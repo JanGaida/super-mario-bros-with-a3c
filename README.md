@@ -26,7 +26,7 @@ Nachfolgend eine kurze Anleitung zum verwenden dieses Projekt.
 
 Nachfolgend eine kurze Erklärung wie dieses Notebook mit Docker ausgeführt werden kann.
 
-Eine funktionierende Docker-Installation wird hierfür benötigt ([s.h. Docker-Dokumentation](https://docs.docker.com/docker-for-windows/install/)
+Eine funktionierende Docker-Installation wird hierfür benötigt ([s.h. Docker-Dokumentation](https://docs.docker.com/docker-for-windows/install/))
 
 #### 1.1.1 Herunterladen des Images
 
