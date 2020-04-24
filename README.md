@@ -40,7 +40,7 @@ $ docker pull jupyter/tensorflow-notebook
 Nachdem das Image heruntergeladen ist kann der Container gebaut und gestartet werden.
 
 ```
-$ docker run -d -p 8888:8888 -p 6006:6006 jupyter/tensorflow-notebook
+$ docker run --privileged -d -p 8888:8888 -p 6006:6006 jupyter/tensorflow-notebook
 ```
 
 Wenn der Container bereits gestartet worden ist:
