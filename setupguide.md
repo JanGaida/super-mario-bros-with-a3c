@@ -111,6 +111,30 @@ pip install tensorflow-gpu==2.0.0
 
 ### 8. [Optional] Remote-Verbindung konfigurieren
 
+```
+jupyter notebook --generate-config
+```
+
+```
+sudo nano ~/.jupyter/jupyter_notebook_config.py
+```
+
+*Passen Sie ggf. die erstellte Config-Datei an (bspw. am Anfang der Datei). Nachfolgend ist ein Vorschlag an Änderungen für das benutzten in einem lokalen Heim-Netzwerk (!):*
+
+```
+c.NotebookApp.ip = '*' # Listen to all ip's
+c.NotebookApp.port = 8888 # Use given port
+c.NotebookApp.token = '' # Skip authentication
+c.NotebookApp.allow_origin = '*' # Allow access from anywhere
+c.NotebookApp.disable_check_xsrf = True # Allow cross-site requests
+```
+
+*Mit erwähnten Konfigurationen können Sie anschließend Jupyter-Notebook starten.*
+
+```
+jupyter notebook
+```
+
 ### 9. Finale Schritte
 
 ```
