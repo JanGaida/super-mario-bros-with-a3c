@@ -18,7 +18,7 @@
 
 ## Installations-Guide
 
-### 1. Hinzufügen des NVIDIA-Package-Repos
+#### 1. Hinzufügen des NVIDIA-Package-Repos
 ```
 mkdir ~/tmp && cd ~/tmp
 
@@ -51,7 +51,7 @@ sudo apt-get update
 nvidia-smi
 ```
 
-### 3. Installieren der Runtime-Libraries
+#### 3. Installieren der Runtime-Libraries
 ```
 sudo apt-get install --no-install-recommends cuda-10-0 libcudnn7=7.6.2.24-1+cuda10.0 libcudnn7-dev=7.6.2.24-1+cuda10.0
 ```
@@ -64,12 +64,12 @@ numba -s
 
 *In den aufgelistetet Informationen findet sich der Unterpunkt 'CUDA Information', bei welchen die GPU's aufgelistet sind gefolgt von einem '[SUPPORTED]' bei erfolgreichem einrichten.*
 
-### 4. [Optional] Installieren von TensorRT
+#### 4. [Optional] Installieren von TensorRT
 ```
 sudo apt-get install -y --no-install-recommends libnvinfer5=5.1.5-1+cuda10.0 libnvinfer-dev=5.1.5-1+cuda10.0
 ```
 
-### 5. Installieren von Anaconda
+#### 5. Installieren von Anaconda
 ```
 cd ~/tmp
 
@@ -106,18 +106,18 @@ which python && which pip
 ~/anaconda3/bin/pip
 ```
 
-### 6. Installieren von Jupyter-Notebook mit Anaconda
+#### 6. Installieren von Jupyter-Notebook mit Anaconda
 
 ```
 conda install -c anaconda jupyter
 ```
 
-### 7. Installieren von Tensorflow 2.0 mit Pip
+#### 7. Installieren von Tensorflow 2.0 mit Pip
 ```
 pip install tensorflow-gpu==2.0.0
 ```
 
-### 8. [Optional] Remote-Verbindung konfigurieren
+#### 8. [Optional] Remote-Verbindung konfigurieren
 
 ```
 jupyter notebook --generate-config
@@ -147,7 +147,7 @@ jupyter notebook
 *Anschließend können Sie sich mit einem Browser, der IP des Host-Rechners, sowie dem spezifizierten Port mit dem Jupyter-Notebook verbinden. (Bspw. https://localhost:8888)*
 
 
-### 9. Finale Schritte
+#### 9. Finale Schritte
 
 ```
 cd ~
@@ -156,6 +156,8 @@ rm -r tmp
 
 sudo apt-get update
 ```
+
+---
 
 ---
 <font size="5"><a href="https://medium.com/@birkann/install-tensorflow-2-0-with-gpu-support-and-jupyter-notebook-db0eeb3067a1">Quelle</a> (Diverse Anpassungen wurden vorgenommen)</font>
