@@ -16,7 +16,7 @@
 - Abgeschlossen Cuda- und Jupyter-Notebook-Installation (<a href="https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/blob/master/setup_guide.md">Klicke hier für eine konforme Anleitung</a>)
 ---
 
-! *Nachfolgend sind <b>optionale</b> Anpassungen an dem im Container installierten Jupyter-Notebook* !
+<b>!!!</b> *Nachfolgend sind <b>optionale</b> Anpassungen an dem im Container installierten Jupyter-Notebook*
 
 ---
 
