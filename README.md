@@ -41,4 +41,4 @@ Clonen Sie dieses Projekt mit Git:
 git clone 'https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020.git'
 ```
 
-Alternativ können Sie dieses Repository auch als gepackt herunterladen und an passender Stelle entpacken.
+Alternativ können Sie dieses Repository auch als gepackten Ordner herunterladen und an passender Stelle entpacken.
