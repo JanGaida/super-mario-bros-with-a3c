@@ -41,8 +41,6 @@ jupyter nbextensions_configurator enable --user
 Nun muss das Jupyter-Notebook neugestartet werden, dazu geben Sie im Terminal des Host-Computers folgende Befehle ein:
 
 ```
-cd ~
-
 jupyter notebook stop
 
 jupyter notebook
@@ -105,10 +103,23 @@ Screenshots der aufgeführten Themes sind <a href="https://github.com/dunovank/j
 
 Kommando zum aktivieren des Themes:
 ```
-$ jt -t <theme-name>
+jt -t <theme-name>
 ```
 
 Kommando zum zurücksetzen des Themes:
 ```
-$ jt -r
+jt -r
 ```
+
+Um Änderungen am Theme zu übernehmmen muss ggf. das Jupyter-Notebook neugestartet werden.
+```
+jupyter notebook stop
+
+jupyter notebook
+```
+
+---
+
+<a href="https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020">Hier geht es zurück zum Research-Projekt</a>
+
+---
