@@ -26,7 +26,7 @@ Nachfolgend eine kurze Anleitung zum verwenden dieses Projekt.
 
 Nachfolgend eine kurze Erklärung wie dieses Notebook mit Docker ausgeführt werden kann.
 
-Eine funktionierende Docker-Installation wird hierfür benötigt ([s.h. Docker-Dokumentation](https://docs.docker.com/docker-for-windows/install/)
+Eine funktionierende Docker-Installation wird hierfür benötigt ([s.h. Docker-Dokumentation](https://docs.docker.com/docker-for-windows/install/))
 
 #### 1.1.1 Herunterladen des Images
 
@@ -40,7 +40,7 @@ $ docker pull jupyter/tensorflow-notebook
 Nachdem das Image heruntergeladen ist kann der Container gebaut und gestartet werden.
 
 ```
-$ docker run -d -p 8888:8888 jupyter/tensorflow-notebook
+$ docker run -d -p 8888:8888 -p 6006:6006 jupyter/tensorflow-notebook
 ```
 
 Wenn der Container bereits gestartet worden ist:
