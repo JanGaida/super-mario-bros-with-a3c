@@ -167,6 +167,21 @@ Gegebenenfalls muss der Docker-Container neugestartet werden:
 $ docker stop <container-id>
 $ docker start -i <container-id>
 ```
+### 1.3 Repository clonen
+
+Nachfolgend muss dieses Repository in das Jupyter-Notebook geladen werden.
+
+Hierfür wird das bereits installierte Git-Package und das Terminal verwendet:
+
+```
+Home -> New -> Terminal
+```
+
+Anschließend kann folgender Befehl ausgeführt werden:
+
+```
+$ git clone https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020.git
+```
 
 ---
 
