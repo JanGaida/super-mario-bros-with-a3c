@@ -56,6 +56,14 @@ nvidia-smi
 sudo apt-get install --no-install-recommends cuda-10-0 libcudnn7=7.6.2.24-1+cuda10.0 libcudnn7-dev=7.6.2.24-1+cuda10.0
 ```
 
+*Sie können nun überprüfen ob CUDA korrekt installiert wurde und ordnungsgemäß funktioniert.*
+
+```
+numba -s
+```
+
+*In den aufgelistetet Informationen findet sich der Unterpunkt 'CUDA Information', bei welchen die GPU's aufgelistet sind gefolgt von einem '[SUPPORTED]' bei erfolgreichem einrichten.*
+
 ### 4. [Optional] Installieren von TensorRT
 ```
 sudo apt-get install -y --no-install-recommends libnvinfer5=5.1.5-1+cuda10.0 libnvinfer-dev=5.1.5-1+cuda10.0
@@ -150,5 +158,5 @@ sudo apt-get update
 ```
 
 ---
-<a href="https://medium.com/@birkann/install-tensorflow-2-0-with-gpu-support-and-jupyter-notebook-db0eeb3067a1"><font size="5">Resource</font></a>
+<font size="5"><a href="https://medium.com/@birkann/install-tensorflow-2-0-with-gpu-support-and-jupyter-notebook-db0eeb3067a1">Quelle</a> (Diverse Anpassungen wurden vorgenommen)</font>
 
