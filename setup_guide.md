@@ -159,6 +159,8 @@ sudo apt-get update
 
 ---
 
+<a href="https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/blob/master/styling_guide.md">Hier geht es mit dem optional stylen von Jupyter-Notebook weiter...</a>
+
 ---
 <font size="5"><a href="https://medium.com/@birkann/install-tensorflow-2-0-with-gpu-support-and-jupyter-notebook-db0eeb3067a1">Quelle</a> (Diverse Anpassungen wurden vorgenommen)</font>
 
