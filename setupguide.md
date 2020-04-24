@@ -127,6 +127,7 @@ c.NotebookApp.port = 8888 # Use given port
 c.NotebookApp.token = '' # Skip authentication
 c.NotebookApp.allow_origin = '*' # Allow access from anywhere
 c.NotebookApp.disable_check_xsrf = True # Allow cross-site requests
+c.NotebookApp.open_browser = False # block browser from launching with jupyter
 ```
 
 *Mit erwähnten Konfigurationen können Sie anschließend Jupyter-Notebook starten.*
@@ -134,6 +135,9 @@ c.NotebookApp.disable_check_xsrf = True # Allow cross-site requests
 ```
 jupyter notebook
 ```
+
+*Anschließend können Sie sich mit einem Browser, der IP des Host-Rechners, sowie dem spezifizierten Port mit dem Jupyter-Notebook verbinden. (Bspw. https://localhost:8888)*
+
 
 ### 9. Finale Schritte
 
