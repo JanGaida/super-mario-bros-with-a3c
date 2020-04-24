@@ -109,8 +109,18 @@ conda install -c anaconda jupyter
 pip install tensorflow-gpu==2.0.0
 ```
 
-### 8. Finale Schritte
+### 8. [Optional] Remote-Verbindung konfigurieren
+
+### 9. Finale Schritte
 
 ```
+cd ~
+
+rm -r tmp
+
 sudo apt-get update
 ```
+
+---
+<a href="https://medium.com/@birkann/install-tensorflow-2-0-with-gpu-support-and-jupyter-notebook-db0eeb3067a1"><font size="5">Resource</font></a>
+
