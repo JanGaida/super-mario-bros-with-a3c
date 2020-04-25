@@ -40,12 +40,16 @@ sudo apt-get update
 
 ### 2. Installieren der NVIDIA-Treiber
 ```
-sudo apt-get install --no-install-recommends nvidia-driver-418
+sudo apt-get install -y --no-install-recommends nvidia-driver-418
 
 sudo apt-get update
 ```
 
 *Anschließend den Computer **neustarten**.*
+
+```
+reboot
+````
 
 *Wenn alles geklappt habt gibt nachfolgender Befehl Informationen über die mit dem System verbundenen GPU's aus.*
 
@@ -55,7 +59,9 @@ nvidia-smi
 
 #### 3. Installieren der Runtime-Libraries
 ```
-sudo apt-get install --no-install-recommends cuda-10-0 libcudnn7=7.6.2.24-1+cuda10.0 libcudnn7-dev=7.6.2.24-1+cuda10.0
+sudo apt-get install -y --no-install-recommends cuda-10-0 libcudnn7=7.6.2.24-1+cuda10.0 libcudnn7-dev=7.6.2.24-1+cuda10.0
+
+sudo apt-get update
 ```
 
 *Sie können nun überprüfen ob CUDA korrekt installiert wurde und ordnungsgemäß funktioniert.*
@@ -69,6 +75,8 @@ numba -s
 #### 4. [Optional] Installieren von TensorRT
 ```
 sudo apt-get install -y --no-install-recommends libnvinfer5=5.1.5-1+cuda10.0 libnvinfer-dev=5.1.5-1+cuda10.0
+
+sudo apt-get update
 ```
 
 #### 5. Installieren von Anaconda
