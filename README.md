@@ -45,7 +45,7 @@ Alternativ können Sie dieses Repository auch als gepackten Ordner herunterladen
 
 ## Starten
 
-Testen Sie ob ihre GPU korrekt funktioniert, indem Sie das '<b>gpu_test</b>'-JupyterNotebook ausführen
+Testen Sie ob ihre GPU korrekt funktioniert, indem Sie das '<b>gpu_test</b>'-JupyterNotebook ausführen.
 
 Anschließend können Sie das '<b>main</b>'-JupyterNotebook ausführen um das Model zu trainieren.
 
