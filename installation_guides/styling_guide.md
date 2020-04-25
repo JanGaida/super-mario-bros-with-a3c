@@ -76,7 +76,21 @@ Home -> Nbextensions
 
 *Lädt man nun die offnen Jupyter-Notebooks neu so werden diese mit der Erweiterung geladen.*
 
-#### 4. [Optional] Theme
+#### 4. [Optional] Inhaltsverzeichnis
+
+*Nachfolgend ist beschrieben wie eine Jupyterweiterung zur Darstellung von Ausführungszeiten im Jupyter-Notebook installiert wird. Hierfür kann die zuvor installierte Erweiterung 'Nbextensions' genutzt werden*:
+
+```
+Home -> Nbextensions
+```
+
+*Zunächst muss der Hacken bei <b>'disable configuration for nbextensions without explicit compatibility [...]'</b> entfernt werden.*
+
+*Anschließend kann nach <b>'table of contents'</b> gesucht werden und diese Erweiterung mit einem Klick aktiviert werden.*
+
+*Lädt man nun die offnen Jupyter-Notebooks neu so werden diese mit der Erweiterung geladen.*
+
+#### 5. [Optional] Theme
 
 *Nachfolgende ist beschrieben wie eine Jupyterweiterung zum Anpassen des Jupyter-Themes installiert wird. Zunächst muss mit Pip das 'jupyterthemes'-Package benötigt, dazu wird zu erst ein Terminal gebraucht:*
 
