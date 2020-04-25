@@ -137,7 +137,7 @@ conda install -c anaconda jupyter
 ```
 pip install --upgrade pip
 
-pip install tensorflow
+pip install tensorflow-gpu==1.14.0
 ```
 
 #### 8. [Optional] Remote-Verbindung konfigurieren
