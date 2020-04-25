@@ -11,7 +11,7 @@
 ---
 
 ## Anforderungen
-- Ubunbtu 20.04 (frühere Versionen erfordern ggf. Anpassungen)
+- Ubunbtu 20.04, 64-bit (andere Versionen erfordern ggf. kleinere Anpassungen)
 - CUDA-Kompatible GPU (<a href="https://developer.nvidia.com/cuda-gpus">Klicke hier für eine Liste der unterstützten GPU's</a>)
 - Abgeschlossen Cuda- und Jupyter-Notebook-Installation (<a href="https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/blob/master/setup_guide.md">Klicke hier für eine konforme Anleitung</a>)
 ---
