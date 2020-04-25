@@ -11,7 +11,7 @@
 ---
 
 ## Anforderungen
-- Ubunbtu 20.04 (frühere Versionen erfordern ggf. Anpassungen)
+- Ubunbtu 20.04, 64-bit (andere Versionen erfordern ggf. kleinere Anpassungen)
 - CUDA-Kompatible GPU (<a href="https://developer.nvidia.com/cuda-gpus">Klicke hier für eine Liste der unterstützten GPU's</a>)
 
 ---
@@ -64,11 +64,6 @@ sudo apt-get install -y --no-install-recommends cuda-10-0 libcudnn7=7.6.2.24-1+c
 sudo apt-get update
 ```
 
-*Sie können nun überprüfen ob CUDA korrekt installiert wurde und ordnungsgemäß funktioniert.*
-
-```
-numba -s
-```
 
 *In den aufgelistetet Informationen findet sich der Unterpunkt 'CUDA Information', bei welchen die GPU's aufgelistet sind gefolgt von einem '[SUPPORTED]' bei erfolgreichem einrichten.*
 
@@ -83,9 +78,9 @@ sudo apt-get update
 ```
 cd ~/tmp
 
-wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh
+wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
 
-bash ./Anaconda3-2019.07-Linux-x86_64.sh
+bash ./Anaconda3-2020.02-Linux-x86_64.sh
 ```
 
 *Bestätigen Sie anschließend die Lizenzbedingungen mit 'yes', wählen Sie das Installationsverzeichnis (Default ist '~/anaconda3') und initlialisieren Sie Anaconda3 mit 'yes'.*
@@ -107,13 +102,19 @@ source ~/.bashrc
 *Überprüfen Sie nun ob die Insallations geglückt ist mit folgenden Befehl:*
 
 ```
-which python && which pip && which pip3
+which python && which pip
 ```
 
 *Das erwartete Ergebnis lautet:*
 ```
-~/anaconda3/bin/python
-~/anaconda3/bin/pip
+/home/{username}/anaconda3/bin/python
+/home/{username}/anaconda3/bin/pip
+```
+
+*Sie können nun überprüfen ob CUDA korrekt installiert wurde und ordnungsgemäß funktioniert.*
+
+```
+numba -s
 ```
 
 #### 6. Installieren von Jupyter-Notebook mit Anaconda
@@ -157,7 +158,7 @@ c.NotebookApp.open_browser = False # block browser from launching with jupyter
 jupyter notebook
 ```
 
-*Anschließend können Sie sich mit einem Browser, der IP des Host-Rechners, sowie dem spezifizierten Port mit dem Jupyter-Notebook verbinden. (Bspw. https://localhost:8888)*
+*Anschließend können Sie sich mit einem Browser, der <b>lokalen IP</b> des Host-Rechners, sowie dem spezifizierten Port mit dem Jupyter-Notebook verbinden. (Bspw. https://localhost:8888)*
 
 #### 9. Installieren von Git
 
