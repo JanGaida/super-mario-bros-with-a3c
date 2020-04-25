@@ -131,6 +131,7 @@ sudo nano ~/.jupyter/jupyter_notebook_config.py
 
 ```
 c.NotebookApp.ip = '*' # Listen to all ip's
+c.NotebookApp.notebook_dir = '/Absolute/Path/'
 c.NotebookApp.port = 8888 # Use given port
 c.NotebookApp.token = '' # Skip authentication
 c.NotebookApp.allow_origin = '*' # Allow access from anywhere
