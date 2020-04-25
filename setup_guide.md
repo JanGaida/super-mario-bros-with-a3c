@@ -122,9 +122,11 @@ which python && which pip && which pip3
 conda install -c anaconda jupyter
 ```
 
-#### 7. Installieren von Tensorflow 2.0 mit Pip
+#### 7. Installieren von Tensorflow mit Pip
 ```
-pip install tensorflow-gpu==2.0.0
+pip install --upgrade pip
+
+pip install tensorflow
 ```
 
 #### 8. [Optional] Remote-Verbindung konfigurieren
@@ -173,7 +175,7 @@ git config --globaal user.email 'EMAIL'
 
 #### 10. Finale Schritte
 
-Fast geschaft ...
+*Fast geschaft ...*
 
 ```
 cd ~
