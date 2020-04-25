@@ -171,9 +171,9 @@ sudo apt-get install -y git-all
 *Nun muss Git noch konfiguriert werden, ersetzen Sie hierbei den <b>NAME</b> sowie <b>EMAIL</b> passend.*
 
 ```
-git config --globaal user.name 'NAME'
+git config --global user.name 'NAME'
 
-git config --globaal user.email 'EMAIL'
+git config --global user.email 'EMAIL'
 ```
 
 #### 10. Finale Schritte
@@ -181,9 +181,7 @@ git config --globaal user.email 'EMAIL'
 *Fast geschaft ...*
 
 ```
-cd ~
-
-rm -r tmp
+cd ~ && rm -r tmp
 
 sudo apt-get update
 ```
