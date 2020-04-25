@@ -81,6 +81,8 @@ cd ~/tmp
 wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
 
 bash ./Anaconda3-2020.02-Linux-x86_64.sh
+
+conda update -n base -c defaults conda
 ```
 
 *Bestätigen Sie anschließend die Lizenzbedingungen mit 'yes', wählen Sie das Installationsverzeichnis (Default ist '~/anaconda3') und initlialisieren Sie Anaconda3 mit 'yes'.*
