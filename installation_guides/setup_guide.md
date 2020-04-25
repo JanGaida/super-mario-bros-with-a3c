@@ -1,6 +1,6 @@
 ---
 
- <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="350">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="350">
 
 ---
 
@@ -56,6 +56,10 @@ reboot
 ```
 nvidia-smi
 ```
+
+*Beispiel-Ausgabe:*
+
+<img src="https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/blob/master/installation_guides/screenshot_terminal_nvidia-smi.png" height="250px"/>
 
 #### 3. Installieren der Runtime-Libraries
 ```
@@ -118,6 +122,10 @@ which python && which pip
 ```
 numba -s
 ```
+
+*Beispiel-Ausgabe:*
+
+<img src="https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/blob/master/installation_guides/screenshot_termina_numba-s.png" height="90px"/>
 
 #### 6. Installieren von Jupyter-Notebook mit Anaconda
 
