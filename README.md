@@ -1,8 +1,6 @@
 [![Generic badge](https://img.shields.io/badge/License-Properitary-red.svg)](https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/blob/master/LICENSE.md)
 [![Active Development](https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg)](https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/)
 [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/issues)
-[![Python 3.7.7](https://img.shields.io/badge/python-3.7.7-blue.svg)](https://www.python.org/downloads/release/python-377/)
-[![JupyterNotebook 6.03](https://img.shields.io/badge/Jupyter_Notebook-6.0.3-orange.svg)](https://jupyter.org/)
 
 ---
 
@@ -42,3 +40,13 @@ git clone 'https://github.com/JanGaida/research_project_machine_learning_hshof_s
 ```
 
 Alternativ können Sie dieses Repository auch als gepackten Ordner herunterladen und an passender Stelle entpacken.
+
+---
+
+## Starten
+
+Testen Sie ob ihre GPU korrekt funktioniert, indem Sie das '<b>gpu_test</b>'-JupyterNotebook ausführen
+
+Anschließend können Sie das '<b>main</b>'-JupyterNotebook ausführen um das Model zu trainieren.
+
+---
