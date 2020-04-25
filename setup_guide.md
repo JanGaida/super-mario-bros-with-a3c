@@ -107,7 +107,7 @@ source ~/.bashrc
 *Überprüfen Sie nun ob die Insallations geglückt ist mit folgenden Befehl:*
 
 ```
-which python && which pip
+which python && which pip && which pip3
 ```
 
 *Das erwartete Ergebnis lautet:*
@@ -157,8 +157,23 @@ jupyter notebook
 
 *Anschließend können Sie sich mit einem Browser, der IP des Host-Rechners, sowie dem spezifizierten Port mit dem Jupyter-Notebook verbinden. (Bspw. https://localhost:8888)*
 
+#### 9. Installieren von Git
 
-#### 9. Finale Schritte
+```
+sudo apt-get install -y git-all
+```
+
+*Nun muss Git noch konfiguriert werden, ersetzen Sie hierbei den <b>NAME</b> sowie <b>EMAIL</b> passend.*
+
+```
+git config --globaal user.name 'NAME'
+
+git config --globaal user.email 'EMAIL'
+```
+
+#### 10. Finale Schritte
+
+Fast geschaft ...
 
 ```
 cd ~
