@@ -176,7 +176,28 @@ git config --global user.name 'NAME'
 git config --global user.email 'EMAIL'
 ```
 
-#### 10. Finale Schritte
+#### 10. [Optional] Installieren und konfigurieren von SSH
+```
+sudo apt install -y ssh
+
+sudo systemctl enable --now ssh
+```
+
+*Überprüfen Sie anschließend den Status des SSH-Serices:*
+
+```
+sudo systemctl status ssh
+```
+
+*Sie können sich nun mit SSH zu dem Host-Computer verbinden.*
+
+*Um den SSH-Service automatisch zu starten geben Sie folgenden Befehl ein:*
+
+```
+sudo update-rc.d ssh defaults
+```
+
+#### 11. Finale Schritte
 
 *Fast geschaft ...*
 
