@@ -2,7 +2,7 @@
 logs/*
 
 # MP4
-mp4/*
+records/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
