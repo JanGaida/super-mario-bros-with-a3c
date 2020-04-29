@@ -1,8 +1,7 @@
-# Logs
-logs/*
-
-# MP4
-records/*
+# Project-Specific
+LOGS/*
+MODEL/*
+REC/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
