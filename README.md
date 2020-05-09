@@ -9,7 +9,7 @@
 
 ---
 
-## Research Project: 
+#### Research Project: 
 # Deep-Q-Learning mit 'Super Mario Bros' und A3C.'
 
 *Seminararbeit der Vorlesung **Angewandtes Maschinelles Lernen** an der **Hochschule für angewande Wissenschaften Hof** des **Sommersemesters 2020**.*
@@ -24,3 +24,25 @@
 *Anmerkung: Eine CUDA-Unterstüzte GPU ist <b>nicht</b> zwingend erforderlich, aber für das Trainieren des Neuronalen-Netzes empfohlen.*
 
 ---
+
+## Benötigte Pip-Packages
+
+- gym
+- gym-super-mario-bros
+- nes-py
+- tensorboardX
+- torch
+
+*Zum installieren der empfohlenen Packeges kann auch die Requierments.txt benutzt werden:*
+
+```bash 
+pip install -r <PATH>/requirements.txt
+```
+
+---
+
+## Credits & Special Thanks
+
+---
+
+***README IN PROGRESS***
