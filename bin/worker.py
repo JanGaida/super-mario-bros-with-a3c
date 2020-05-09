@@ -198,7 +198,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save):
             if local_episode == int(max_global_steps / max_local_steps):
                 if verbose:
                     end_time = timeit.default_timer()
-                    print("Worker-{} :: Training --- nach {.2f} s abgeschlossen".format(idx,(end_time - start_time)))
+                    print("Worker-{} :: Training --- nach {.3f} s abgeschlossen".format(idx,(end_time - start_time)))
                 else:
                     print("Worker-{} :: Training --- abgeschlossen".format(idx))
                 # Fertig

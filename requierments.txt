@@ -1,0 +1,11 @@
+gym==0.17.1
+gym-super-mario-bros==7.3.0
+nes-py==8.1.1
+numpy==1.18.1
+PyVirtualDisplay==0.2.5
+tensorboard==1.14.0
+tensorboardX==2.0
+tensorflow-estimator==1.14.0
+tensorflow-gpu==1.14.0
+torch==1.5.0
+torchvision==0.6.0

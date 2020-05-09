@@ -10,7 +10,7 @@ from bin.instructions import start_training, start_testing
 def grab_arguments():
 	"""Hilfsfunktion um Argumente zu parsen"""
 
-	parser = argparse.ArgumentParser("Implementation of model described in the paper: Asynchronous Methods for Deep Reinforcement Learning for Super Mario Bros")
+	parser = argparse.ArgumentParser("Research Project: Deep-Q-Learning mit 'Super Mario Bros' und A3C.")
 	
 	# Modus
 	parser.add_argument("-m", "--mode", type=str, default="training", 
@@ -43,7 +43,7 @@ def grab_arguments():
 	parser.add_argument("--torch_seed", type=int, default=42, 
 		help="Der initiale Torchseed.")
 	parser.add_argument("--model_save_name", type=str, default="a3c_smb",
-		help="Der Name des gespeichert Models (Anmerkung: wird um die Stage, World, Version ergänzt).")
+		help="Der Name des gespeichert Models (Anmerkung: wird um die Stage, World-, Version- sowie Step- und Thread-Informationen ergänzt).")
 
 
 	# Enviorment
@@ -62,15 +62,18 @@ def grab_arguments():
 	parser.add_argument("--max_global_steps", type=int, default=5e5,
 		help="Die maximale Anzahl an globalen Steps die ein Worker auszuführen hat.")
 	parser.add_argument("--max_actions", type=int, default=100, 
-		help="Maximum repetition steps in test phase")
+		help="Maximale Wiederholung von Aktionen in der Testphase.")
 
 
 	# Hyperparameter
-	parser.add_argument("-lr", "--learning_rate", type=float, default=1e-4)
+	parser.add_argument("-lr", "--learning_rate", type=float, default=1e-4,
+		help="Learningrate-Faktor.")
 	parser.add_argument('--discount_gamma', type=float, default=0.9,
-		help='Discount- bzw. Gamma-Faktor')
-	parser.add_argument('--tau', type=float, default=1.0, help='parameter for GAE')
-	parser.add_argument('--beta', type=float, default=0.01, help='entropy coefficient')
+		help='Discount- bzw. Gamma-Faktor.')
+	parser.add_argument('--tau', type=float, default=1.0, 
+		help='Parameter für GAE.')
+	parser.add_argument('--beta', type=float, default=0.01, 
+		help='Entropy Koeffizient.')
 
 	return parser.parse_args()
 
