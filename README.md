@@ -45,7 +45,7 @@
 - tensorboardX
 - torch
 
-*Zum installieren der empfohlenen Packeges kann auch die <a href="https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/blob/master/requierments.txt">Requierments.txt</a> benutzt werden:*
+*Zum installieren der empfohlenen Packages kann auch die <a href="https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/blob/master/requierments.txt">Requierments.txt</a> benutzt werden:*
 
 ```bash 
 pip install -r <PATH>/requirements.txt
