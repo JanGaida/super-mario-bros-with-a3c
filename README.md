@@ -9,7 +9,7 @@
 
 ---
 
-# Research Project: Q-Learning mit 'Super Mario Bros.'
+# Research Project: 1Deep-Q-Learning mit 'Super Mario Bros' und A3C.'
 
 *Seminararbeit der Vorlesung **Angewandtes Maschinelles Lernen** an der **Hochschule für angewande Wissenschaften Hof** des **Sommersemesters 2020**.*
 
