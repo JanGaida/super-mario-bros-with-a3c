@@ -2,6 +2,9 @@
 LOGS/*
 MODEL/*
 REC/*
+SAMPLE_RUN/*.mp4
+logs/*
+models/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
