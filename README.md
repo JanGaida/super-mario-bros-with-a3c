@@ -18,7 +18,7 @@
 ## Anforderungen
 - Ubuntu 18.04 / 20.04, 64-Bit (andere Versionen erfordern ggf. Anpassungen)
 - Eingerichtete CUDA kompatible GPU (<a href="https://developer.nvidia.com/cuda-gpus">Klicke hier für eine Liste der unterstützten GPU's</a>)
-- Python
+- Python 3
 
 *Anmerkung: Eine CUDA-Unterstüzte GPU ist <b>nicht</b> zwingend erforderlich, aber für das Trainieren des Neuronalen-Netzes empfohlen.*
 
