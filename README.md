@@ -25,6 +25,19 @@
 
 ---
 
+## Ziel
+
+- Entwicklen, Traninern und Testen eines Neuronalen Netzes zum absovlieren von Super Mario Bros. (1985)
+- Verständnis von Neuronalen Netzten und RL-Algorithmen (insbesondere Deep-Q-Learning) entfalten
+
+---
+
+## Anwendung
+
+*upcoming*
+
+---
+
 ## Benötigte Pip-Packages
 
 - gym
@@ -42,6 +55,7 @@ pip install -r <PATH>/requirements.txt
 
 ## Credits & Special Thanks
 
+- Dem Professor und den Komilitonen der Vorlesung "Angewandtes maschinelles Lernen (Sose 2020)"
+- Christian Kauten für das Bereitstellen des <a href="https://github.com/Kautenja/gym-super-mario-bros">OpenAi-Gym's Super-Mario-Bros.</a> 
+- <a href="https://github.com/uvipen/Super-mario-bros-A3C-pytorch">Viet Nguyen</a>, <a href="https://github.com/ArvindSoma/a3c-super-mario-pytorch">Arvind Soma</a>, <a href="https://github.com/sachinruk/Mario">Sachin Abeywardana</a>, <a href="https://github.com/Kautenja/playing-mario-with-deep-reinforcement-learning">Christian Kauten</a>,  <a href="https://github.com/sadeqa/Super-Mario-Bros-RL">Otmane Sakhi & Amine Sadeq</a> und <a href="https://github.com/search?q=super+mario+bros+reinforcement-learning&type=Repositories">viele weitere Projekte</a> für inspirerende Reinforcement-Learning-Implementationen im Super-Mario-Bros-Gym's
 ---
-
-***README IN PROGRESS***
