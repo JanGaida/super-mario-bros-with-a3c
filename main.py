@@ -24,7 +24,7 @@ def grab_arguments():
 	# Ordner
 	parser.add_argument("--logdir", type=str, default="logs", 
 		help="Legt den Pfad fest in dem Logs abgelegt werden.")
-	parser.add_argument("--rm_logdir", type=bool, default=False, 
+	parser.add_argument("--rm_logdir", type=bool, default=True, 
 		help="Legt fest ob der Logging-Pfad geleert werden soll wenn vorhanden.")
 	parser.add_argument("--modeldir", type=str, default="models", 
 		help="Legt den Pfad fest in dem Models gespeichert werden.")
@@ -85,7 +85,6 @@ def grab_arguments():
 		help='Entropy Koeffizient.')
 
 	return parser.parse_args()
-
 
 def check_dir_structure(args):
 	"""Überprüft ob die gewünschten Ordner vorhanden sind"""
