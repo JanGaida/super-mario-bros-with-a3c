@@ -17,7 +17,7 @@ def grab_arguments():
 		help="Wertebereich: \'training\', \'testing\'\nLegt fest ob ein Model trainiert oder getestet werden soll.")
 	parser.add_argument("-v", "--verbose", type=bool, default=True, 
 		help="Ob diverse Informationen ausgegeben werden sollen.")
-	parser.add_argument("--verbose_every_episode", type=int, default=5, 
+	parser.add_argument("--verbose_every_episode", type=int, default=10, 
 		help="Nach welchen Episoden diverse Informationen ausgegeben werden sollen.")
 
 
@@ -55,7 +55,7 @@ def grab_arguments():
 		help="Legt die initiale Welt des Super-Mario-Bros-Gym's fest.")
 	parser.add_argument("-s", "--stage", type=int, default=1, 
 		help="Legt die initiale Stage des Super-Mario-Bros-Gym's fest.")
-	parser.add_argument("-rv", "--rversion", type=int, default=1, 
+	parser.add_argument("-rv", "--rversion", type=int, default=0, 
 		help="Legt die initiale Version des Super-Mario-Bros-Gym's fest.")
 	parser.add_argument("-a", "--action_set", type=str, default="complex",
 		help="Wertebereich: \'rightonly\', \'simple\', \'complex\'\nLegt die initiale Aktionen des Super-Mario-Bros-Gym's fest.")
@@ -67,6 +67,8 @@ def grab_arguments():
 		help="Die maximale Anzahl an globalen Steps die ein Worker auszuführen hat.")
 	parser.add_argument("--max_actions", type=int, default=100, 
 		help="Maximale Wiederholung von Aktionen in der Testphase.")
+	parser.add_argument("--skip_frames", type=int, default=5, 
+		help="Die Anzahl an Frames die Übersprungen werden.")
 
 
 	# Hyperparameter

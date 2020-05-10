@@ -58,7 +58,7 @@ class ActorCriticModel(nn.Module):
         x = F.relu(self.conv4(x))
 
         # LSTM
-        hx, cx = self.lstm(x.view(x.size(0), -1), (hx, cx))
+        hx, cx = self.lstm( x.view( x.size(0), -1), (hx, cx))
 
         return self.actor(hx), self.critic(hx), hx, cx
 

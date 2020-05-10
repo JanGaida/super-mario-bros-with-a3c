@@ -1,6 +1,7 @@
 def printHeaders(args):
     """Gibt den Header des Skriptes aus."""
-    print("\n")
+    printStars()
+    printProjektInfos()
     printStars()
     print("                               ______                              _          ______          _           _         \n\
                                | ___ \                            | |         | ___ \        (_)         | |  _     \n\
@@ -9,7 +10,7 @@ def printHeaders(args):
                                | |\ \  __/\__ \  __/ (_| | | | (__| | | |     | |  | | | (_) | |  __/ (__| |_ _     \n\
                                \_| \_\___||___/\___|\__,_|_|  \___|_| |_|     \_|  |_|  \___/| |\___|\___|\__(_)    \n\
                                                                                             _/ |                    \n\
-                                                                                          |__/                     \n\
+                                                                                           |__/                     \n\
                                 _____                        ___  ___           _        ______                     \n\
                                /  ___|                       |  \/  |          (_)       | ___ \                    \n\
                                \ `--. _   _ _ __   ___ _ __  | .  . | __ _ _ __ _  ___   | |_/ /_ __ ___  ___       \n\
@@ -47,4 +48,13 @@ def printTestingMode():
     printStars("\n")
 
 def printStars(add = ""):
+    """Gibt eine Zeile voller Sterne aus"""
     print("***********************************************************************************************************************************************{}".format(add))
+
+def printProjektInfos():
+    """Gibt mehrere Zeilen mit Projekt-Infos aus"""
+    print("\n\tAutor: Jan Gaida" +\
+    "\n\tProjekt: Deep-Q-Learning mit 'Super Mario Bros' und A3C" +\
+    "\n\tGithub: https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020" +\
+    "\n\tVersion: 1.0.0-r" +\
+    "\n\n\tCopyright (c) 2020 Jan Gaida\n")

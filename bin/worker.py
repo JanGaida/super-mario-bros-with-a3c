@@ -15,7 +15,7 @@ from tensorboardX import SummaryWriter
 from bin.enviorment import make_training_enviorment
 from bin.model import ActorCriticModel
 
-def dispatch_training(idx, args, global_model, optimizer, should_save):
+def dispatch_training(idx, args, global_model, optimizer, should_save = False, trained_episodes = 0):
     """Die Worker Aufgabe für ein Training"""
     try:
 
@@ -42,9 +42,10 @@ def dispatch_training(idx, args, global_model, optimizer, should_save):
         local_state = T.from_numpy( env.reset() )
         if cuda: local_state = local_state.cuda() # GPU-Support
         local_done = True # ob das gym-level abgeschlossen ist
-        local_episode = 0 # aktuelle worker-episode
+        local_episode = trained_episodes # aktuelle worker-episode
         local_step = 0 # aktueller worker-step
         local_reward = 0 # aktueller worker-reward
+        total_loss = 0
 
         # Loop-Const
         episode_save_interval = args.episode_save_interval # der Speicherinterval
@@ -69,16 +70,17 @@ def dispatch_training(idx, args, global_model, optimizer, should_save):
         while True:
 
             # Überprüfe ob gespeichert werden soll
-            if should_save and local_episode % episode_save_interval == 0 and not local_episode == 0:
+            if should_save and local_episode % episode_save_interval == 0 and not local_episode == trained_episodes:
                 T.save(global_model.state_dict(), "{}/{}_world{}_stage{}_ver{}__ep{}_x_{}.pt".format(modeldir, model_save_name, world, stage, rversion, local_episode, num_parallel_trainings_threads))
-                if verbose: print("Worker {: 3d} :: Training    ---    globales Model gespeichert".format(idx))
+                if verbose: print("\nWorker {: 2d} :: Training    ---    globales Model gespeichert\n".format(idx))
 
             # Nächste Episode
             local_episode += 1
             if verbose and local_episode % verbose_every_episode == 0 and not local_episode == 0: 
                 latest_sum_reward = sum(ep_rewards)
                 latest_avg_reward = latest_sum_reward / len(ep_rewards)
-                print("Worker {: 3d} :: Training    ---    lokale Episode {:>7}    ---    lokale Avg.Reward {:>9.2f}    ---    lokale Sum.Reward {:>9.2f}".format(idx, local_episode, latest_sum_reward, latest_avg_reward))
+                print("Worker {: 2d} :: Training    ---    lokale Episode {:>7}    ---    lokale Avg.Reward {:>10.3f}    ---    lokale Sum.Reward {:>10.3f}    ---    Loss {:>12.2f}"\
+                    .format(idx, local_episode, latest_avg_reward, latest_sum_reward, total_loss.item()))
 
             # Gewichte aus dem globalen Model laden
             local_model.load_state_dict(global_model.state_dict())
@@ -144,12 +146,12 @@ def dispatch_training(idx, args, global_model, optimizer, should_save):
                 if local_done:
                     break
 
-            # ??
+            # Bewertung
             R = T.zeros((1, 1), dtype=T.float)
             if cuda: R = R.cuda() # GPU-Support
 
             if not local_done: 
-                # Bewertung nachholen, sollte eig. nicht passieren
+                # Bewertung einholen für Runs die nicht abgeschlossen wurden
                 _, R, _, _ = local_model(local_state, h_0, c_0)
 
             gae = T.zeros((1,1), dtype=T.float)
@@ -198,14 +200,20 @@ def dispatch_training(idx, args, global_model, optimizer, should_save):
             if local_episode == int(max_global_steps / max_local_steps):
                 if verbose:
                     end_time = timeit.default_timer()
-                    print("Worker {: 3d} :: Training    ---    nach {.2f} s abgeschlossen".format(idx,(end_time - start_time)))
+                    print("Worker {: 2d} :: Training    ---    nach {:.2f} s abgeschlossen".format(idx,(end_time - start_time)))
                 else:
-                    print("Worker {: 3d} :: Training    ---    abgeschlossen".format(idx))
+                    print("Worker {: 2d} :: Training    ---    abgeschlossen".format(idx))
                 # Fertig
                 return
 
     except KeyboardInterrupt:
-        print("Worker {: 3d} :: Training    ---    EXIT OK".format(idx))
+        if verbose:
+            end_time = timeit.default_timer()
+            print("Worker {: 2d} :: Training    ---    Laufzeit {:.2f} s    ---    EXIT OK".format(idx,(end_time - start_time)))
+        else:
+            print("Worker {: 2d} :: Training    ---    EXIT OK".format(idx))
+        # Fertig
+        return
 
 
 def dispatch_testing(idx, args, global_model):
@@ -236,6 +244,7 @@ def dispatch_testing(idx, args, global_model):
 
             # Model wiederladen wenn Run abgeschlossen
             if local_done:
+                #print("Runner {: 2d} :: Training    ---    Lade Globales Model nach".format(idx))
                 local_model.load_state_dict(global_model.state_dict())
 
             # Ohne Gradienten-Berrechnung
@@ -265,6 +274,7 @@ def dispatch_testing(idx, args, global_model):
 
             # Wenn max_global_steps erreicht wurde oder wenn die max_actions erreich wurden ...
             if local_step > max_global_steps or actions.count(actions[0]) == actions.maxlen:
+                #print("Runner {: 2d} :: Training    ---    Aktionslimit erreicht".format(idx))
                 # .. neustarten
                 local_done = True
 
@@ -280,4 +290,5 @@ def dispatch_testing(idx, args, global_model):
             local_state = T.from_numpy(local_state)
 
     except KeyboardInterrupt:
-        print("Runner {: 3d} :: Training    ---    EXIT OK".format(idx))
+        print("Runner {: 2d} :: Training    ---    EXIT OK".format(idx))
+        return
