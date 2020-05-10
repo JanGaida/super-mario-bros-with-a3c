@@ -311,7 +311,7 @@ def get_corresponding_model_file(args):
 
 
 def get_all_corresponding_model_file(args):
-    """"""
+    """Gibt alle passenden Model-Files zurück, als auch in einer seperaten Liste die episoden Anzahl des Models"""
     modeldir = args.modeldir
     model_load_file = args.model_load_file
 

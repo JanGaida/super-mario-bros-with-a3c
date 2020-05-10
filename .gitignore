@@ -1,5 +1,7 @@
 # Project-Specific
 logs/*
+models/*
+rec/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
