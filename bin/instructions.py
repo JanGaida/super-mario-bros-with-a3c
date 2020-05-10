@@ -1,5 +1,5 @@
 # Generel
-import os, shutil, time, glob
+import os, shutil, time, glob, uuid
 
 # Torch
 import torch as T
@@ -127,101 +127,112 @@ def start_testing(args):
         # Bereite Torch-Multiprocessing vor
         T.manual_seed(args.torch_seed)
 
-        print("Initialisiere Enviorment...")
-        # Enviorment initialisieren
-        env, num_states, num_actions = make_testing_enviorment(args)
-
-        # Cuda-Unterstüzung
         cuda = args.cuda
-        if cuda: print("Aktiviere Cuda-Unterstüzung...")
 
-        print("Initialisiere Model...")
+        model_files, episodes = get_all_corresponding_model_file(args)
 
-        # Model initialisieren
-        local_model = ActorCriticModel(num_states, num_actions)
+        if model_files is None or episodes is None:
+            print("\nKeine Model-Files für gegebene Argumente gefunden.\nBrechen Training ab...\n")
+            return
 
         # Const
         modeldir = args.modeldir
-        model_save_name = args.model_save_name
+        recordsdir = args.recordsdir
         world = args.world
         stage = args.stage
         rversion = args.rversion
+        num_parallel_trainings_threads = args.num_parallel_trainings_threads
 
-        # Gewichte laden
-
-        if args.model_load_latest:
-            print("Suche Model-File Gewichte und Biase in \'{}\'...".format(args.modeldir))
-            model_file, trained_episodes = get_corresponding_model_file(args)
-
-            # Wenn File gefunden wurde
-            if model_file is not None:
-                print("Lade Model-File {}...".format(model_file))
-                local_model.load_state_dict(T.load(model_file))
-
-            # Wenn kein File gefunden wurde
-            else:
-                print("Kein Model-File gefunden...".format(model_file))
-
-        # Evaluations-Flag
-        local_model.eval()
-
-        print("Model Initallisierung abgeschlossen...")
-
-        # Loop-Var
-        local_state = T.from_numpy( env.reset() )
-        local_done = True
-
-        print("Testing Vorbereitungen abgeschlossen...")
+        counter = 1
 
         printStars("\n")
-        print(">> Training:\n")
+        print(">> Aufnahmen:")
 
-        # Testing-Loop
-        while True:
-            # Wenn Env abgeschlossen ist...
-            if local_done: 
-                # Neue Tensor erzeugen
-                h_0 = T.zeros((1, 512), dtype = T.float)
-                c_0 = T.zeros((1, 512), dtype = T.float)
+        for model_file, episode in zip(model_files, episodes):
 
-                # Enviorment zurücksetzen
-                env.reset()
+            print("\nBeginne Aufnahme {} / {}    --    World {}, Stage {}, Version {}, Episode {}    --    Model-Datei {}" \
+                .format(counter, len(model_files), world, stage, rversion, episode, model_file))
 
-            else:
-                # Tensor wiederverwenden
-                h_0 = h_0.detach()
-                c_0 = c_0.detach()
+            # Aufnahme-Enviorment initialisieren
+            env, num_states, num_actions = make_testing_enviorment(args, episode)
 
-            # GPU-Support
-            if cuda:
-                h_0 = h_0.cuda()
-                c_0 = c_0.cuda()
-                local_state = local_state.cuda()
+            # Model laden
+            local_model = ActorCriticModel(num_states, num_actions)
+            local_model.load_state_dict(T.load(model_file))
 
-            # Model
-            action_logit_probability, action_judgement, h_0, c_0 = local_model(local_state, h_0, c_0)
+            # Gpu-Support
+            if cuda: local_model.cuda()
 
-            # Policy
-            policy = F.softmax(action_logit_probability, dim = 1)
+            # Evaluierungs-Flag
+            local_model.eval()
 
-            # Action wählen
-            #action = int(T.argmax(policy).item()
-            action = T.argmax(policy).item()
+            # Loop-Var
+            local_state = T.from_numpy( env.reset() )
+            local_done = True
 
-            # Ausführen
-            local_state, local_reward, local_done, local_info = env.step(action)
-            local_state = T.from_numpy(local_state)
-            env.render()
+            # Aufnahme-Loop
+            while True:
+                # Wenn Env abgeschlossen ist...
+                if local_done: 
+                    # Neue Tensor erzeugen
+                    h_0 = T.zeros((1, 512), dtype = T.float)
+                    c_0 = T.zeros((1, 512), dtype = T.float)
 
-            if local_info["flag_get"]:
-                print("World {} stage {} completed".format(world, stage))
-                break
+                    # Enviorment zurücksetzen
+                    env.reset()
+
+                else:
+                    # Tensor wiederverwenden
+                    h_0 = h_0.detach()
+                    c_0 = c_0.detach()
+
+                # GPU-Support
+                if cuda:
+                    h_0 = h_0.cuda()
+                    c_0 = c_0.cuda()
+                    local_state = local_state.cuda()
+
+                # Model
+                action_logit_probability, action_judgement, h_0, c_0 = local_model(local_state, h_0, c_0)
+
+                # Policy
+                policy = F.softmax(action_logit_probability, dim = 1)
+
+                # Action wählen
+                #action = int(T.argmax(policy).item()
+                action = T.argmax(policy).item()
+
+                # Ausführen
+                local_state, local_reward, local_done, local_info = env.step(action)
+                local_state = T.from_numpy(local_state)
+                env.render()
+
+                # Wenn der Run abgeschlossen ist
+                if local_done:
+                    try:
+                        # Aufnahme stoppen
+                        env.close()
+                    except ValueError:
+                        print("")
+                    break
+
+            # Warte kurz
+            time.sleep(1)
+
+            # Verschiebe die Aufnahme & Lösche den ursprünglichen Ordner
+            for mp4 in glob.glob("{}/a3c_smb_world{}_stage{}_ver{}/ep{}/*1.mp4".format(recordsdir, world, stage, rversion, episode)):
+                shutil.move(mp4, "{}/a3c_smb_world{}_stage{}_ver{}/episode_{}_x_{}__{}.mp4".format(recordsdir, world, stage, rversion, episode, num_parallel_trainings_threads, uuid.uuid4()))
+                shutil.rmtree("{}/a3c_smb_world{}_stage{}_ver{}/ep{}/".format(recordsdir, world, stage, rversion, episode))
+
+            print("\n.. abgeschlossen\n")
+            counter += 1
+
     except KeyboardInterrupt:
         return
 
 
 def get_corresponding_model_file(args):
-    """"""
+    """Gibt das aktuellste (wenn nicht näher definiert) Model-File zurück für gegebene Argumente"""
     modeldir = args.modeldir
     model_load_file = args.model_load_file
 
@@ -275,7 +286,7 @@ def get_corresponding_model_file(args):
                 episode = int(file[idx_0:idx_1])
                 thread = int(file[idx_2:idx_3])
 
-                training = episode * thread
+                training = episode # * thread # todo: re-enable
 
                 # mit <= damit das letzte in der 'Liste' genommen wird
                 if biggest_training <= training:
@@ -297,3 +308,48 @@ def get_corresponding_model_file(args):
                 Bitte stellen Sie sicher das alle im \'{}\' liegenden Model-Files folgendes Schema befolgen: {}_world<ZAHL>_stage<ZAHL>_ver<ZAHL>__ep<ZAHL>_x_<ZAHL>.pt\n\
                 -> Fahre ohne laden eines Models fort.\n".format(modeldir, model_save_name))
             return None, None
+
+
+def get_all_corresponding_model_file(args):
+    """"""
+    modeldir = args.modeldir
+    model_load_file = args.model_load_file
+
+    # Wenn ein spezifisches File vorgegeben wurde
+    if not model_load_file == "":
+        # Überprüfe ob es existiert
+        if os.path.isfile("{}/{}".format(modeldir, model_load_file)):
+            return model_load_file
+        # ansonsten das letzte passende
+
+    model_save_name = args.model_save_name
+    world = args.world
+    stage = args.stage
+    rversion = args.rversion
+    num_parallel_trainings_threads = args.num_parallel_trainings_threads
+
+    # Initiale Filter World,Stage,RVersion
+    matched_files = []
+    for file in glob.glob("{}/*.pt".format(modeldir)):
+        # Überprüfe ob passende Parameter
+        if file.startswith("{}/{}_world{}_stage{}_ver{}".format(modeldir,model_save_name, world, stage, rversion)):
+            matched_files.append(file)
+
+    # Überpüft ob passende Model-Files _nicht_ vorhanden waren
+    if len(matched_files) == 0:
+        return None, None
+
+    # Ansonsten die Episoden extrahieren & als Liste zurückgegeben
+    else:
+        list_files = []
+        list_episodes = []
+
+        for file in matched_files:
+            idx_0 = file.find('__ep') + 4
+            idx_1 = file.find('_x_')
+            episode = int(file[idx_0:idx_1])
+
+            list_files.append(file)
+            list_episodes.append(episode)
+
+        return list_files, list_episodes

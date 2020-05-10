@@ -21,7 +21,10 @@ def printHeaders(args):
                                            |_|                                                                      ")
     printStars("\n")
     print("                                             Info: Das Skript ist mit STRG + C (je nach Terminal) zu beenden.\n")
+    print("                                     Info: Für eine Auflistung aller Parameter starten Sie das \'main.py\' mit \'--help\'\n")
     printStars()
+
+
 
 def printTrainingMode():
     """Gibt den Header für den Training-Mode aus"""
@@ -37,7 +40,7 @@ def printTrainingMode():
 
 def printTestingMode():
     """Gibt den Header für den Testing-Mode aus"""
-    print("                                                             _______        _   _             \n\
+    print("                                                         _______        _   _             \n\
                                                         |__   __|      | | (_)            \n\
                                                            | | ___  ___| |_ _ _ __   __ _ \n\
                                                            | |/ _ \/ __| __| | '_ \ / _` |\n\

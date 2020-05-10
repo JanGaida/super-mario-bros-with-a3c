@@ -7,6 +7,7 @@ import subprocess as sp
 import gym
 from gym import Wrapper
 from gym.spaces import Box
+from gym.wrappers import Monitor
 
 # Super-Mario-Bros-Gym
 import gym_super_mario_bros
@@ -53,30 +54,37 @@ class RewardWrapper(Wrapper):
         # hier berrechnet Reward liegt zwischen -15 und 15 
         # reward = (x_pos_1 - x_pos_0) + (clock_0 - clock_1) + (alive ? 0 ansonsten -15)
 
+        my_reward = 0
+        # zusätzlicher Reward mindestens 0
+        # my_reward = (score_1 - self.score_0) / 50. + (coin_1 - self.coin_0) + (complete ? 45 ansonsten -45)
+        # ~> reward insgesamt: (reward + my_reward) / 10.
+
         # Score:
         score_1 = info["score"]
-        my_reward = (score_1 - self.score_0) * .01
+        my_reward += (score_1 - self.score_0) / 50.
 
         # Coins
         coin_1 = info["coins"]
-        my_reward = (coin_1 - self.coin_0) * .1
+        my_reward += (coin_1 - self.coin_0) / 10.
 
         self.score_0 = score_1
         self.coin_0 = coin_1
+
+        my_reward = max(0, my_reward)
 
         # Wenn das Enviorment abgeschlossen ist
         if done:
             # Und das Ziel erreicht wurde
             if info["flag_get"]:
-                my_reward += 45
+                my_reward += 45.
 
             # Und das Ziel _nicht_ erreicht wurde
             else:
-                my_reward -= 45
+                my_reward += -45.
 
-        reward += my_reward * .1
+        reward += my_reward
 
-        return state, reward, done, info
+        return state, reward / 10. , done, info
 
     def reset(self):
         # Letzten Score ebenfalls zurücksetzten
@@ -126,7 +134,7 @@ class SkipFrameWrapper(Wrapper):
 
         # Genauigkeit reduzieren
         states = states.astype(np.float32)
-        
+
         return states, reward, done, info
 
     def reset(self):
@@ -198,9 +206,37 @@ def make_training_enviorment(args):
 
     return env, num_states, num_actions
 
-def make_testing_enviorment(args):
+def make_testing_enviorment(args, episode):
     """Erzeugt ein Testing-Enviorment"""
 
-    # todo: Monitor
+    # Gym
+    env = gym.make("SuperMarioBros-{}-{}-v{}".format(args.world, args.stage, args.rversion))
 
-    return make_training_enviorment(args)
+    # JoypadSpace-Wrapper, vgl. https://github.com/Kautenja/gym-super-mario-bros/blob/master/gym_super_mario_bros/actions.py
+    if args.action_set == "rightonly":
+        action_set = RIGHT_ONLY
+    elif args.action_set == "simple":
+        action_set = SIMPLE_MOVEMENT
+    elif args.action_set == "complex":
+        action_set = COMPLEX_MOVEMENT
+    else:
+        raise Exception("Invalde Actions.")
+    env = JoypadSpace(env, action_set)
+
+    # Wende Monitor an
+    env = Monitor(env, "{}/a3c_smb_world{}_stage{}_ver{}/ep{}".format(args.recordsdir, args.world, args.stage, args.rversion, episode), force=True)
+
+    # Berarbeiten der Frames
+    env = PreprocessFrameWrapper(env)
+
+    # Überschreiben des Rewards
+    env = RewardWrapper(env)
+
+    # Überspringen von Frames
+    env = SkipFrameWrapper(env, args.skip_frames)
+
+    # Rückgabe
+    num_states = env.observation_space.shape[0]
+    num_actions = len(action_set)
+
+    return env, num_states, num_actions

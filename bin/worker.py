@@ -65,6 +65,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save = False, t
         # Für Verbose vorzeitige init
         if verbose:
             ep_rewards = [0]
+            loop_time_0 = timeit.default_timer()
 
         # unendliche Trainings-Loop
         while True:
@@ -79,8 +80,10 @@ def dispatch_training(idx, args, global_model, optimizer, should_save = False, t
             if verbose and local_episode % verbose_every_episode == 0 and not local_episode == 0: 
                 latest_sum_reward = sum(ep_rewards)
                 latest_avg_reward = latest_sum_reward / len(ep_rewards)
-                print("Worker {: 2d} :: Training    ---    lokale Episode {:>7}    ---    lokale Avg.Reward {:>10.3f}    ---    lokale Sum.Reward {:>10.3f}    ---    Loss {:>12.2f}"\
-                    .format(idx, local_episode, latest_avg_reward, latest_sum_reward, total_loss.item()))
+                loop_time_1 = timeit.default_timer()
+                print("Worker {: 2d} :: Training    ---    lokale Episode {:>7}    ---    lokale Avg.Reward {:>10.3f}    ---    lokale Sum.Reward {:>10.2f}    ---    {:>4.2f}s / episode"\
+                    .format(idx, local_episode, latest_avg_reward, latest_sum_reward, ((loop_time_1 - loop_time_0)/verbose_every_episode)))
+                loop_time_0 = loop_time_1
 
             # Gewichte aus dem globalen Model laden
             local_model.load_state_dict(global_model.state_dict())

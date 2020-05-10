@@ -28,6 +28,9 @@ def grab_arguments():
 		help="Legt fest ob der Logging-Pfad geleert werden soll wenn vorhanden.")
 	parser.add_argument("--modeldir", type=str, default="models", 
 		help="Legt den Pfad fest in dem Models gespeichert werden.")
+	parser.add_argument("--recordsdir", type=str, default="rec", 
+		help="Legt den Pfad fest in dem Aufnahmen gespeichert werden.")
+
 
 
 	# Laufzeitumgebung
@@ -35,7 +38,7 @@ def grab_arguments():
 		help="Legt fest ob die GPU (mit CUDA-Support) verwendet werden soll.")
 	parser.add_argument("--num_parallel_trainings_threads", type=int, default=6, 
 		help="Legt fest wie viele Threads verwendet werden sollen.")
-	parser.add_argument("--num_parallel-testing_threads", type=int, default=2, 
+	parser.add_argument("--num_parallel-testing_threads", type=int, default=1, 
 		help="Legt fest wie viele Threads verwendet werden sollen.")
 
 
@@ -97,6 +100,9 @@ def check_dir_structure(args):
 	if not os.path.isdir(args.modeldir):
 		os.makedirs(args.modeldir)
 
+	# recordsdir
+	if not os.path.isdir(args.recordsdir):
+		os.makedirs(args.recordsdir)
 
 if __name__ == "__main__":
 	"""Die Main-Funktion"""
