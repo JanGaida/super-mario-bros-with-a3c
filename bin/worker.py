@@ -16,7 +16,7 @@ from bin.enviorment import make_training_enviorment
 from bin.model import ActorCriticModel
 
 def dispatch_training(idx, args, global_model, optimizer, should_save):
-    """Die Worker-Aufgabe für ein Training"""
+    """Die Worker Aufgabe für ein Training"""
     try:
 
         # Bereite Torch-Multiprocessing vor
@@ -59,7 +59,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save):
         tau = args.tau
         beta = args.beta
         verbose_every_episode = args.verbose_every_episode
-        num_parallel_trainings_threads = arg.num_parallel_trainings_threads
+        num_parallel_trainings_threads = args.num_parallel_trainings_threads
 
         # Für Verbose vorzeitige init
         if verbose:
@@ -70,15 +70,15 @@ def dispatch_training(idx, args, global_model, optimizer, should_save):
 
             # Überprüfe ob gespeichert werden soll
             if should_save and local_episode % episode_save_interval == 0 and not local_episode == 0:
-                T.save(global_model.state_dict(), "{}/{}_world{}_stage{}_ver{}__ep{}_x_{}".format(modeldir, model_save_name, world, stage, rversion, local_episode, num_parallel_trainings_threads))
-                if verbose and local_episode & verbose_every_episode == 0: print("Worker-{} :: Training --- globales Model gespeichert".format(idx))
+                T.save(global_model.state_dict(), "{}/{}_world{}_stage{}_ver{}__ep{}_x_{}.pt".format(modeldir, model_save_name, world, stage, rversion, local_episode, num_parallel_trainings_threads))
+                if verbose: print("Worker {: 3d} :: Training    ---    globales Model gespeichert".format(idx))
 
             # Nächste Episode
             local_episode += 1
-            if verbose: 
+            if verbose and local_episode % verbose_every_episode == 0 and not local_episode == 0: 
                 latest_sum_reward = sum(ep_rewards)
-                latest_avg_reward = lastest_sum_reward / len(ep_rewards)
-                print("Worker-{} :: Training --- lokale Episode {} --- lokale Avg.Reward {} --- lokale Sum.Reward {}".format(idx, local_episode, latest_sum_reward, latest_avg_reward))
+                latest_avg_reward = latest_sum_reward / len(ep_rewards)
+                print("Worker {: 3d} :: Training    ---    lokale Episode {:>7}    ---    lokale Avg.Reward {:>9.2f}    ---    lokale Sum.Reward {:>9.2f}".format(idx, local_episode, latest_sum_reward, latest_avg_reward))
 
             # Gewichte aus dem globalen Model laden
             local_model.load_state_dict(global_model.state_dict())
@@ -198,18 +198,18 @@ def dispatch_training(idx, args, global_model, optimizer, should_save):
             if local_episode == int(max_global_steps / max_local_steps):
                 if verbose:
                     end_time = timeit.default_timer()
-                    print("Worker-{} :: Training --- nach {.3f} s abgeschlossen".format(idx,(end_time - start_time)))
+                    print("Worker {: 3d} :: Training    ---    nach {.2f} s abgeschlossen".format(idx,(end_time - start_time)))
                 else:
-                    print("Worker-{} :: Training --- abgeschlossen".format(idx))
+                    print("Worker {: 3d} :: Training    ---    abgeschlossen".format(idx))
                 # Fertig
                 return
 
     except KeyboardInterrupt:
-        print("\nWorker-{} :: Training --- EXIT OK\n".format(idx))
+        print("Worker {: 3d} :: Training    ---    EXIT OK".format(idx))
 
 
 def dispatch_testing(idx, args, global_model):
-    """Die Worker-Aufgabe für ein Testing"""
+    """Die Worker Aufgabe für ein Testing"""
     try:
         # Bereite Torch-Multiprocessing vor
         T.manual_seed(args.torch_seed + idx)
@@ -236,7 +236,7 @@ def dispatch_testing(idx, args, global_model):
 
             # Model wiederladen wenn Run abgeschlossen
             if local_done:
-                local_model.load_state_dict(globale_model.state_dict())
+                local_model.load_state_dict(global_model.state_dict())
 
             # Ohne Gradienten-Berrechnung
             with T.no_grad():
@@ -280,4 +280,4 @@ def dispatch_testing(idx, args, global_model):
             local_state = T.from_numpy(local_state)
 
     except KeyboardInterrupt:
-        print("\nRunner-{} :: Training --- EXIT OK\n".format(idx))
+        print("Runner {: 3d} :: Training    ---    EXIT OK".format(idx))

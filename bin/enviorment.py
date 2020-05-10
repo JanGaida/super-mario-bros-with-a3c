@@ -13,6 +13,12 @@ import gym_super_mario_bros
 from nes_py.wrappers import JoypadSpace
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT, COMPLEX_MOVEMENT, RIGHT_ONLY
 
+# Ignoriere Numpy-Warnings -> https://github.com/RunzheYang/MORL/issues/5
+np.seterr(over = 'ignore')
+
+# Gym-Logger-Level -> DEBUG = 10  INFO = 20  WARN = 30  ERROR = 40  DISABLED = 50
+gym.logger.set_level(40)
+
 """
 class Monitor:
     def __init__(self, width, height, saved_path):
@@ -40,7 +46,7 @@ def process_frame(frame):
 class RewardWrapper(Wrapper):
     def __init__(self, env=None):
         super(RewardWrapper, self).__init__(env)
-        self.observation_space = Box(low=0, high=255, shape=(1, 84, 84))
+        self.observation_space = Box(low = 0, high = 255, shape = (1, 84, 84), dtype = np.float32)
         self.curr_score = 0
 
     def step(self, action):
@@ -63,7 +69,7 @@ class RewardWrapper(Wrapper):
 class SkipFrameWrapper(Wrapper):
     def __init__(self, env, skip=4):
         super(SkipFrameWrapper, self).__init__(env)
-        self.observation_space = Box(low=0, high=255, shape=(4, 84, 84))
+        self.observation_space = Box(low = 0, high = 255, shape = (4, 84, 84), dtype = np.float32)
         self.skip = skip
 
     def step(self, action):

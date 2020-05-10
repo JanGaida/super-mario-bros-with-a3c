@@ -17,7 +17,7 @@ def grab_arguments():
 		help="Wertebereich: \'training\', \'testing\'\nLegt fest ob ein Model trainiert oder getestet werden soll.")
 	parser.add_argument("-v", "--verbose", type=bool, default=True, 
 		help="Ob diverse Informationen ausgegeben werden sollen.")
-	parser.add_argument("--verbose_every_episode", type=int, default=25, 
+	parser.add_argument("--verbose_every_episode", type=int, default=5, 
 		help="Nach welchen Episoden diverse Informationen ausgegeben werden sollen.")
 
 
@@ -44,6 +44,10 @@ def grab_arguments():
 		help="Der initiale Torchseed.")
 	parser.add_argument("--model_save_name", type=str, default="a3c_smb",
 		help="Der Name des gespeichert Models (Anmerkung: wird um die Stage, World-, Version- sowie Step- und Thread-Informationen ergänzt).")
+	parser.add_argument("--model_load_latest", type=bool, default=True,
+		help="Ob ein Model beim Start geladen werden soll.")
+	parser.add_argument("--model_load_file", type=str, default="",
+		help="Der Name des Models welches geladen werden soll.")
 
 
 	# Enviorment
