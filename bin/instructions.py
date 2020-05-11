@@ -52,9 +52,18 @@ def start_training(args):
                 print("Kein Model-File gefunden...".format(model_file))
 
 
+        print("Bereite TensorboardX-Writer vor...")
+
+        # SummaryWriter
+        summarywriter_path = "{}/{}_world{}_stage{}_ver{}__{}".format(args.logdir, args.model_save_name, args.world, args.stage, args.rversion, datetime.now().strftime("%d_%m_%y_%H_%M_%S"))
+        if not os.path.isdir(summarywriter_path):
+            os.mkdir(summarywriter_path)
+
+        print("Tensorboard kann mit dem CL-Kommando \'tensorboard --logdir={}\' gestartet werden..".format(args.logdir))
+
         # GPU-Support
         if args.cuda: 
-            print("Aktiviere Cuda-Unterstüzung...")
+            print("Aktiviere Cuda-GPU-Unterstüzung...")
             global_model.cuda() 
 
         # Gloables Model mit allen Teilen
@@ -71,21 +80,21 @@ def start_training(args):
         threads = []
 
         # initaler Trainings-Thread (wird abgespeichert)
-        trainings_thread = mp.Process(target = dispatch_training, args = (0, args, global_model, optimizer, True, trained_episodes))
+        trainings_thread = mp.Process(target = dispatch_training, args = (0, args, global_model, optimizer, True, trained_episodes, summarywriter_path))
         threads.append(trainings_thread)
 
         # weitere Trainings-Threads
         for idx in range(1, args.num_parallel_trainings_threads):
-            trainings_thread = mp.Process(target = dispatch_training, args = (idx, args, global_model, optimizer, False, trained_episodes))
+            trainings_thread = mp.Process(target = dispatch_training, args = (idx, args, global_model, optimizer, False, trained_episodes, summarywriter_path))
             threads.append(trainings_thread)
 
         # Testing-Threads
         trainings_threads_count = args.num_parallel_trainings_threads
         for idx in range(args.num_parallel_testing_threads):
-            test_thread = mp.Process(target = dispatch_testing, args = ((idx + trainings_threads_count), args, global_model))
+            test_thread = mp.Process(target = dispatch_testing, args = ((idx + trainings_threads_count), args, global_model, summarywriter_path))
             threads.append(test_thread)
 
-        print("{} Thread's initialisiert ({} Worker und {} Tester)...\nStarte Trainings-Threads...\n".format(len(threads), args.num_parallel_trainings_threads, args.num_parallel_testing_threads))
+        print("{} Thread's initialisiert ({} Worker und {} Tester)...\nStarten alle Threads in Kürze...\n".format(len(threads), args.num_parallel_trainings_threads, args.num_parallel_testing_threads))
         printStars("\n")
 
         print(">>> Neuronales-Netz:\n")
@@ -99,6 +108,7 @@ def start_training(args):
             x = x.cuda()
             hx = hx.cuda()
             cx = cx.cuda()
+
         # Infos von Torch
         print(global_model)
         print("\n")
@@ -130,7 +140,7 @@ def start_testing(args):
 
         cuda = args.cuda
 
-        model_files, episodes = get_all_corresponding_model_file(args)
+        model_files, episodes = get_all_corresponding_model_files(args)
 
         if model_files is None or episodes is None:
             print("\nKeine Model-Files für gegebene Argumente gefunden.\nBrechen Training ab...\n")
@@ -176,25 +186,25 @@ def start_testing(args):
                 # Wenn Env abgeschlossen ist...
                 if local_done: 
                     # Neue Tensor erzeugen
-                    h_0 = T.zeros((1, 512), dtype = T.float)
-                    c_0 = T.zeros((1, 512), dtype = T.float)
+                    hx = T.zeros((1, 512), dtype = T.float)
+                    cx = T.zeros((1, 512), dtype = T.float)
 
                     # Enviorment zurücksetzen
                     env.reset()
 
                 else:
                     # Tensor wiederverwenden
-                    h_0 = h_0.detach()
-                    c_0 = c_0.detach()
+                    hx = hx.detach()
+                    cx = cx.detach()
 
                 # GPU-Support
                 if cuda:
-                    h_0 = h_0.cuda()
-                    c_0 = c_0.cuda()
+                    hx = hx.cuda()
+                    cx = cx.cuda()
                     local_state = local_state.cuda()
 
                 # Model
-                action_logit_probability, action_judgement, h_0, c_0 = local_model(local_state, h_0, c_0)
+                action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx)
 
                 # Policy
                 policy = F.softmax(action_logit_probability, dim = 1)
@@ -221,9 +231,9 @@ def start_testing(args):
             time.sleep(1)
 
             # Verschiebe die Aufnahme & Lösche den ursprünglichen Ordner
-            for mp4 in glob.glob("{}/a3c_smb_world{}_stage{}_ver{}/ep{}/*1.mp4".format(recordsdir, world, stage, rversion, episode)):
-                shutil.move(mp4, "{}/a3c_smb_world{}_stage{}_ver{}/ep_{}_x_{}__{}.mp4".format(recordsdir, world, stage, rversion, episode, num_parallel_trainings_threads, now_str))
-                shutil.rmtree("{}/a3c_smb_world{}_stage{}_ver{}/ep{}/".format(recordsdir, world, stage, rversion, episode))
+            for mp4 in glob.glob("{}/{}_world{}_stage{}_ver{}/ep{}/*1.mp4".format(recordsdir, model_save_name, world, stage, rversion, episode)):
+                shutil.move(mp4, "{}/{}_world{}_stage{}_ver{}/ep_{}_x_{}__{}.mp4".format(recordsdir, model_save_name, world, stage, rversion, episode, num_parallel_trainings_threads, now_str))
+                shutil.rmtree("{}/{}_world{}_stage{}_ver{}/ep{}/".format(recordsdir, model_save_name, world, stage, rversion, episode))
 
             print("\n.. abgeschlossen\n")
             counter += 1
@@ -250,12 +260,11 @@ def get_corresponding_model_file(args):
     rversion = args.rversion
     num_parallel_trainings_threads = args.num_parallel_trainings_threads
 
-    # Initiale Filter World,Stage,RVersion
-    matched_files = []
-    for file in glob.glob("{}/*.pt".format(modeldir)):
-        # Überprüfe ob passende Parameter
-        if file.startswith("{}/{}_world{}_stage{}_ver{}".format(modeldir,model_save_name, world, stage, rversion)):
-            matched_files.append(file)
+    if not os.path.isdir("{}/{}_world{}_stage{}_ver{}".format(modeldir, model_save_name, world, stage, rversion)):
+        return None, None
+
+    # Initiale Filter World, Stage, RVersion
+    matched_files = glob.glob("{}/{}_world{}_stage{}_ver{}/*.pt".format(modeldir, model_save_name, world, stage, rversion))
 
     # Überpüft ob passende Model-Files _nicht_ vorhanden waren
     if len(matched_files) == 0:
@@ -264,7 +273,7 @@ def get_corresponding_model_file(args):
     # Wenn es nur 1 passenden gibt
     elif len(matched_files) == 1:
         file = matched_files[0]
-        idx_0 = file.find('__ep') + 4
+        idx_0 = file.find('ep') + 2
         idx_1 = file.find('_x_')
         episode = int(file[idx_0:idx_1])
 
@@ -273,30 +282,26 @@ def get_corresponding_model_file(args):
     # Ansonsten finde das letzte
     else:
         try:
-            biggest_training = -1
             biggest_episode = -1
             biggest_file = ""
 
             for file in matched_files:
                 # Indicies
-                idx_0 = file.find('__ep') + 4
+                idx_0 = file.find('ep') + 2
                 idx_1 = file.find('_x_')
-                idx_2 = idx_1 + 3
-                idx_3 = file.find('.pt')
+                #idx_2 = idx_1 + 3
+                #idx_3 = file.find('.pt')
 
                 episode = int(file[idx_0:idx_1])
-                thread = int(file[idx_2:idx_3])
-
-                training = episode # * thread # todo: re-enable
+                #thread = int(file[idx_2:idx_3])
 
                 # mit <= damit das letzte in der 'Liste' genommen wird
-                if biggest_training <= training:
-                    biggest_training = training
+                if biggest_episode <= episode:
                     biggest_episode = episode
                     biggest_file = file
 
             # Nochmaliges überprüfen ob files gefunden wurden
-            if not biggest_training == -1 and not biggest_file == "" and not biggest_episode == -1:
+            if not biggest_file == "" and not biggest_episode == -1:
                 return biggest_file, biggest_episode
 
             # Keines gefunden obwohl eins erwartet wurde
@@ -305,13 +310,13 @@ def get_corresponding_model_file(args):
                 return None, None
 
         except:
-            print("Kritischer Parsing-Exception beim finden des Model-Files.\n\
-                Bitte stellen Sie sicher das alle im \'{}\' liegenden Model-Files folgendes Schema befolgen: {}_world<ZAHL>_stage<ZAHL>_ver<ZAHL>__ep<ZAHL>_x_<ZAHL>.pt\n\
-                -> Fahre ohne laden eines Models fort.\n".format(modeldir, model_save_name))
+            print("Kritischer Parsing-Exception beim finden des Model-Files.\n"+\
+                "Bitte stellen Sie sicher das alle im \'{}\' liegenden Model-Files folgendes Schema befolgen: \'{}_world<ZAHL>_stage<ZAHL>_ver<ZAHL>/ep<ZAHL>_x_<ZAHL>.pt\'\n"+\
+                "-> Fahre ohne laden eines Models fort.\n".format(modeldir, model_save_name))
             return None, None
 
 
-def get_all_corresponding_model_file(args):
+def get_all_corresponding_model_files(args):
     """Gibt alle passenden Model-Files zurück, als auch in einer seperaten Liste die episoden Anzahl des Models"""
     modeldir = args.modeldir
     model_load_file = args.model_load_file
@@ -329,12 +334,12 @@ def get_all_corresponding_model_file(args):
     rversion = args.rversion
     num_parallel_trainings_threads = args.num_parallel_trainings_threads
 
-    # Initiale Filter World,Stage,RVersion
-    matched_files = []
-    for file in glob.glob("{}/*.pt".format(modeldir)):
-        # Überprüfe ob passende Parameter
-        if file.startswith("{}/{}_world{}_stage{}_ver{}".format(modeldir,model_save_name, world, stage, rversion)):
-            matched_files.append(file)
+    # Überprüfen ob der Ordner exisitert
+    if not os.path.isdir("{}/{}_world{}_stage{}_ver{}".format(modeldir, model_save_name, world, stage, rversion)):
+        return None, None
+
+    # Initiale Filter World, Stage, RVersion
+    matched_files = glob.glob("{}/{}_world{}_stage{}_ver{}/*.pt".format(modeldir, model_save_name, world, stage, rversion))
 
     # Überpüft ob passende Model-Files _nicht_ vorhanden waren
     if len(matched_files) == 0:
@@ -346,7 +351,7 @@ def get_all_corresponding_model_file(args):
         list_episodes = []
 
         for file in matched_files:
-            idx_0 = file.find('__ep') + 4
+            idx_0 = file.find('ep') + 2
             idx_1 = file.find('_x_')
             episode = int(file[idx_0:idx_1])
 

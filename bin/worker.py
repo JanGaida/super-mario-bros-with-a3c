@@ -1,5 +1,6 @@
 # Generel
-import timeit
+import timeit, os
+from datetime import datetime
 
 # Torch
 import torch as T
@@ -15,7 +16,7 @@ from tensorboardX import SummaryWriter
 from bin.enviorment import make_training_enviorment
 from bin.model import ActorCriticModel
 
-def dispatch_training(idx, args, global_model, optimizer, should_save = False, trained_episodes = 0):
+def dispatch_training(idx, args, global_model, optimizer, should_save, trained_episodes, summarywriter_path):
     """Die Worker Aufgabe für ein Training"""
     try:
 
@@ -27,8 +28,8 @@ def dispatch_training(idx, args, global_model, optimizer, should_save = False, t
         verbose = args.verbose
         if verbose: start_time = timeit.default_timer()
 
-        # Tensorboard
-        writer = SummaryWriter(args.logdir)
+        # Summarywriter
+        writer = SummaryWriter(summarywriter_path)
 
         # Lokales Enviorment
         env, num_states, num_actions = make_training_enviorment(args)
@@ -45,6 +46,10 @@ def dispatch_training(idx, args, global_model, optimizer, should_save = False, t
         local_episode = trained_episodes # aktuelle worker-episode
         local_step = 0 # aktueller worker-step
         local_reward = 0 # aktueller worker-reward
+
+        actor_loss = 0
+        critic_loss = 0
+        entropy_loss = 0
         total_loss = 0
 
         # Loop-Const
@@ -67,22 +72,28 @@ def dispatch_training(idx, args, global_model, optimizer, should_save = False, t
             ep_rewards = [0]
             loop_time_0 = timeit.default_timer()
 
+        # Für das Speichern
+        specific_modeldir = "{}/{}_world{}_stage{}_ver{}".format(modeldir, model_save_name, world, stage, rversion)
+        if not os.path.isdir(specific_modeldir):
+            os.mkdir(specific_modeldir)
+
         # unendliche Trainings-Loop
         while True:
 
             # Überprüfe ob gespeichert werden soll
             if should_save and local_episode % episode_save_interval == 0 and not local_episode == trained_episodes:
-                T.save(global_model.state_dict(), "{}/{}_world{}_stage{}_ver{}__ep{}_x_{}.pt".format(modeldir, model_save_name, world, stage, rversion, local_episode, num_parallel_trainings_threads))
-                if verbose: print("\nWorker {: 2d} :: Training    ---    globales Model gespeichert\n".format(idx))
+                T.save(global_model.state_dict(), "{}/ep{}_x_{}.pt".format(specific_modeldir, local_episode, num_parallel_trainings_threads))
+                if verbose: print("\n{} :: Worker {: 2d}    ---    globales Model erfolgreich gespeichert\n".format(datetime.now().strftime("%H:%M:%S"), idx))
 
             # Nächste Episode
             local_episode += 1
-            if verbose and local_episode % verbose_every_episode == 0 and not local_episode == 0: 
+            if verbose and local_episode % verbose_every_episode == 0 and not local_episode == 0:
                 latest_sum_reward = sum(ep_rewards)
                 latest_avg_reward = latest_sum_reward / len(ep_rewards)
                 loop_time_1 = timeit.default_timer()
-                print("Worker {: 2d} :: Training    ---    lokale Episode {:>7}    ---    lokale Avg.Reward {:>10.3f}    ---    lokale Sum.Reward {:>10.2f}    ---    {:>4.2f}s / episode"\
-                    .format(idx, local_episode, latest_avg_reward, latest_sum_reward, ((loop_time_1 - loop_time_0)/verbose_every_episode)))
+                print("{} :: Worker {: 2d}  |  EP {:>6}  |  Avg-RW {:>6.2f}  | Sum-RW {:>8.1f}  |  Perf {:>5.2f} ep/sec  |  A-Loss {:>8.1f}  |  C-Loss {:>8.1f}  |  E-Loss {:>8.1f}  |  Loss {:>8.1f}".format(
+                    datetime.now().strftime("%H:%M:%S"), idx, local_episode, latest_avg_reward, latest_sum_reward, ((loop_time_1 - loop_time_0)/verbose_every_episode), actor_loss.item(), critic_loss.item(), entropy_loss.item(), total_loss.item())
+                )
                 loop_time_0 = loop_time_1
 
             # Gewichte aus dem globalen Model laden
@@ -90,14 +101,14 @@ def dispatch_training(idx, args, global_model, optimizer, should_save = False, t
 
             # Episoden Tensor
             if local_done: # Neue Tensor erzeugen falls benötigt
-                h_0 = T.zeros( (1, 512), dtype = T.float)
-                c_0 = T.zeros( (1, 512), dtype = T.float)
+                hx = T.zeros( (1, 512), dtype = T.float)
+                cx = T.zeros( (1, 512), dtype = T.float)
             else: # Wiederverwenden
-                h_0 = h_0.detach()
-                c_0 = c_0.detach()
+                hx = hx.detach()
+                cx = cx.detach()
             if cuda: # CUDA-Support
-                h_0 = h_0.cuda()
-                c_0 = c_0.cuda()
+                hx = hx.cuda()
+                cx = cx.cuda()
 
             # Episoden-Var
             ep_policies = []
@@ -110,7 +121,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save = False, t
                 local_step += 1
 
                 # Model
-                action_logit_probability, action_judgement, h_0, c_0 = local_model(local_state, h_0, c_0)
+                action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx)
 
                 # Policies
                 policy = F.softmax(action_logit_probability, dim = 1)
@@ -155,7 +166,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save = False, t
 
             if not local_done: 
                 # Bewertung einholen für Runs die nicht abgeschlossen wurden
-                _, R, _, _ = local_model(local_state, h_0, c_0)
+                _, R, _, _ = local_model(local_state, hx, cx)
 
             gae = T.zeros((1,1), dtype=T.float)
             if cuda: gae = gae.cuda()
@@ -180,7 +191,9 @@ def dispatch_training(idx, args, global_model, optimizer, should_save = False, t
             total_loss = -actor_loss + critic_loss - beta * entropy_loss
 
             # Tensorboard
-            writer.add_scalar("Training_Worker_{}_Loss".format(idx), total_loss, local_episode)
+            writer.add_scalar("Workers/#{}/actor_loss".format(idx), actor_loss, local_episode)
+            writer.add_scalar("Workers/#{}/critic_loss".format(idx), critic_loss, local_episode)
+            writer.add_scalar("Workers/#{}/total_loss".format(idx), total_loss, local_episode)
 
             # Vor der Backpropagation alle Gradienten auf 0 setzen
             optimizer.zero_grad()
@@ -203,23 +216,23 @@ def dispatch_training(idx, args, global_model, optimizer, should_save = False, t
             if local_episode == int(max_global_steps / max_local_steps):
                 if verbose:
                     end_time = timeit.default_timer()
-                    print("Worker {: 2d} :: Training    ---    nach {:.2f} s abgeschlossen".format(idx,(end_time - start_time)))
+                    print("{} :: Worker {: 2d}    ---    nach {:.2f} s abgeschlossen".format(datetime.now().strftime("%H:%M:%S"), idx, (end_time - start_time)))
                 else:
-                    print("Worker {: 2d} :: Training    ---    abgeschlossen".format(idx))
+                    print("{} :: Worker {: 2d}    ---   abgeschlossen".format(datetime.now().strftime("%H:%M:%S"), idx))
                 # Fertig
                 return
 
     except KeyboardInterrupt:
         if verbose:
             end_time = timeit.default_timer()
-            print("Worker {: 2d} :: Training    ---    Laufzeit {:.2f} s    ---    EXIT OK".format(idx,(end_time - start_time)))
+            print("{} :: Worker {: 2d}    ---    nach {:.2f} s abgeschlossen".format(datetime.now().strftime("%H:%M:%S"), idx, (end_time - start_time)))
         else:
-            print("Worker {: 2d} :: Training    ---    EXIT OK".format(idx))
+            print("{} :: Worker {: 2d}    ---   abgeschlossen".format(datetime.now().strftime("%H:%M:%S"), idx))
         # Fertig
         return
 
 
-def dispatch_testing(idx, args, global_model):
+def dispatch_testing(idx, args, global_model, summarywriter_path):
     """Die Worker Aufgabe für ein Testing"""
     try:
         # Bereite Torch-Multiprocessing vor
@@ -228,6 +241,9 @@ def dispatch_testing(idx, args, global_model):
         # Enviorment initialisieren
         env, num_states, num_actions = make_training_enviorment(args)
 
+        # Tensorboard
+        writer = SummaryWriter(summarywriter_path)
+
         # Lokales Model
         local_model = ActorCriticModel(num_states, num_actions)
         local_model.eval() # Evaluation-Flag
@@ -235,6 +251,8 @@ def dispatch_testing(idx, args, global_model):
         # Loop-Vars
         local_done = True
         local_step = 0
+        local_episode = 0
+        ep_rewards = []
         local_state = T.from_numpy( env.reset() )
         actions = deque(maxlen = args.max_actions)
         max_global_steps = args.max_global_steps
@@ -253,14 +271,14 @@ def dispatch_testing(idx, args, global_model):
             # Ohne Gradienten-Berrechnung
             with T.no_grad():
                 if local_done: # Neue Tensor erzeugen falls benötigt
-                    h_0 = T.zeros((1, 512), dtype=T.float)
-                    c_0 = T.zeros((1, 512), dtype=T.float)
+                    hx = T.zeros((1, 512), dtype=T.float)
+                    cx = T.zeros((1, 512), dtype=T.float)
                 else: # Ansonsten wiederverwenden
-                    h_0 = h_0.detach()
-                    c_0 = c_0.detach()
+                    hx = hx.detach()
+                    cx = cx.detach()
 
             # Model
-            action_logit_probability, action_judgement, h_0, c_0 = local_model(local_state, h_0, c_0)
+            action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx)
 
             # Policy
             policy = F.softmax(action_logit_probability, dim=1)
@@ -269,7 +287,8 @@ def dispatch_testing(idx, args, global_model):
             action = T.argmax(policy).item()
 
             # Action durchführen
-            local_state, local_reward, local_done, _ = env.step(action)
+            local_state, local_reward, local_done, info = env.step(action)
+            ep_rewards.append(local_reward)
             env.render()
 
             # Aktion merken
@@ -283,9 +302,26 @@ def dispatch_testing(idx, args, global_model):
 
             # Überprüft ob das Enviroment zrückgesetzt werden soll
             if local_done:
+
+                latest_sum_reward = sum(ep_rewards)
+                latest_avg_reward = latest_sum_reward / len(ep_rewards)
+
+                # Tensorboard
+                writer.add_scalar("Tester-{}/X_Position".format(idx), info['x_pos'], local_episode)
+                writer.add_scalar("Tester-{}/Score".format(idx), info['score'], local_episode)
+                writer.add_scalar("Tester-{}/Coins".format(idx), info['coins'], local_episode)
+                writer.add_scalar("Tester-{}/Sum_Reward".format(idx), latest_sum_reward, local_episode)
+                writer.add_scalar("Tester-{}/Avg_Reward".format(idx), latest_avg_reward, local_episode)
+                if info["flag_get"]: flag_get = 1
+                else: flag_get = -1
+                writer.add_scalar("Tester-{}/Flag".format(idx), flag_get, local_episode)
+
                 # Variablen zurückstetzten
                 local_step = 0
+                ep_rewards = []
+                local_episode += 1
                 actions.clear()
+
                 # Env zurückstetzen
                 local_state = env.reset()
 
@@ -293,5 +329,5 @@ def dispatch_testing(idx, args, global_model):
             local_state = T.from_numpy(local_state)
 
     except KeyboardInterrupt:
-        print("Runner {: 2d} :: Training    ---    EXIT OK".format(idx))
+        print("{} :: Runner {: 2d}    ---   abgeschlossen".format(datetime.now().strftime("%H:%M:%S"), idx))
         return

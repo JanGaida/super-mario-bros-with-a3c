@@ -41,8 +41,16 @@ class RewardWrapper(Wrapper):
 
     def __init__(self, env):
         super(RewardWrapper, self).__init__(env)
-        self.score_0 = 0
-        self.coin_0 = 0
+        self.x_0 = 40 # Mario's initiale X-Position
+        self.score_0 = 0 # Mario's initialer Score
+        #self.coins_0 = 0  # Mario's initialer Coins
+        self.clock_0 = 400 # Mario's initiale Zeit
+        self.life_0 = 3 # Mario's initiale Leben
+        #self.status_0 = 0 # Mario's initaler Status (== small)
+
+        # prev imp
+        #self.score_0 = 0
+        #self.coin_0 = 0
 
     def step(self, action):
         # Info-Dict ~> https://github.com/Kautenja/gym-super-mario-bros#info-dictionary
@@ -53,6 +61,69 @@ class RewardWrapper(Wrapper):
 
         # hier berrechnet Reward liegt zwischen -15 und 15 
         # reward = (x_pos_1 - x_pos_0) + (clock_0 - clock_1) + (alive ? 0 ansonsten -15)
+
+        reward = 0
+
+        # X-POSITION
+        x_1 = info['x_pos']
+        score_1 = info['score']
+        clock_1 = info['time']
+        #life_1 = info['life']
+
+        # Formula
+        reward += max(x_1 - self.x_0, -0.01) + (max(score_1 - self.score_0, 0) / 10) + ((clock_1 - self.clock_0) * 2)
+
+        # + Leben-Bestrafung
+        #if not life_1 == self.life_0:
+        #    reward += -5
+
+        # + Ziel erreicht
+        if done:
+            # Das Env ist abgeschossen:
+            if info['flag_get']:
+                # Mario hat die Flagge erreicht
+                reward += 200
+            #else:
+            #    # Mario hat nicht die Flagge erreicht
+            #    reward += -50
+
+        self.x_0 = x_1
+        self.score_0 = score_1
+        #self.coins_0 = coins_1
+        self.clock_0 = clock_1
+        #self.life_0 = life_1
+        #self.status_0 = status_1
+
+        #coins_1 = info['coins'] # Annmerkung: 1 Coin == 200 Score
+        #delta_coins = coins_1 - self.coins_0
+
+        #status_1 = self.status_to_int(info['status'])
+        #delta_status = status_1 - self.status_0
+
+        #f delta_coins > 0:
+        #    # Mario hat Coins gesammelt
+        #    reward += 0.35 # + 0.6 durch Score
+
+        #if delta_status > 0:
+        #    # Mario ist gewachsen
+        #    reward += 0.2
+        #else:
+        #    # Mario ist geschrumpft
+        #    reward += -0.2
+
+        #if delta_life == -1:
+        #    # Mario hat ein Leben verloren
+        #    reward += -15
+
+
+        # Letzte Werte merken
+
+
+        # Fertig
+        return state, reward, done, info
+
+        """
+        Alte Reward-Implementation ... ~~~ Funktioniert, könnte aber schneller gehen -> Problem im lvl 2
 
         my_reward = 0
         # zusätzlicher Reward mindestens 0
@@ -85,6 +156,7 @@ class RewardWrapper(Wrapper):
         reward += my_reward
 
         return state, reward / 10. , done, info
+        """
 
     def reset(self):
         # Letzten Score ebenfalls zurücksetzten
@@ -94,11 +166,17 @@ class RewardWrapper(Wrapper):
         # Weiterleiten
         return self.env.reset()
 
+    def status_to_int(self, status):
+        if not status == "small":
+            return 1
+        else:
+            return 0
 
-class SkipFrameWrapper(Wrapper):
+
+class BufferSkipFrameWrapper(Wrapper):
 
     def __init__(self, env, skip):
-        super(SkipFrameWrapper, self).__init__(env)
+        super(BufferSkipFrameWrapper, self).__init__(env)
         # Überschreib den Observation_Space
         self.observation_space = Box(low = 0, high = 255, shape = (4, 84, 84), dtype = np.float32)
         # Merk wie viel Frames übersprungen werden sollen
@@ -198,7 +276,7 @@ def make_training_enviorment(args):
     env = RewardWrapper(env)
 
     # Überspringen von Frames
-    env = SkipFrameWrapper(env, args.skip_frames)
+    env = BufferSkipFrameWrapper(env, args.skip_frames)
 
     # Rückgabe
     num_states = env.observation_space.shape[0]
@@ -233,7 +311,7 @@ def make_testing_enviorment(args, episode):
     env = RewardWrapper(env)
 
     # Überspringen von Frames
-    env = SkipFrameWrapper(env, args.skip_frames)
+    env = BufferSkipFrameWrapper(env, args.skip_frames)
 
     # Rückgabe
     num_states = env.observation_space.shape[0]

@@ -17,14 +17,14 @@ def grab_arguments():
 		help="Wertebereich: \'training\', \'testing\'\nLegt fest ob ein Model trainiert oder getestet werden soll.")
 	parser.add_argument("-v", "--verbose", type=bool, default=True, 
 		help="Ob diverse Informationen ausgegeben werden sollen.")
-	parser.add_argument("--verbose_every_episode", type=int, default=10, 
+	parser.add_argument("--verbose_every_episode", type=int, default=25, 
 		help="Nach welchen Episoden diverse Informationen ausgegeben werden sollen.")
 
 
 	# Ordner
 	parser.add_argument("--logdir", type=str, default="logs", 
 		help="Legt den Pfad fest in dem Logs abgelegt werden.")
-	parser.add_argument("--rm_logdir", type=bool, default=True, 
+	parser.add_argument("--rm_logdir", type=bool, default=False, 
 		help="Legt fest ob der Logging-Pfad geleert werden soll wenn vorhanden.")
 	parser.add_argument("--modeldir", type=str, default="models", 
 		help="Legt den Pfad fest in dem Models gespeichert werden.")
@@ -36,7 +36,7 @@ def grab_arguments():
 	# Laufzeitumgebung
 	parser.add_argument("--cuda", type=bool, default=True, 
 		help="Legt fest ob die GPU (mit CUDA-Support) verwendet werden soll.")
-	parser.add_argument("--num_parallel_trainings_threads", type=int, default=6, 
+	parser.add_argument("--num_parallel_trainings_threads", type=int, default=7, 
 		help="Legt fest wie viele Threads verwendet werden sollen.")
 	parser.add_argument("--num_parallel-testing_threads", type=int, default=1, 
 		help="Legt fest wie viele Threads verwendet werden sollen.")
