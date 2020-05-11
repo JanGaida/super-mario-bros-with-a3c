@@ -1,5 +1,6 @@
 # Generel
-import os, shutil, time, glob, uuid
+import os, shutil, time, glob
+from datetime import datetime
 
 # Torch
 import torch as T
@@ -142,7 +143,7 @@ def start_testing(args):
         stage = args.stage
         rversion = args.rversion
         num_parallel_trainings_threads = args.num_parallel_trainings_threads
-
+        now_str = datetime.now().strftime("%d-%m-%y")
         counter = 1
 
         printStars("\n")
@@ -221,7 +222,7 @@ def start_testing(args):
 
             # Verschiebe die Aufnahme & Lösche den ursprünglichen Ordner
             for mp4 in glob.glob("{}/a3c_smb_world{}_stage{}_ver{}/ep{}/*1.mp4".format(recordsdir, world, stage, rversion, episode)):
-                shutil.move(mp4, "{}/a3c_smb_world{}_stage{}_ver{}/episode_{}_x_{}__{}.mp4".format(recordsdir, world, stage, rversion, episode, num_parallel_trainings_threads, uuid.uuid4()))
+                shutil.move(mp4, "{}/a3c_smb_world{}_stage{}_ver{}/ep_{}_x_{}__{}.mp4".format(recordsdir, world, stage, rversion, episode, num_parallel_trainings_threads, now_str))
                 shutil.rmtree("{}/a3c_smb_world{}_stage{}_ver{}/ep{}/".format(recordsdir, world, stage, rversion, episode))
 
             print("\n.. abgeschlossen\n")
