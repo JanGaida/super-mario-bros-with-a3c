@@ -6,6 +6,8 @@ from datetime import datetime
 import torch as T
 import torch.nn.functional as F
 from torch.multiprocessing import Process
+
+# Summary
 from torchsummaryX import summary
 
 # Hilfsklassen & -Funktionen
@@ -55,7 +57,7 @@ def start_training(args):
         print("Bereite TensorboardX-Writer vor...")
 
         # SummaryWriter
-        summarywriter_path = "{}/{}_world{}_stage{}_ver{}__{}".format(args.logdir, args.model_save_name, args.world, args.stage, args.rversion, datetime.now().strftime("%d_%m_%y_%H_%M_%S"))
+        summarywriter_path = "{}/{}_w{}-s{}-v{}_{}".format(args.logdir, args.model_save_name, args.world, args.stage, args.rversion, datetime.now().strftime("%d-%m-%y_%H-%M-%S"))
         if not os.path.isdir(summarywriter_path):
             os.mkdir(summarywriter_path)
 
@@ -79,9 +81,10 @@ def start_training(args):
         # Threads
         threads = []
 
-        # initaler Trainings-Thread (wird abgespeichert)
-        trainings_thread = mp.Process(target = dispatch_training, args = (0, args, global_model, optimizer, True, trained_episodes, summarywriter_path))
-        threads.append(trainings_thread)
+        if args.num_parallel_trainings_threads > 0:
+            # initaler Trainings-Thread (wird abgespeichert)
+            trainings_thread = mp.Process(target = dispatch_training, args = (0, args, global_model, optimizer, True, trained_episodes, summarywriter_path))
+            threads.append(trainings_thread)
 
         # weitere Trainings-Threads
         for idx in range(1, args.num_parallel_trainings_threads):
@@ -149,6 +152,7 @@ def start_testing(args):
         # Const
         modeldir = args.modeldir
         recordsdir = args.recordsdir
+        model_save_name = args.model_save_name
         world = args.world
         stage = args.stage
         rversion = args.rversion
@@ -161,7 +165,7 @@ def start_testing(args):
 
         for model_file, episode in zip(model_files, episodes):
 
-            print("\nBeginne Aufnahme {} / {}    --    World {}, Stage {}, Version {}, Episode {}    --    Model-Datei {}" \
+            print("\nBeginne Aufnahme {} / {}    --    World {}, Stage {}, Version {}, Episode {}    --    Model-Datei {}\n" \
                 .format(counter, len(model_files), world, stage, rversion, episode, model_file))
 
             # Aufnahme-Enviorment initialisieren

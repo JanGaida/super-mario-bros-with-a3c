@@ -36,9 +36,9 @@ def grab_arguments():
 	# Laufzeitumgebung
 	parser.add_argument("--cuda", type=bool, default=True, 
 		help="Legt fest ob die GPU (mit CUDA-Support) verwendet werden soll.")
-	parser.add_argument("--num_parallel_trainings_threads", type=int, default=7, 
+	parser.add_argument("-ttr", "--num_parallel_trainings_threads", type=int, default=7, 
 		help="Legt fest wie viele Threads verwendet werden sollen.")
-	parser.add_argument("--num_parallel-testing_threads", type=int, default=1, 
+	parser.add_argument("-tte", "--num_parallel-testing_threads", type=int, default=1, 
 		help="Legt fest wie viele Threads verwendet werden sollen.")
 
 
@@ -66,7 +66,7 @@ def grab_arguments():
 		help="Anzahl an Episoden nach den das globale Model gespeichert werden soll.")
 	parser.add_argument("--max_local_steps", type=int, default=50,
 		help="Die maximale Anzahl an lokalen Steps die ein Worker auszuführen hat.")
-	parser.add_argument("--max_global_steps", type=int, default=5e5,
+	parser.add_argument("--max_global_steps", type=int, default=5e6,
 		help="Die maximale Anzahl an globalen Steps die ein Worker auszuführen hat.")
 	parser.add_argument("--max_actions", type=int, default=100, 
 		help="Maximale Wiederholung von Aktionen in der Testphase.")

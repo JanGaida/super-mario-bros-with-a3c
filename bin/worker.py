@@ -5,20 +5,21 @@ from datetime import datetime
 # Torch
 import torch as T
 import torch.nn.functional as F
-
 from torch.distributions import Categorical
 from collections import deque
 
-# TensorboardX
+# Tensorboard
 from tensorboardX import SummaryWriter
 
 # Hilfsklassen & -Funktionen
 from bin.enviorment import make_training_enviorment
 from bin.model import ActorCriticModel
 
+
 def dispatch_training(idx, args, global_model, optimizer, should_save, trained_episodes, summarywriter_path):
     """Die Worker Aufgabe für ein Training"""
     try:
+        #summarywriter = SummaryWriter(summarywriter_path)
 
         # Bereite Torch-Multiprocessing vor
         T.manual_seed(args.torch_seed + idx)
@@ -27,9 +28,6 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
         # Falls Verbose
         verbose = args.verbose
         if verbose: start_time = timeit.default_timer()
-
-        # Summarywriter
-        writer = SummaryWriter(summarywriter_path)
 
         # Lokales Enviorment
         env, num_states, num_actions = make_training_enviorment(args)
@@ -91,8 +89,8 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
                 latest_sum_reward = sum(ep_rewards)
                 latest_avg_reward = latest_sum_reward / len(ep_rewards)
                 loop_time_1 = timeit.default_timer()
-                print("{} :: Worker {: 2d}  |  EP {:>6}  |  Avg-RW {:>6.2f}  | Sum-RW {:>8.1f}  |  Perf {:>5.2f} ep/sec  |  A-Loss {:>8.1f}  |  C-Loss {:>8.1f}  |  E-Loss {:>8.1f}  |  Loss {:>8.1f}".format(
-                    datetime.now().strftime("%H:%M:%S"), idx, local_episode, latest_avg_reward, latest_sum_reward, ((loop_time_1 - loop_time_0)/verbose_every_episode), actor_loss.item(), critic_loss.item(), entropy_loss.item(), total_loss.item())
+                print("{} :: Worker {: 2d}  |  EP {:>6} ({:>4.2f} ep/s)  |  Avg-RW {:>6.2f}  | Sum-RW {:>8.1f}  |  A-Loss {:>8.1f}  |  C-Loss {:>8.1f}  |  E-Loss {:>8.1f}  |  Loss {:>8.1f}".format(
+                    datetime.now().strftime("%H:%M:%S"), idx, local_episode, ((loop_time_1 - loop_time_0)/verbose_every_episode), latest_avg_reward, latest_sum_reward, actor_loss.item(), critic_loss.item(), entropy_loss.item(), total_loss.item())
                 )
                 loop_time_0 = loop_time_1
 
@@ -191,9 +189,9 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
             total_loss = -actor_loss + critic_loss - beta * entropy_loss
 
             # Tensorboard
-            writer.add_scalar("Workers/#{}/actor_loss".format(idx), actor_loss, local_episode)
-            writer.add_scalar("Workers/#{}/critic_loss".format(idx), critic_loss, local_episode)
-            writer.add_scalar("Workers/#{}/total_loss".format(idx), total_loss, local_episode)
+            #summarywriter.add_scalar("Worker-{}/actor_loss".format(idx), actor_loss.item(), local_episode)
+            #summarywriter.add_scalar("Worker-{}/critic_loss".format(idx), critic_loss.item(), local_episode)
+            #summarywriter.add_scalar("Worker-{}/total_loss".format(idx), total_loss.item(), local_episode)
 
             # Vor der Backpropagation alle Gradienten auf 0 setzen
             optimizer.zero_grad()
@@ -235,14 +233,13 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
 def dispatch_testing(idx, args, global_model, summarywriter_path):
     """Die Worker Aufgabe für ein Testing"""
     try:
+        summarywriter = SummaryWriter(summarywriter_path)
+
         # Bereite Torch-Multiprocessing vor
         T.manual_seed(args.torch_seed + idx)
 
         # Enviorment initialisieren
         env, num_states, num_actions = make_training_enviorment(args)
-
-        # Tensorboard
-        writer = SummaryWriter(summarywriter_path)
 
         # Lokales Model
         local_model = ActorCriticModel(num_states, num_actions)
@@ -307,14 +304,14 @@ def dispatch_testing(idx, args, global_model, summarywriter_path):
                 latest_avg_reward = latest_sum_reward / len(ep_rewards)
 
                 # Tensorboard
-                writer.add_scalar("Tester-{}/X_Position".format(idx), info['x_pos'], local_episode)
-                writer.add_scalar("Tester-{}/Score".format(idx), info['score'], local_episode)
-                writer.add_scalar("Tester-{}/Coins".format(idx), info['coins'], local_episode)
-                writer.add_scalar("Tester-{}/Sum_Reward".format(idx), latest_sum_reward, local_episode)
-                writer.add_scalar("Tester-{}/Avg_Reward".format(idx), latest_avg_reward, local_episode)
+                summarywriter.add_scalar("Tester-{}/X_Position".format(idx), info['x_pos'], local_episode)
+                summarywriter.add_scalar("Tester-{}/Score".format(idx), info['score'], local_episode)
+                summarywriter.add_scalar("Tester-{}/Coins".format(idx), info['coins'], local_episode)
+                summarywriter.add_scalar("Tester-{}/Sum_Reward".format(idx), latest_sum_reward, local_episode)
+                summarywriter.add_scalar("Tester-{}/Avg_Reward".format(idx), latest_avg_reward, local_episode)
                 if info["flag_get"]: flag_get = 1
                 else: flag_get = -1
-                writer.add_scalar("Tester-{}/Flag".format(idx), flag_get, local_episode)
+                summarywriter.add_scalar("Tester-{}/Flag".format(idx), flag_get, local_episode)
 
                 # Variablen zurückstetzten
                 local_step = 0

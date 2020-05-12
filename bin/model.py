@@ -49,7 +49,7 @@ class ActorCriticModel(nn.Module):
 
 
     def forward(self, x, hx, cx):
-        """Wenn das NN aufgreufen wird"""
+        """Wenn das NN aufgerufen wird"""
 
         # CNN
         x = F.relu(self.conv1(x))

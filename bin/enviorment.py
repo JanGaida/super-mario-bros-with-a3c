@@ -1,7 +1,6 @@
 # Generel
 import numpy as np
 import cv2
-import subprocess as sp
 
 # Gym
 import gym
@@ -45,12 +44,8 @@ class RewardWrapper(Wrapper):
         self.score_0 = 0 # Mario's initialer Score
         #self.coins_0 = 0  # Mario's initialer Coins
         self.clock_0 = 400 # Mario's initiale Zeit
-        self.life_0 = 3 # Mario's initiale Leben
+        #self.life_0 = 3 # Mario's initiale Leben
         #self.status_0 = 0 # Mario's initaler Status (== small)
-
-        # prev imp
-        #self.score_0 = 0
-        #self.coin_0 = 0
 
     def step(self, action):
         # Info-Dict ~> https://github.com/Kautenja/gym-super-mario-bros#info-dictionary
@@ -59,65 +54,22 @@ class RewardWrapper(Wrapper):
         # leite den Step weiter
         state, reward, done, info = self.env.step(action)
 
-        # hier berrechnet Reward liegt zwischen -15 und 15 
-        # reward = (x_pos_1 - x_pos_0) + (clock_0 - clock_1) + (alive ? 0 ansonsten -15)
-
-        reward = 0
-
         # X-POSITION
         x_1 = info['x_pos']
         score_1 = info['score']
         clock_1 = info['time']
-        #life_1 = info['life']
 
         # Formula
-        reward += max(x_1 - self.x_0, -0.01) + (max(score_1 - self.score_0, 0) / 10) + ((clock_1 - self.clock_0) * 2)
-
-        # + Leben-Bestrafung
-        #if not life_1 == self.life_0:
-        #    reward += -5
-
-        # + Ziel erreicht
-        if done:
-            # Das Env ist abgeschossen:
-            if info['flag_get']:
-                # Mario hat die Flagge erreicht
-                reward += 200
-            #else:
-            #    # Mario hat nicht die Flagge erreicht
-            #    reward += -50
+        reward = 0
+        reward += ( -.025 if x_1 == self.x_0 else max(x_1 - self.x_0, -.025) ) \
+                + ( max(score_1 - self.score_0, 0) / 1000 ) \
+                + ( clock_1 - self.clock_0 ) * 2 \
+                + ( 100 if done and info['flag_get'] else 0 )
+                #+ (-5) if not life_1 == self.life_0 else 0 \
 
         self.x_0 = x_1
         self.score_0 = score_1
-        #self.coins_0 = coins_1
         self.clock_0 = clock_1
-        #self.life_0 = life_1
-        #self.status_0 = status_1
-
-        #coins_1 = info['coins'] # Annmerkung: 1 Coin == 200 Score
-        #delta_coins = coins_1 - self.coins_0
-
-        #status_1 = self.status_to_int(info['status'])
-        #delta_status = status_1 - self.status_0
-
-        #f delta_coins > 0:
-        #    # Mario hat Coins gesammelt
-        #    reward += 0.35 # + 0.6 durch Score
-
-        #if delta_status > 0:
-        #    # Mario ist gewachsen
-        #    reward += 0.2
-        #else:
-        #    # Mario ist geschrumpft
-        #    reward += -0.2
-
-        #if delta_life == -1:
-        #    # Mario hat ein Leben verloren
-        #    reward += -15
-
-
-        # Letzte Werte merken
-
 
         # Fertig
         return state, reward, done, info
