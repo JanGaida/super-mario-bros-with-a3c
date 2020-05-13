@@ -44,7 +44,7 @@ class RewardWrapper(Wrapper):
         self.score_0 = 0 # Mario's initialer Score
         #self.coins_0 = 0  # Mario's initialer Coins
         self.clock_0 = 400 # Mario's initiale Zeit
-        #self.life_0 = 3 # Mario's initiale Leben
+        self.life_0 = 3 # Mario's initiale Leben
         #self.status_0 = 0 # Mario's initaler Status (== small)
 
     def step(self, action):
@@ -58,18 +58,26 @@ class RewardWrapper(Wrapper):
         x_1 = info['x_pos']
         score_1 = info['score']
         clock_1 = info['time']
+        life_1 = info['life']
 
         # Formula
-        reward = 0
-        reward += ( -.025 if x_1 == self.x_0 else max(x_1 - self.x_0, -.025) ) \
-                + ( max(score_1 - self.score_0, 0) / 1000 ) \
-                + ( clock_1 - self.clock_0 ) * 2 \
-                + ( 100 if done and info['flag_get'] else 0 )
-                #+ (-5) if not life_1 == self.life_0 else 0 \
+            # -0.0125 für zurückgehen, 0 für stehen bleiben, 0.1 je X-Fortschritt
+            # 0.1 pro 100 Scorepunkten
+            # - 0.25 pro tick
+            # 10 wenn abgeschlossen
+            # -5 wenn Leben verloren wurde
+
+        reward = \
+                  ( max( x_1 - self.x_0, -.125 ) ) / 10  \
+                + ( max( score_1 - self.score_0, 0 ) / 1000 ) \
+                + ( clock_1 - self.clock_0 ) / 4 \
+                + ( 10 if done and info['flag_get'] else 0 ) \
+                + ( -5 if not life_1 == self.life_0 else 0 )
 
         self.x_0 = x_1
         self.score_0 = score_1
         self.clock_0 = clock_1
+        self.life_0 = life_1
 
         # Fertig
         return state, reward, done, info

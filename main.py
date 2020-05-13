@@ -17,7 +17,7 @@ def grab_arguments():
 		help="Wertebereich: \'training\', \'testing\'\nLegt fest ob ein Model trainiert oder getestet werden soll.")
 	parser.add_argument("-v", "--verbose", type=bool, default=True, 
 		help="Ob diverse Informationen ausgegeben werden sollen.")
-	parser.add_argument("--verbose_every_episode", type=int, default=25, 
+	parser.add_argument("--verbose_every_episode", type=int, default=50, 
 		help="Nach welchen Episoden diverse Informationen ausgegeben werden sollen.")
 
 
@@ -36,7 +36,7 @@ def grab_arguments():
 	# Laufzeitumgebung
 	parser.add_argument("--cuda", type=bool, default=True, 
 		help="Legt fest ob die GPU (mit CUDA-Support) verwendet werden soll.")
-	parser.add_argument("-ttr", "--num_parallel_trainings_threads", type=int, default=7, 
+	parser.add_argument("-ttr", "--num_parallel_trainings_threads", type=int, default=5, 
 		help="Legt fest wie viele Threads verwendet werden sollen.")
 	parser.add_argument("-tte", "--num_parallel-testing_threads", type=int, default=1, 
 		help="Legt fest wie viele Threads verwendet werden sollen.")
@@ -61,10 +61,10 @@ def grab_arguments():
 	parser.add_argument("-rv", "--rversion", type=int, default=0, 
 		help="Legt die initiale Version des Super-Mario-Bros-Gym's fest.")
 	parser.add_argument("-a", "--action_set", type=str, default="complex",
-		help="Wertebereich: \'rightonly\', \'simple\', \'complex\'\nLegt die initiale Aktionen des Super-Mario-Bros-Gym's fest.")
+		help="Wertebereich: \'rightonly\', \'simple\', \'complex\' Legt die initiale Aktionen des Super-Mario-Bros-Gym's fest.")
 	parser.add_argument("--episode_save_interval", type=int, default=500,
 		help="Anzahl an Episoden nach den das globale Model gespeichert werden soll.")
-	parser.add_argument("--max_local_steps", type=int, default=50,
+	parser.add_argument("--max_local_steps", type=int, default=75,
 		help="Die maximale Anzahl an lokalen Steps die ein Worker auszuführen hat.")
 	parser.add_argument("--max_global_steps", type=int, default=5e6,
 		help="Die maximale Anzahl an globalen Steps die ein Worker auszuführen hat.")
