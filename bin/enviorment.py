@@ -58,65 +58,38 @@ class RewardWrapper(Wrapper):
         x_1 = info['x_pos']
         score_1 = info['score']
         clock_1 = info['time']
-        life_1 = info['life']
+        #life_1 = info['life']
 
-        # Formula
-            # -0.0125 für zurückgehen, 0 für stehen bleiben, 0.1 je X-Fortschritt
-            # 0.1 pro 100 Scorepunkten
-            # - 0.25 pro tick
-            # 10 wenn abgeschlossen
-            # -5 wenn Leben verloren wurde
 
-        reward = \
-                  ( max( x_1 - self.x_0, -.125 ) ) / 10  \
-                + ( max( score_1 - self.score_0, 0 ) / 1000 ) \
-                + ( clock_1 - self.clock_0 ) / 4 \
-                + ( 10 if done and info['flag_get'] else 0 ) \
-                + ( -5 if not life_1 == self.life_0 else 0 )
+        reward =  ( max( x_1 - self.x_0, 0 ) ) \
+                + ( max( score_1 - self.score_0, 0 ) / 400. ) \
+                + ( clock_1 - self.clock_0 ) / 10.
+
+        if done:
+            if info['flag_get']:
+                reward += 50.
+            else:
+                reward -= 50.
 
         self.x_0 = x_1
         self.score_0 = score_1
         self.clock_0 = clock_1
-        self.life_0 = life_1
+        #self.life_0 = life_1
+
+        """ Semi-Gut
+
+                reward = \
+                          ( max( x_1 - self.x_0, 0 ) ) / 10  \
+                        + ( max( score_1 - self.score_0, 0 ) / 1000. ) \
+                        + ( clock_1 - self.clock_0 ) * 2 \
+                        + ( 10 if done and info['flag_get'] else 0 ) \
+                        # + ( -5 if not life_1 == self.life_0 else 0 )
+        """
 
         # Fertig
-        return state, reward, done, info
-
-        """
-        Alte Reward-Implementation ... ~~~ Funktioniert, könnte aber schneller gehen -> Problem im lvl 2
-
-        my_reward = 0
-        # zusätzlicher Reward mindestens 0
-        # my_reward = (score_1 - self.score_0) / 50. + (coin_1 - self.coin_0) + (complete ? 45 ansonsten -45)
-        # ~> reward insgesamt: (reward + my_reward) / 10.
-
-        # Score:
-        score_1 = info["score"]
-        my_reward += (score_1 - self.score_0) / 50.
-
-        # Coins
-        coin_1 = info["coins"]
-        my_reward += (coin_1 - self.coin_0) / 10.
-
-        self.score_0 = score_1
-        self.coin_0 = coin_1
-
-        my_reward = max(0, my_reward)
-
-        # Wenn das Enviorment abgeschlossen ist
-        if done:
-            # Und das Ziel erreicht wurde
-            if info["flag_get"]:
-                my_reward += 45.
-
-            # Und das Ziel _nicht_ erreicht wurde
-            else:
-                my_reward += -45.
-
-        reward += my_reward
-
         return state, reward / 10. , done, info
-        """
+
+        
 
     def reset(self):
         # Letzten Score ebenfalls zurücksetzten
@@ -140,7 +113,7 @@ class BufferSkipFrameWrapper(Wrapper):
         # Überschreib den Observation_Space
         self.observation_space = Box(low = 0, high = 255, shape = (4, 84, 84), dtype = np.float32)
         # Merk wie viel Frames übersprungen werden sollen
-        self.skip = skip - 1
+        self.skip = (skip - 1)
 
     def step(self, action):
         # zusammelnde Vars

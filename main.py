@@ -64,9 +64,9 @@ def grab_arguments():
 		help="Wertebereich: \'rightonly\', \'simple\', \'complex\' Legt die initiale Aktionen des Super-Mario-Bros-Gym's fest.")
 	parser.add_argument("--episode_save_interval", type=int, default=500,
 		help="Anzahl an Episoden nach den das globale Model gespeichert werden soll.")
-	parser.add_argument("--max_local_steps", type=int, default=75,
+	parser.add_argument("--max_local_steps", type=int, default=50,
 		help="Die maximale Anzahl an lokalen Steps die ein Worker auszuführen hat.")
-	parser.add_argument("--max_global_steps", type=int, default=5e6,
+	parser.add_argument("--max_global_steps", type=int, default=5e5,
 		help="Die maximale Anzahl an globalen Steps die ein Worker auszuführen hat.")
 	parser.add_argument("--max_actions", type=int, default=100, 
 		help="Maximale Wiederholung von Aktionen in der Testphase.")
@@ -75,12 +75,12 @@ def grab_arguments():
 
 
 	# Hyperparameter
-	parser.add_argument("-lr", "--learning_rate", type=float, default=1e-4,
+	parser.add_argument("-lr", "--learning_rate", type=float, default=0.0001,
 		help="Learningrate-Faktor.")
 	parser.add_argument('--discount_gamma', type=float, default=0.9,
 		help='Discount- bzw. Gamma-Faktor.')
 	parser.add_argument('--tau', type=float, default=1.0, 
-		help='Parameter für GAE.')
+		help='Parameter für Gamma.')
 	parser.add_argument('--beta', type=float, default=0.01, 
 		help='Entropy Koeffizient.')
 
