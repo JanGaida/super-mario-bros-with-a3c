@@ -64,6 +64,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
         beta = args.beta
         verbose_every_episode = args.verbose_every_episode
         num_parallel_trainings_threads = args.num_parallel_trainings_threads
+        absolute_max_training_steps = args.absolute_max_training_steps
 
         # Für Verbose vorzeitige init
         if verbose:
@@ -211,7 +212,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
             optimizer.step()
 
             # Finally, wenn 
-            if local_episode == int(max_global_steps / max_local_steps):
+            if local_episode == absolute_max_training_steps:
                 if verbose:
                     end_time = timeit.default_timer()
                     print("{} :: Worker {: 2d}    ---    nach {:.2f} s abgeschlossen".format(datetime.now().strftime("%H:%M:%S"), idx, (end_time - start_time)))
