@@ -103,7 +103,7 @@ def start_training(args):
         print(">>> Neuronales-Netz:\n")
 
         # Beispiel-Input
-        x = T.zeros((1, num_states, 84, 84))
+        x = T.zeros((1, num_states, 64, 50))
         hx = T.zeros((1, 512))
         cx = T.zeros((1, 512))
 
@@ -261,6 +261,14 @@ def get_corresponding_model_file(args):
     model_save_name = args.model_save_name
     world = args.world
     stage = args.stage
+
+    if args.load_model_from_prev_training:
+        if stage == 1:
+            world = world - 1
+            stage = 4
+        else:
+            stage = stage - 1
+
     rversion = args.rversion
     num_parallel_trainings_threads = args.num_parallel_trainings_threads
 

@@ -51,6 +51,8 @@ def grab_arguments():
 		help="Ob ein Model beim Start geladen werden soll.")
 	parser.add_argument("--model_load_file", type=str, default="",
 		help="Der Name des Models welches geladen werden soll.")
+	parser.add_argument("-prev", "--load_model_from_prev_training", type=bool, default=False,
+		help="Ob das Model der vorherigen Stage geladen werden soll")
 
 
 	# Enviorment
@@ -74,6 +76,7 @@ def grab_arguments():
 		help="Maximale Wiederholung von Aktionen in der Testphase.")
 	parser.add_argument("--skip_frames", type=int, default=5, 
 		help="Die Anzahl an Frames die Übersprungen werden.")
+
 
 	# Hyperparameter
 	parser.add_argument("-lr", "--learning_rate", type=float, default=0.0001,

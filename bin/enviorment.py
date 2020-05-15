@@ -63,13 +63,14 @@ class RewardWrapper(Wrapper):
 
         reward =  ( max( x_1 - self.x_0, 0 ) ) \
                 + ( max( score_1 - self.score_0, 0 ) / 400. ) \
-                + ( clock_1 - self.clock_0 ) / 10.
+                + ( clock_1 - self.clock_0 ) / 10. \
+                + ( 0. if not done else  50. if info['flag_get'] else -50.)
 
-        if done:
-            if info['flag_get']:
-                reward += 50.
-            else:
-                reward -= 50.
+        #if done:
+        #    if info['flag_get']:
+        #        reward += 50.
+        #    else:
+        #        reward -= 50.
 
         self.x_0 = x_1
         self.score_0 = score_1
@@ -106,10 +107,10 @@ class RewardWrapper(Wrapper):
             return 0
 
 
-class BufferSkipFrameWrapper(Wrapper):
+class FrameBufferWrapper(Wrapper):
 
     def __init__(self, env, skip):
-        super(BufferSkipFrameWrapper, self).__init__(env)
+        super(FrameBufferWrapper, self).__init__(env)
         # Überschreib den Observation_Space
         self.observation_space = Box(low = 0, high = 255, shape = (4, 84, 84), dtype = np.float32)
         # Merk wie viel Frames übersprungen werden sollen
@@ -163,26 +164,42 @@ class BufferSkipFrameWrapper(Wrapper):
 
 def preprocess_frame(frame):
     """Vereinfacht das übergebe frame"""
+
     if frame is not None:
-        #cv2.imwrite("pre-process.jpg", frame) 
+        # frame.shape == (240, 256, 3)
+        # Auflösung: 256 / 240 == 16 / 15
+
+        #cv2.imwrite("frame-pre-processing.jpg", frame) 
+
+        # Zuschneiden
+        frame = frame[15:215,:]
+        # frame.shape == (200, 256, 3)
+        # Auflösung: 256/200 == 32/25
+
+        #cv2.imwrite("frame-cut.jpg", frame) 
 
         # Frame zu Schwarz-Weiß (255 - 0)
-        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-        #cv2.imwrite("post-rgb2gray.jpg", frame) 
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        # Verkleinern 
-        frame = cv2.resize(frame, (84, 84))
-        #cv2.imwrite("post-resize.jpg", frame) 
+        #cv2.imwrite("frame-black-n-white.jpg", frame) 
 
-        # Schwarz-Weiß zu Binary (1 - 0)
+        # Verkleinern
+        frame = cv2.resize(frame, (64, 50))
+        # frame.shape == (50, 64)
+        # Auflösung: 64/50 == 32/25
+
+        #cv2.imwrite("frame-resized.jpg", frame) 
+
+        # Schwarz-Weiß zu Binary (1 - 0) & Channel hinzufügen
         frame = frame[None, :, :] / 255. 
+        # frame.shape == (1, 50, 64)
 
         return frame
 
     # Ansonsten
     else:
-        # Schwarzes Bild
-        return np.zeros((1, 84, 84))
+        # Leeres Bild
+        return np.zeros((1, 50, 64))
 
 
 def make_training_enviorment(args):
@@ -209,7 +226,7 @@ def make_training_enviorment(args):
     env = RewardWrapper(env)
 
     # Überspringen von Frames
-    env = BufferSkipFrameWrapper(env, args.skip_frames)
+    env = FrameBufferWrapper(env, args.skip_frames)
 
     # Rückgabe
     num_states = env.observation_space.shape[0]
@@ -244,7 +261,7 @@ def make_testing_enviorment(args, episode):
     env = RewardWrapper(env)
 
     # Überspringen von Frames
-    env = BufferSkipFrameWrapper(env, args.skip_frames)
+    env = FrameBufferWrapper(env, args.skip_frames)
 
     # Rückgabe
     num_states = env.observation_space.shape[0]
