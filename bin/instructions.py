@@ -17,8 +17,8 @@ from bin.optimizer import Adam
 from bin.worker import dispatch_training, dispatch_testing
 from bin.printers import *
 
-# Anzahl an Parrallelen Threads
-os.environ['OMP_NUM_THREADS'] = '1'
+os.environ['OMP_NUM_THREADS'] = '1' # Anzahl an Parrallelen Threads
+
 
 def start_training(args):
     """Startet das Training, dazu werden unteranderem mehrere Trainings-Prozesse gestartet"""
@@ -133,8 +133,10 @@ def start_training(args):
     except KeyboardInterrupt:
         return
 
+
 def start_testing(args):
     """Startet das Testing"""
+
     try:
         print(">> Fortschritt:\n\nInitialisiere Testing...\nInitialisiere Torch-Multiprocessing...\nTorch-Seed: {}".format(args.torch_seed))
 
@@ -248,6 +250,7 @@ def start_testing(args):
 
 def get_corresponding_model_file(args):
     """Gibt das aktuellste (wenn nicht näher definiert) Model-File zurück für gegebene Argumente"""
+
     modeldir = args.modeldir
     model_load_file = args.model_load_file
 
@@ -330,6 +333,7 @@ def get_corresponding_model_file(args):
 
 def get_all_corresponding_model_files(args):
     """Gibt alle passenden Model-Files zurück, als auch in einer seperaten Liste die episoden Anzahl des Models"""
+    
     modeldir = args.modeldir
     model_load_file = args.model_load_file
 

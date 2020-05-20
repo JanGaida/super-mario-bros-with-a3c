@@ -7,6 +7,7 @@ import os
 from bin.printers import printHeaders, printTrainingMode, printTestingMode
 from bin.instructions import start_training, start_testing
 
+
 def grab_arguments():
 	"""Hilfsfunktion um Argumente zu parsen"""
 
@@ -30,7 +31,6 @@ def grab_arguments():
 		help="Legt den Pfad fest in dem Models gespeichert werden.")
 	parser.add_argument("--recordsdir", type=str, default="rec", 
 		help="Legt den Pfad fest in dem Aufnahmen gespeichert werden.")
-
 
 
 	# Laufzeitumgebung
@@ -90,6 +90,7 @@ def grab_arguments():
 
 	return parser.parse_args()
 
+
 def check_dir_structure(args):
 	"""Überprüft ob die gewünschten Ordner vorhanden sind"""
 	
@@ -106,6 +107,7 @@ def check_dir_structure(args):
 	# recordsdir
 	if not os.path.isdir(args.recordsdir):
 		os.makedirs(args.recordsdir)
+
 
 if __name__ == "__main__":
 	"""Die Main-Funktion"""

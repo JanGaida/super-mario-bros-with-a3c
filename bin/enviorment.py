@@ -13,26 +13,69 @@ import gym_super_mario_bros
 from nes_py.wrappers import JoypadSpace
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT, COMPLEX_MOVEMENT, RIGHT_ONLY
 
-# Ignoriere Numpy-Warnings -> https://github.com/RunzheYang/MORL/issues/5
-np.seterr(over = 'ignore')
+np.seterr(over = 'ignore') # Ignoriere Numpy-Warnings -> https://github.com/RunzheYang/MORL/issues/5
+gym.logger.set_level(40) # Gym-Logger-Level -> DEBUG = 10  INFO = 20  WARN = 30  ERROR = 40  DISABLED = 50
 
-# Gym-Logger-Level -> DEBUG = 10  INFO = 20  WARN = 30  ERROR = 40  DISABLED = 50
-gym.logger.set_level(40)
 
 class PreprocessFrameWrapper(Wrapper):
     """Bearbeitet alle Frames des Enviorments"""
 
     def __init__(self, env):
         super(PreprocessFrameWrapper, self).__init__(env)
+        """Init"""
+
 
     def step(self, action):
-        # leite den Step weiter
-        state, reward, done, info = self.env.step(action)
-        return preprocess_frame(state), reward, done, info
+        """leite den Step weiter"""
+
+        state, reward, done, info = self.env.step(action) # den Step auffangen
+        return self.preprocess_frame(state), reward, done, info # den Frame verarbeiten
+
 
     def reset(self):
-        # leite den Reset weiter & bearbeite diesen
-        return preprocess_frame(self.env.reset())
+        """leitet den Reset-Call weiter"""
+
+        return self.preprocess_frame(self.env.reset()) # Leite den call weiter und verarbeite den Frame
+
+
+    def preprocess_frame(self, frame):
+        """Vereinfacht das übergebe Frame"""
+
+        if frame is not None:
+            # frame.shape == (240, 256, 3)
+            # Auflösung: 256 / 240 == 16 / 15
+
+            #cv2.imwrite("frame-pre-processing.jpg", frame) 
+
+            # Zuschneiden
+            frame = frame[15:215,:]
+            # frame.shape == (200, 256, 3)
+            # Auflösung: 256/200 == 32/25
+
+            #cv2.imwrite("frame-cut.jpg", frame) 
+
+            # Frame zu Schwarz-Weiß (255 - 0)
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+            #cv2.imwrite("frame-black-n-white.jpg", frame) 
+
+            # Verkleinern
+            frame = cv2.resize(frame, (64, 50))
+            # frame.shape == (50, 64)
+            # Auflösung: 64/50 == 32/25
+
+            #cv2.imwrite("frame-resized.jpg", frame) 
+
+            # Schwarz-Weiß zu Binary (1 - 0) & Channel hinzufügen
+            frame = frame[None, :, :] / 255. 
+            # frame.shape == (1, 50, 64)
+
+            return frame
+
+        # Ansonsten
+        else:
+            # Leeres Bild
+            return np.zeros((1, 50, 64))
 
 
 class RewardWrapper(Wrapper):
@@ -40,67 +83,77 @@ class RewardWrapper(Wrapper):
 
     def __init__(self, env):
         super(RewardWrapper, self).__init__(env)
+        """Init"""
+
         self.x_0 = 40 # Mario's initiale X-Position
         self.score_0 = 0 # Mario's initialer Score
+        self.clock_0 = 400 # Mario's initiale Zeit, Anmerkung: In Bowser-Lvln 300
+        #self.life_0 = 3 # Mario's initiale Leben
         #self.coins_0 = 0  # Mario's initialer Coins
-        self.clock_0 = 400 # Mario's initiale Zeit
-        self.life_0 = 3 # Mario's initiale Leben
         #self.status_0 = 0 # Mario's initaler Status (== small)
 
+
     def step(self, action):
+        """Leitet den Step call weiter und übschreibt den Reward"""
+
         # Info-Dict ~> https://github.com/Kautenja/gym-super-mario-bros#info-dictionary
         # Org. Reward ~> https://github.com/Kautenja/gym-super-mario-bros#reward-function
 
         # leite den Step weiter
         state, reward, done, info = self.env.step(action)
 
-        # X-POSITION
+        # VARs grabn
         x_1 = info['x_pos']
         score_1 = info['score']
         clock_1 = info['time']
         #life_1 = info['life']
 
 
-        reward =  ( max( x_1 - self.x_0, 0 ) ) \
+        reward =  ( max( x_1 - self.x_0, -.001 ) / 2. ) \
+                + ( max(clock_1 - self.clock_0, -1) / 10. ) \
                 + ( max( score_1 - self.score_0, 0 ) / 400. ) \
-                + ( clock_1 - self.clock_0 ) / 10. \
                 + ( 0. if not done else  50. if info['flag_get'] else -50.)
 
-        #if done:
-        #    if info['flag_get']:
-        #        reward += 50.
-        #    else:
-        #        reward -= 50.
-
+        # VARs updaten
         self.x_0 = x_1
         self.score_0 = score_1
         self.clock_0 = clock_1
         #self.life_0 = life_1
 
         """ Semi-Gut
+        reward = \
+                  ( max( x_1 - self.x_0, 0 ) ) / 10  \
+                + ( max( score_1 - self.score_0, 0 ) / 1000. ) \
+                + ( clock_1 - self.clock_0 ) * 2 \
+                + ( 10 if done and info['flag_get'] else 0 ) \
+                # + ( -5 if not life_1 == self.life_0 else 0 )
+        """
 
-                reward = \
-                          ( max( x_1 - self.x_0, 0 ) ) / 10  \
-                        + ( max( score_1 - self.score_0, 0 ) / 1000. ) \
-                        + ( clock_1 - self.clock_0 ) * 2 \
-                        + ( 10 if done and info['flag_get'] else 0 ) \
-                        # + ( -5 if not life_1 == self.life_0 else 0 )
+        """ Sehr gut für W1S1
+        reward =  ( max( x_1 - self.x_0, 0 ) ) \
+                + ( max( score_1 - self.score_0, 0 ) / 400. ) \
+                + ( clock_1 - self.clock_0 ) / 10. \
+                + ( 0. if not done else  50. if info['flag_get'] else -50.)
         """
 
         # Fertig
-        return state, reward / 10. , done, info
+        return state, reward / 10. , done, info        
 
-        
 
     def reset(self):
+        """Leitet den Reset-Call weiter"""
+
         # Letzten Score ebenfalls zurücksetzten
         self.score_0 = 0
-        self.coin_0 = 0
+        #self.coin_0 = 0
 
         # Weiterleiten
         return self.env.reset()
 
+
     def status_to_int(self, status):
+        """Hilfsfunktion um den Status von Mario in einen vergleichbaren Integer zu wandeln"""
+
         if not status == "small":
             return 1
         else:
@@ -108,16 +161,23 @@ class RewardWrapper(Wrapper):
 
 
 class FrameBufferWrapper(Wrapper):
+    """Puffert einige Frames in einem Numpy-Array, überschreibt den Observation_Space dementsprechend"""
 
     def __init__(self, env, skip):
         super(FrameBufferWrapper, self).__init__(env)
-        # Überschreib den Observation_Space
-        self.observation_space = Box(low = 0, high = 255, shape = (4, 84, 84), dtype = np.float32)
+        """Init"""
+
         # Merk wie viel Frames übersprungen werden sollen
         self.skip = (skip - 1)
 
+        # Überschreib den Observation_Space
+        self.observation_space = Box(low = 0, high = 255, shape = (4, 50, 64), dtype = np.float32)
+
+
     def step(self, action):
-        # zusammelnde Vars
+        """Leite den Step-Call weiter und puffert die Frames"""
+
+        # zusammelnde VARs
         states = []
         sum_reward = 0
 
@@ -125,81 +185,38 @@ class FrameBufferWrapper(Wrapper):
         state, reward, done, info = self.env.step(action)
 
         # 1. bis n. Step
-        for i in range(self.skip):
+        for _ in range(self.skip):
 
             # Wenn Env nicht abgeschlossen wurde
             if not done:
-                # .. mach den Step
-                state, reward, done, info = self.env.step(action)
-                # .. bilde die Summe des Rewards
-                sum_reward += reward
-                # .. füg den State hinzu
-                states.append(state)
+                state, reward, done, info = self.env.step(action) # .. mach den Step
+                sum_reward += reward # .. bilde die Summe des Rewards
+                states.append(state) # .. füg den State hinzu
 
             # Wenn Env abgeschlossen wurde
             else:
-                # .. fülle mit den letzten State auf
-                states.append(state)
+                states.append(state) # .. fülle mit den letzten State auf
 
         # Aus den gesammelten States ein Array bauen
         states = np.concatenate(states, 0)[None, :, :, :]
 
-        # Genauigkeit reduzieren
+        # F-Genauigkeit reduzieren
         states = states.astype(np.float32)
 
         return states, reward, done, info
 
+
     def reset(self):
+        """Leitet den Reset-Call weiter"""
+
         # Weiterleiten
         state = self.env.reset()
-
         # State wiederholen und zu Array umformen
         states = np.concatenate([state for _ in range(self.skip)], 0)[None, :, :, :]
-
         # Genauigkeit reduzieren
         states = states.astype(np.float32)
 
         return states
-
-
-def preprocess_frame(frame):
-    """Vereinfacht das übergebe frame"""
-
-    if frame is not None:
-        # frame.shape == (240, 256, 3)
-        # Auflösung: 256 / 240 == 16 / 15
-
-        #cv2.imwrite("frame-pre-processing.jpg", frame) 
-
-        # Zuschneiden
-        frame = frame[15:215,:]
-        # frame.shape == (200, 256, 3)
-        # Auflösung: 256/200 == 32/25
-
-        #cv2.imwrite("frame-cut.jpg", frame) 
-
-        # Frame zu Schwarz-Weiß (255 - 0)
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        #cv2.imwrite("frame-black-n-white.jpg", frame) 
-
-        # Verkleinern
-        frame = cv2.resize(frame, (64, 50))
-        # frame.shape == (50, 64)
-        # Auflösung: 64/50 == 32/25
-
-        #cv2.imwrite("frame-resized.jpg", frame) 
-
-        # Schwarz-Weiß zu Binary (1 - 0) & Channel hinzufügen
-        frame = frame[None, :, :] / 255. 
-        # frame.shape == (1, 50, 64)
-
-        return frame
-
-    # Ansonsten
-    else:
-        # Leeres Bild
-        return np.zeros((1, 50, 64))
 
 
 def make_training_enviorment(args):
@@ -233,6 +250,7 @@ def make_training_enviorment(args):
     num_actions = len(action_set)
 
     return env, num_states, num_actions
+
 
 def make_testing_enviorment(args, episode):
     """Erzeugt ein Testing-Enviorment"""

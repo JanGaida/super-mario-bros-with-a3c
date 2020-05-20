@@ -6,24 +6,23 @@ class ActorCriticModel(nn.Module):
     """Das zugrundeliegende Troch-Model für den A3C-Algorithmus"""
 
     def __init__(self, num_states, num_actions):
-        """Init"""
         super(ActorCriticModel, self).__init__()
+        """Init"""
 
         # CNN
+        self.conv1 = nn.Conv2d(num_states, 320, 3, stride=2, padding=1)
+        self.conv2 = nn.Conv2d(320, 240, 3, stride=2, padding=1)
+        self.conv3 = nn.Conv2d(240, 160, 3, stride=2, padding=1)
+        self.conv4 = nn.Conv2d(160, 80, 3, stride=2, padding=1)
+        """ Ganz gut
         self.conv1 = nn.Conv2d(num_states, 320, 3, stride=2, padding=1)
         self.conv2 = nn.Conv2d(320, 160, 3, stride=2, padding=1)
         self.conv3 = nn.Conv2d(160, 80, 3, stride=2, padding=1)
         self.conv4 = nn.Conv2d(80, 40, 3, stride=2, padding=1)
         """
-        self.conv1 = nn.Conv2d(num_states, 32, 3, stride=2, padding=1)
-        self.conv2 = nn.Conv2d(32, 32, 3, stride=2, padding=1)
-        self.conv3 = nn.Conv2d(32, 32, 3, stride=2, padding=1)
-        self.conv4 = nn.Conv2d(32, 32, 3, stride=2, padding=1)
-        """
 
         # LSTM
-        self.lstm = nn.LSTMCell(40 * 4 * 4, 512)
-        #self.lstm = nn.LSTMCell(32 * 6 * 6, 512)
+        self.lstm = nn.LSTMCell(80 * 4 * 4, 512)
 
         # Critc
         self.critic = nn.Linear(512, 1)
@@ -37,6 +36,7 @@ class ActorCriticModel(nn.Module):
 
     def init_weights(self):
         """Hilfsfunktion um die initialen NN-Gewichte festzulegen"""
+        
         for m in self.modules():
 
             # CNN
@@ -64,12 +64,9 @@ class ActorCriticModel(nn.Module):
         x = F.relu(self.conv3(x))
         x = F.relu(self.conv4(x))
 
-        #print(">> LSTM-INPUT-SIZE: {}".format(x.size())) == 32 * 4 * 4
+        #print("~> LSTM-INPUT-SIZE: {}".format(x.size()))
 
         # LSTM
         hx, cx = self.lstm( x.view( x.size(0), -1), (hx, cx))
 
         return self.actor(hx), self.critic(hx), hx, cx
-
-
-

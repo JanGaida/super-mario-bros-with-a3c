@@ -18,6 +18,7 @@ from bin.model import ActorCriticModel
 
 def dispatch_training(idx, args, global_model, optimizer, should_save, trained_episodes, summarywriter_path):
     """Die Worker Aufgabe für ein Training"""
+    
     try:
         #summarywriter = SummaryWriter(summarywriter_path)
 
@@ -233,6 +234,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
 
 def dispatch_testing(idx, args, global_model, summarywriter_path):
     """Die Worker Aufgabe für ein Testing"""
+
     try:
         summarywriter = SummaryWriter(summarywriter_path)
 

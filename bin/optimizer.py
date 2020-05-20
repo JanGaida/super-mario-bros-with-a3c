@@ -1,11 +1,12 @@
 import torch as T
 
+
 class Adam(T.optim.Adam):
-    """Der Adam-Optimierer"""
+    """Basis-Implementierung des Adam-Optimierer"""
 
     def __init__(self, params, args):
+        super(Adam, self).__init__(params, lr = args.learning_rate)
         """Init"""
-        super(Adam, self).__init__(params, lr=args.learning_rate)
 
         for group in self.param_groups:
             for p in group['params']:
