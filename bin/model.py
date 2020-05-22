@@ -67,6 +67,6 @@ class ActorCriticModel(nn.Module):
         #print("~> LSTM-INPUT-SIZE: {}".format(x.size()))
 
         # LSTM
-        hx, cx = self.lstm( x.view( x.size(0), -1), (hx, cx))
+        hx, cx = self.gru( x.view( x.size(0), -1), (hx, cx))
 
         return self.actor(hx), self.critic(hx), hx, cx

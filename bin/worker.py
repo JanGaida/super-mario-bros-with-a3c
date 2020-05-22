@@ -18,7 +18,7 @@ from bin.model import ActorCriticModel
 
 def dispatch_training(idx, args, global_model, optimizer, should_save, trained_episodes, summarywriter_path):
     """Die Worker Aufgabe für ein Training"""
-    
+
     try:
         #summarywriter = SummaryWriter(summarywriter_path)
 
@@ -91,7 +91,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
                 latest_sum_reward = sum(ep_rewards)
                 latest_avg_reward = latest_sum_reward / len(ep_rewards)
                 loop_time_1 = timeit.default_timer()
-                print("{} :: Worker {: 2d}  |  EP {:>6} ({:>4.2f} ep/s)  |  Avg-RW {:>6.2f}  | Sum-RW {:>8.1f}  |  A-Loss {:>8.1f}  |  C-Loss {:>8.1f}  |  E-Loss {:>8.1f}  |  Loss {:>8.1f}".format(
+                print("{} :: Worker {: 2d}  |  E {:>6} ({:>4.2f} e/s)  |  Avg-RW {:>6.2f}  | Sum-RW {:>7.1f}  |  A-Loss {:>8.2f}  |  C-Loss {:>8.2f}  |  E-Loss {:>8.2f}  |  Loss {:>8.2f}".format(
                     datetime.now().strftime("%H:%M:%S"), idx, local_episode, ((loop_time_1 - loop_time_0)/verbose_every_episode), latest_avg_reward, latest_sum_reward, actor_loss.item(), critic_loss.item(), entropy_loss.item(), total_loss.item())
                 )
                 loop_time_0 = loop_time_1

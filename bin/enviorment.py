@@ -88,7 +88,7 @@ class RewardWrapper(Wrapper):
         self.x_0 = 40 # Mario's initiale X-Position
         self.score_0 = 0 # Mario's initialer Score
         self.clock_0 = 400 # Mario's initiale Zeit, Anmerkung: In Bowser-Lvln 300
-        #self.life_0 = 3 # Mario's initiale Leben
+        self.life_0 = 3 # Mario's initiale Leben
         #self.coins_0 = 0  # Mario's initialer Coins
         #self.status_0 = 0 # Mario's initaler Status (== small)
 
@@ -106,19 +106,35 @@ class RewardWrapper(Wrapper):
         x_1 = info['x_pos']
         score_1 = info['score']
         clock_1 = info['time']
-        #life_1 = info['life']
+        life_1 = info['life']
 
 
-        reward =  ( max( x_1 - self.x_0, -.001 ) / 2. ) \
-                + ( max(clock_1 - self.clock_0, -1) / 10. ) \
+        reward =  ( max( x_1 - self.x_0, -1 ) / 2. ) \
+                + ( max(clock_1 - self.clock_0, -1) ) \
                 + ( max( score_1 - self.score_0, 0 ) / 400. ) \
-                + ( 0. if not done else  50. if info['flag_get'] else -50.)
+                + ( 0. if not done else  50. if info['flag_get'] else -50.) \
+                + ( -100. if not life_1 == self.life_0 else 0. )
 
         # VARs updaten
         self.x_0 = x_1
         self.score_0 = score_1
         self.clock_0 = clock_1
-        #self.life_0 = life_1
+        self.life_0 = life_1
+
+        """ Gut für W1S2        
+        reward =  ( max( x_1 - self.x_0, -1 ) / 2. ) \
+                + ( max(clock_1 - self.clock_0, -1) ) \
+                + ( max( score_1 - self.score_0, 0 ) / 400. ) \
+                + ( 0. if not done else  50. if info['flag_get'] else -50.) \
+                + ( -5 if not life_1 == self.life_0 else 0 )
+        """
+
+        """ Sehr gut für W1S1
+        reward =  ( max( x_1 - self.x_0, 0 ) ) \
+                + ( max( score_1 - self.score_0, 0 ) / 400. ) \
+                + ( clock_1 - self.clock_0 ) / 10. \
+                + ( 0. if not done else  50. if info['flag_get'] else -50.)
+        """
 
         """ Semi-Gut
         reward = \
@@ -127,13 +143,6 @@ class RewardWrapper(Wrapper):
                 + ( clock_1 - self.clock_0 ) * 2 \
                 + ( 10 if done and info['flag_get'] else 0 ) \
                 # + ( -5 if not life_1 == self.life_0 else 0 )
-        """
-
-        """ Sehr gut für W1S1
-        reward =  ( max( x_1 - self.x_0, 0 ) ) \
-                + ( max( score_1 - self.score_0, 0 ) / 400. ) \
-                + ( clock_1 - self.clock_0 ) / 10. \
-                + ( 0. if not done else  50. if info['flag_get'] else -50.)
         """
 
         # Fertig

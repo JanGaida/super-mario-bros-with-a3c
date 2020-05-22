@@ -26,7 +26,6 @@ def printHeaders(args):
     printStars()
 
 
-
 def printTrainingMode():
     """Gibt den Header für den Training-Mode aus"""
 
@@ -39,6 +38,7 @@ def printTrainingMode():
                                                                                                     __/ |\n\
                                                                                                    |___/ ")
     printStars("\n")
+
 
 def printTestingMode():
     """Gibt den Header für den Testing-Mode aus"""
@@ -53,14 +53,16 @@ def printTestingMode():
                                                                                                  |___/ ")
     printStars("\n")
 
+
 def printStars(add = ""):
     """Gibt eine Zeile voller Sterne aus"""
 
     print("******************************************************************************************************************************************************************{}".format(add))
 
+
 def printProjektInfos():
     """Gibt mehrere Zeilen mit Projekt-Infos aus"""
-    
+
     print("\n\tAutor: Jan Gaida" +\
     "\n\tProjekt: Deep-Q-Learning mit 'Super Mario Bros' und A3C" +\
     "\n\tGithub: https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020" +\
