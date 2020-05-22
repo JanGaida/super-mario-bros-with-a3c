@@ -21,8 +21,9 @@ class ActorCriticModel(nn.Module):
         self.conv4 = nn.Conv2d(80, 40, 3, stride=2, padding=1)
         """
 
-        # LSTM
-        self.lstm = nn.LSTMCell(80 * 4 * 4, 512)
+        # Memory
+        #self.lstm = nn.LSTMCell(80 * 4 * 4, 512)
+        self.gru = nn.GRUCell(80 * 4 * 4, 512)
 
         # Critc
         self.critic = nn.Linear(512, 1)
@@ -49,13 +50,14 @@ class ActorCriticModel(nn.Module):
                 nn.init.xavier_uniform_(m.weight)
                 nn.init.constant_(m.bias, 0)
 
-            # LSTM
-            elif isinstance(m, nn.LSTMCell):
+            # LSTM / GRU
+            elif isinstance(m, nn.LSTMCell) or isinstance(m, nn.GRUCell):
                 nn.init.constant_(m.bias_ih, 0)
                 nn.init.constant_(m.bias_hh, 0)
 
 
-    def forward(self, x, hx, cx):
+    #def forward(self, x, hx, cx): # LSTM-Version
+    def forward(self, x, hx): # GRU-Version
         """Wenn das NN aufgerufen wird"""
 
         # CNN
@@ -64,9 +66,12 @@ class ActorCriticModel(nn.Module):
         x = F.relu(self.conv3(x))
         x = F.relu(self.conv4(x))
 
-        #print("~> LSTM-INPUT-SIZE: {}".format(x.size()))
+        #print("~> CNN-OUTPUT-SIZE: {}".format(x.size()))
 
-        # LSTM
-        hx, cx = self.gru( x.view( x.size(0), -1), (hx, cx))
+        # LSTM-Version
+        #hx, cx = self.gru( x.view( x.size(0), -1), (hx,cx))
+        #return self.actor(hx), self.critic(hx), hx, cx
 
-        return self.actor(hx), self.critic(hx), hx, cx
+        # GRU-Version
+        hx = self.gru( x.view( x.size(0), -1), hx)
+        return self.actor(hx), self.critic(hx), hx

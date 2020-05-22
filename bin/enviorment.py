@@ -108,12 +108,17 @@ class RewardWrapper(Wrapper):
         clock_1 = info['time']
         life_1 = info['life']
 
+        reward =  ( max( x_1 - self.x_0, -5 ) ) \
+                + ( max( score_1 - self.score_0, 0 ) / 400. ) \
+                + ( clock_1 - self.clock_0 ) / 10. \
+                + ( 0. if not done else  50. if info['flag_get'] else -50.) \
+                + ( -40. if not life_1 == self.life_0 else 0. )
 
-        reward =  ( max( x_1 - self.x_0, -1 ) / 2. ) \
+        """reward =  ( (x_1 - self.x_0) / 4. ) \
                 + ( max(clock_1 - self.clock_0, -1) ) \
                 + ( max( score_1 - self.score_0, 0 ) / 400. ) \
                 + ( 0. if not done else  50. if info['flag_get'] else -50.) \
-                + ( -100. if not life_1 == self.life_0 else 0. )
+                + ( -75. if not life_1 == self.life_0 else 0. )"""
 
         # VARs updaten
         self.x_0 = x_1

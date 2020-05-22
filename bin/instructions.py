@@ -116,7 +116,7 @@ def start_training(args):
         print(global_model)
         print("\n")
         # Infos von TorchSummaryX
-        summary(global_model, x, hx, cx)
+        summary(global_model, x, hx)
 
         print("\n")
         printStars("\n")
@@ -193,7 +193,7 @@ def start_testing(args):
                 if local_done: 
                     # Neue Tensor erzeugen
                     hx = T.zeros((1, 512), dtype = T.float)
-                    cx = T.zeros((1, 512), dtype = T.float)
+                    #cx = T.zeros((1, 512), dtype = T.float) # LSTM-Version
 
                     # Enviorment zurücksetzen
                     env.reset()
@@ -201,16 +201,17 @@ def start_testing(args):
                 else:
                     # Tensor wiederverwenden
                     hx = hx.detach()
-                    cx = cx.detach()
+                    #cx = cx.detach() # LSTM-Version
 
                 # GPU-Support
                 if cuda:
                     hx = hx.cuda()
-                    cx = cx.cuda()
+                    #cx = cx.cuda() # LSTM-Version
                     local_state = local_state.cuda()
 
                 # Model
-                action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx)
+                #action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx) # LSTM-Version
+                action_logit_probability, action_judgement, hx = local_model(local_state, hx) # GRU-Version
 
                 # Policy
                 policy = F.softmax(action_logit_probability, dim = 1)

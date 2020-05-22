@@ -68,7 +68,7 @@ def grab_arguments():
 		help="Anzahl an Episoden nach den das globale Model gespeichert werden soll.")
 	parser.add_argument("--max_local_steps", type=int, default=50,
 		help="Die maximale Anzahl an lokalen Steps die ein Worker auszuführen hat.")
-	parser.add_argument("--absolute_max_training_steps", type=int, default=5e6,
+	parser.add_argument("-max", "--absolute_max_training_steps", type=int, default=5e6,
 		help="Die maximale Anzahl an absoluten lokalen Steps die ein Worker auszuführen hat.")
 	parser.add_argument("--max_global_steps", type=int, default=5e5,
 		help="Die maximale Anzahl an globalen Steps die ein Worker auszuführen hat.")

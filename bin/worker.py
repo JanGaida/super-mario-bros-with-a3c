@@ -65,7 +65,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
         beta = args.beta
         verbose_every_episode = args.verbose_every_episode
         num_parallel_trainings_threads = args.num_parallel_trainings_threads
-        absolute_max_training_steps = args.absolute_max_training_steps
+        absolute_max_training_steps = args.absolute_max_training_steps + 1
 
         # Für Verbose vorzeitige init
         if verbose:
@@ -99,16 +99,23 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
             # Gewichte aus dem globalen Model laden
             local_model.load_state_dict(global_model.state_dict())
 
-            # Episoden Tensor
+            # Episoden Tensor # LSTM Version
+            #if local_done: # Neue Tensor erzeugen falls benötigt
+            #    hx = T.zeros( (1, 512), dtype = T.float)
+            #    cx = T.zeros( (1, 512), dtype = T.float)
+            #else: # Wiederverwenden
+            #    hx = hx.detach()
+            #    cx = cx.detach()
+            #if cuda: # CUDA-Support
+            #    hx = hx.cuda()
+            #    cx = cx.cuda()
+
             if local_done: # Neue Tensor erzeugen falls benötigt
                 hx = T.zeros( (1, 512), dtype = T.float)
-                cx = T.zeros( (1, 512), dtype = T.float)
             else: # Wiederverwenden
                 hx = hx.detach()
-                cx = cx.detach()
             if cuda: # CUDA-Support
                 hx = hx.cuda()
-                cx = cx.cuda()
 
             # Episoden-Var
             ep_policies = []
@@ -121,7 +128,8 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
                 local_step += 1
 
                 # Model
-                action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx)
+                #action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx) # LSTM Version
+                action_logit_probability, action_judgement, hx = local_model(local_state, hx)
 
                 # Policies
                 policy = F.softmax(action_logit_probability, dim = 1)
@@ -166,7 +174,8 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
 
             if not local_done: 
                 # Bewertung einholen für Runs die nicht abgeschlossen wurden
-                _, R, _, _ = local_model(local_state, hx, cx)
+                # _, R, _, _ = local_model(local_state, hx, cx) # LSTM Version
+                _, R, _ = local_model(local_state, hx)
 
             gae = T.zeros((1,1), dtype=T.float)
             if cuda: gae = gae.cuda()
@@ -268,17 +277,24 @@ def dispatch_testing(idx, args, global_model, summarywriter_path):
                 #print("Runner {: 2d} :: Training    ---    Lade Globales Model nach".format(idx))
                 local_model.load_state_dict(global_model.state_dict())
 
+            # Ohne Gradienten-Berrechnung # LSTM Version
+            #with T.no_grad():
+            #    if local_done: # Neue Tensor erzeugen falls benötigt
+            #        hx = T.zeros((1, 512), dtype=T.float)
+            #        cx = T.zeros((1, 512), dtype=T.float)
+            #    else: # Ansonsten wiederverwenden
+            #        hx = hx.detach()
+            #        cx = cx.detach()
             # Ohne Gradienten-Berrechnung
             with T.no_grad():
                 if local_done: # Neue Tensor erzeugen falls benötigt
                     hx = T.zeros((1, 512), dtype=T.float)
-                    cx = T.zeros((1, 512), dtype=T.float)
                 else: # Ansonsten wiederverwenden
                     hx = hx.detach()
-                    cx = cx.detach()
 
             # Model
-            action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx)
+            #action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx) # LSTM Version
+            action_logit_probability, action_judgement, hx = local_model(local_state, hx)
 
             # Policy
             policy = F.softmax(action_logit_probability, dim=1)
