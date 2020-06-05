@@ -10,20 +10,27 @@ class ActorCriticModel(nn.Module):
         """Init"""
 
         # CNN
-        self.conv1 = nn.Conv2d(num_states, 320, 3, stride=2, padding=1)
-        self.conv2 = nn.Conv2d(320, 240, 3, stride=2, padding=1)
-        self.conv3 = nn.Conv2d(240, 160, 3, stride=2, padding=1)
+        self.conv1 = nn.Conv2d(num_states, 640, 3, stride=2, padding=1)
+        self.conv2 = nn.Conv2d(640, 320, 3, stride=2, padding=1)
+        self.conv3 = nn.Conv2d(320, 160, 3, stride=2, padding=1)
         self.conv4 = nn.Conv2d(160, 80, 3, stride=2, padding=1)
+        self.conv5 = nn.Conv2d(80, 40, 3, stride=2, padding=1)
         """ Ganz gut
         self.conv1 = nn.Conv2d(num_states, 320, 3, stride=2, padding=1)
         self.conv2 = nn.Conv2d(320, 160, 3, stride=2, padding=1)
         self.conv3 = nn.Conv2d(160, 80, 3, stride=2, padding=1)
         self.conv4 = nn.Conv2d(80, 40, 3, stride=2, padding=1)
         """
+        """ Besser
+        self.conv1 = nn.Conv2d(num_states, 320, 3, stride=2, padding=1)
+        self.conv2 = nn.Conv2d(320, 240, 3, stride=2, padding=1)
+        self.conv3 = nn.Conv2d(240, 160, 3, stride=2, padding=1)
+        self.conv4 = nn.Conv2d(160, 80, 3, stride=2, padding=1)
+        """
 
         # Memory
-        #self.lstm = nn.LSTMCell(80 * 4 * 4, 512)
-        self.gru = nn.GRUCell(80 * 4 * 4, 512)
+        self.lstm = nn.LSTMCell(40 * 2 * 2, 512) # LSTM-Version
+        #self.gru = nn.GRUCell(80 * 4 * 4, 512) # GRU-Version
 
         # Critc
         self.critic = nn.Linear(512, 1)
@@ -55,10 +62,25 @@ class ActorCriticModel(nn.Module):
                 nn.init.constant_(m.bias_ih, 0)
                 nn.init.constant_(m.bias_hh, 0)
 
+    # LSTM-Version
+    def forward(self, x, hx, cx): 
+        # Wenn das NN aufgerufen wird
 
-    #def forward(self, x, hx, cx): # LSTM-Version
-    def forward(self, x, hx): # GRU-Version
-        """Wenn das NN aufgerufen wird"""
+        # CNN
+        x = F.relu(self.conv1(x))
+        x = F.relu(self.conv2(x))
+        x = F.relu(self.conv3(x))
+        x = F.relu(self.conv4(x))
+        x = F.relu(self.conv5(x))
+
+        #print("~> CNN-OUTPUT-SIZE: {}".format(x.size()))
+
+        hx, cx = self.lstm( x.view( x.size(0), -1), (hx,cx))
+        return self.actor(hx), self.critic(hx), hx, cx
+    """
+    # GRU-Version
+    def forward(self, x, hx):
+        # Wenn das NN aufgerufen wird
 
         # CNN
         x = F.relu(self.conv1(x))
@@ -68,10 +90,6 @@ class ActorCriticModel(nn.Module):
 
         #print("~> CNN-OUTPUT-SIZE: {}".format(x.size()))
 
-        # LSTM-Version
-        #hx, cx = self.gru( x.view( x.size(0), -1), (hx,cx))
-        #return self.actor(hx), self.critic(hx), hx, cx
-
-        # GRU-Version
         hx = self.gru( x.view( x.size(0), -1), hx)
         return self.actor(hx), self.critic(hx), hx
+    """

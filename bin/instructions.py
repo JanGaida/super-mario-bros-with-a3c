@@ -19,7 +19,6 @@ from bin.printers import *
 
 os.environ['OMP_NUM_THREADS'] = '1' # Anzahl an Parrallelen Threads
 
-
 def start_training(args):
     """Startet das Training, dazu werden unteranderem mehrere Trainings-Prozesse gestartet"""
 
@@ -115,8 +114,10 @@ def start_training(args):
         # Infos von Torch
         print(global_model)
         print("\n")
+
         # Infos von TorchSummaryX
-        summary(global_model, x, hx)
+        summary(global_model, x, hx, cx) # LSTM-Version
+        #summary(global_model, x, hx) # GRU-Verison
 
         print("\n")
         printStars("\n")
@@ -190,34 +191,47 @@ def start_testing(args):
             # Aufnahme-Loop
             while True:
                 # Wenn Env abgeschlossen ist...
+
+                # LSTM-Version
                 if local_done: 
                     # Neue Tensor erzeugen
                     hx = T.zeros((1, 512), dtype = T.float)
-                    #cx = T.zeros((1, 512), dtype = T.float) # LSTM-Version
-
+                    cx = T.zeros((1, 512), dtype = T.float)
                     # Enviorment zurücksetzen
                     env.reset()
-
                 else:
                     # Tensor wiederverwenden
                     hx = hx.detach()
-                    #cx = cx.detach() # LSTM-Version
-
+                    cx = cx.detach()
                 # GPU-Support
                 if cuda:
                     hx = hx.cuda()
-                    #cx = cx.cuda() # LSTM-Version
+                    cx = cx.cuda() 
                     local_state = local_state.cuda()
-
                 # Model
-                #action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx) # LSTM-Version
-                action_logit_probability, action_judgement, hx = local_model(local_state, hx) # GRU-Version
+                action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx)
+                """
+                # GRU-Version
+                if local_done: 
+                    # Neue Tensor erzeugen
+                    hx = T.zeros((1, 512), dtype = T.float)
+                    # Enviorment zurücksetzen
+                    env.reset()
+                else:
+                    # Tensor wiederverwenden
+                    hx = hx.detach()
+                # GPU-Support
+                if cuda:
+                    hx = hx.cuda()
+                    local_state = local_state.cuda()
+                # Model
+                action_logit_probability, action_judgement, hx = local_model(local_state, hx)
+                """
 
                 # Policy
                 policy = F.softmax(action_logit_probability, dim = 1)
 
                 # Action wählen
-                #action = int(T.argmax(policy).item()
                 action = T.argmax(policy).item()
 
                 # Ausführen

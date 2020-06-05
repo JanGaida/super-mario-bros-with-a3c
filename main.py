@@ -45,7 +45,7 @@ def grab_arguments():
 	# Torch
 	parser.add_argument("--torch_seed", type=int, default=42, 
 		help="Der initiale Torchseed.")
-	parser.add_argument("--model_save_name", type=str, default="a3c_smb",
+	parser.add_argument("-n", "--model_save_name", type=str, default="a3c_smb",
 		help="Der Name des gespeichert Models (Anmerkung: wird um die Stage, World-, Version- sowie Step- und Thread-Informationen ergänzt).")
 	parser.add_argument("--model_load_latest", type=bool, default=True,
 		help="Ob ein Model beim Start geladen werden soll.")

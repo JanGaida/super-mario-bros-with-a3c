@@ -24,6 +24,11 @@ class PreprocessFrameWrapper(Wrapper):
         super(PreprocessFrameWrapper, self).__init__(env)
         """Init"""
 
+        # Write-Img-Parameter
+        #self.wrote_image_counter = 0
+        #self.write_every_x_image = 1000
+        #self.max_wrote_image_counter = 10001
+
 
     def step(self, action):
         """leite den Step weiter"""
@@ -41,34 +46,41 @@ class PreprocessFrameWrapper(Wrapper):
     def preprocess_frame(self, frame):
         """Vereinfacht das übergebe Frame"""
 
+        # frame.shape == (240, 256, 3) __Auflösung: 256 / 240 == 16 / 15
         if frame is not None:
-            # frame.shape == (240, 256, 3)
-            # Auflösung: 256 / 240 == 16 / 15
 
-            #cv2.imwrite("frame-pre-processing.jpg", frame) 
+            #if (not self.wrote_image_counter == self.max_wrote_image_counter) and self.wrote_image_counter % self.write_every_x_image == 0:
+            #    cv2.imwrite("frame-pre-processing-{}.jpg".format(self.wrote_image_counter), frame)
 
-            # Zuschneiden
+            # Zuschneiden __ frame.shape == (200, 256, 3) __ Auflösung: 256/200 == 32/25
             frame = frame[15:215,:]
-            # frame.shape == (200, 256, 3)
-            # Auflösung: 256/200 == 32/25
 
-            #cv2.imwrite("frame-cut.jpg", frame) 
+            #if (not self.wrote_image_counter == self.max_wrote_image_counter) and self.wrote_image_counter % self.write_every_x_image == 0:
+            #    cv2.imwrite("img/frame-cut-{}.jpg".format(self.wrote_image_counter), frame)
 
             # Frame zu Schwarz-Weiß (255 - 0)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-            #cv2.imwrite("frame-black-n-white.jpg", frame) 
+            #if (not self.wrote_image_counter == self.max_wrote_image_counter) and self.wrote_image_counter % self.write_every_x_image == 0:
+            #    cv2.imwrite("img/frame-black-n-white-{}.jpg".format(self.wrote_image_counter), frame)
 
-            # Verkleinern
+            # Treshold anwenden
+            frame = cv2.adaptiveThreshold(frame, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 3, 1)
+
+            #if (not self.wrote_image_counter == self.max_wrote_image_counter) and self.wrote_image_counter % self.write_every_x_image == 0:
+            #    cv2.imwrite("img/frame-w-gau-tresh-{}.jpg".format(self.wrote_image_counter), frame)
+
+            # Verkleinern __ frame.shape == (50, 64) __ Auflösung: 64/50 == 32/25
             frame = cv2.resize(frame, (64, 50))
-            # frame.shape == (50, 64)
-            # Auflösung: 64/50 == 32/25
 
-            #cv2.imwrite("frame-resized.jpg", frame) 
+            #if (not self.wrote_image_counter == self.max_wrote_image_counter) and self.wrote_image_counter % self.write_every_x_image == 0:
+            #    cv2.imwrite("img/frame-resized-{}.jpg".format(self.wrote_image_counter), frame) 
 
-            # Schwarz-Weiß zu Binary (1 - 0) & Channel hinzufügen
+            # Schwarz-Weiß zu Binary (1 - 0) & Channel hinzufügen __ frame.shape == (1, 50, 64)
             frame = frame[None, :, :] / 255. 
-            # frame.shape == (1, 50, 64)
+
+            #if not self.wrote_image_counter == self.max_wrote_image_counter:
+            #    self.wrote_image_counter += 1
 
             return frame
 
@@ -112,7 +124,15 @@ class RewardWrapper(Wrapper):
                 + ( max( score_1 - self.score_0, 0 ) / 400. ) \
                 + ( clock_1 - self.clock_0 ) / 10. \
                 + ( 0. if not done else  50. if info['flag_get'] else -50.) \
+                + ( -50. if not life_1 == self.life_0 else 0. )
+
+        """w/o w1s3
+        reward =  ( max( x_1 - self.x_0, -5 ) ) \
+                + ( max( score_1 - self.score_0, 0 ) / 400. ) \
+                + ( clock_1 - self.clock_0 ) / 10. \
+                + ( 0. if not done else  50. if info['flag_get'] else -50.) \
                 + ( -40. if not life_1 == self.life_0 else 0. )
+        """
 
         """reward =  ( (x_1 - self.x_0) / 4. ) \
                 + ( max(clock_1 - self.clock_0, -1) ) \

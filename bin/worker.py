@@ -15,9 +15,12 @@ from tensorboardX import SummaryWriter
 from bin.enviorment import make_training_enviorment
 from bin.model import ActorCriticModel
 
+worker_done_states = 0 
 
 def dispatch_training(idx, args, global_model, optimizer, should_save, trained_episodes, summarywriter_path):
     """Die Worker Aufgabe für ein Training"""
+
+    global worker_done_states
 
     try:
         #summarywriter = SummaryWriter(summarywriter_path)
@@ -99,23 +102,26 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
             # Gewichte aus dem globalen Model laden
             local_model.load_state_dict(global_model.state_dict())
 
-            # Episoden Tensor # LSTM Version
-            #if local_done: # Neue Tensor erzeugen falls benötigt
-            #    hx = T.zeros( (1, 512), dtype = T.float)
-            #    cx = T.zeros( (1, 512), dtype = T.float)
-            #else: # Wiederverwenden
-            #    hx = hx.detach()
-            #    cx = cx.detach()
-            #if cuda: # CUDA-Support
-            #    hx = hx.cuda()
-            #    cx = cx.cuda()
-
+            # Episoden Tensor 
+            # LSTM-Version
+            if local_done: # Neue Tensor erzeugen falls benötigt
+                hx = T.zeros( (1, 512), dtype = T.float)
+                cx = T.zeros( (1, 512), dtype = T.float)
+            else: # Wiederverwenden
+                hx = hx.detach()
+                cx = cx.detach()
+            if cuda: # CUDA-Support
+                hx = hx.cuda()
+                cx = cx.cuda()
+            """
+            # GRU-Version
             if local_done: # Neue Tensor erzeugen falls benötigt
                 hx = T.zeros( (1, 512), dtype = T.float)
             else: # Wiederverwenden
                 hx = hx.detach()
             if cuda: # CUDA-Support
                 hx = hx.cuda()
+            """
 
             # Episoden-Var
             ep_policies = []
@@ -128,8 +134,8 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
                 local_step += 1
 
                 # Model
-                #action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx) # LSTM Version
-                action_logit_probability, action_judgement, hx = local_model(local_state, hx)
+                action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx) # LSTM-Version
+                #action_logit_probability, action_judgement, hx = local_model(local_state, hx) # GRU-Verison
 
                 # Policies
                 policy = F.softmax(action_logit_probability, dim = 1)
@@ -174,8 +180,8 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
 
             if not local_done: 
                 # Bewertung einholen für Runs die nicht abgeschlossen wurden
-                # _, R, _, _ = local_model(local_state, hx, cx) # LSTM Version
-                _, R, _ = local_model(local_state, hx)
+                _, R, _, _ = local_model(local_state, hx, cx) # LSTM-Version
+                #_, R, _ = local_model(local_state, hx) # GRU-Version
 
             gae = T.zeros((1,1), dtype=T.float)
             if cuda: gae = gae.cuda()
@@ -229,6 +235,9 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
                 else:
                     print("{} :: Worker {: 2d}    ---   abgeschlossen".format(datetime.now().strftime("%H:%M:%S"), idx))
                 # Fertig
+
+                worker_done_states += 1
+
                 return
 
     except KeyboardInterrupt:
@@ -243,6 +252,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
 
 def dispatch_testing(idx, args, global_model, summarywriter_path):
     """Die Worker Aufgabe für ein Testing"""
+    global worker_done_states
 
     try:
         summarywriter = SummaryWriter(summarywriter_path)
@@ -265,6 +275,7 @@ def dispatch_testing(idx, args, global_model, summarywriter_path):
         local_state = T.from_numpy( env.reset() )
         actions = deque(maxlen = args.max_actions)
         max_global_steps = args.max_global_steps
+        num_parallel_trainings_threads = args.num_parallel_trainings_threads
         # Loop-Const
 
         # Testing-Loop
@@ -274,27 +285,29 @@ def dispatch_testing(idx, args, global_model, summarywriter_path):
 
             # Model wiederladen wenn Run abgeschlossen
             if local_done:
-                #print("Runner {: 2d} :: Training    ---    Lade Globales Model nach".format(idx))
                 local_model.load_state_dict(global_model.state_dict())
 
-            # Ohne Gradienten-Berrechnung # LSTM Version
-            #with T.no_grad():
-            #    if local_done: # Neue Tensor erzeugen falls benötigt
-            #        hx = T.zeros((1, 512), dtype=T.float)
-            #        cx = T.zeros((1, 512), dtype=T.float)
-            #    else: # Ansonsten wiederverwenden
-            #        hx = hx.detach()
-            #        cx = cx.detach()
             # Ohne Gradienten-Berrechnung
+            # LSTM-Version
+            with T.no_grad():
+                if local_done: # Neue Tensor erzeugen falls benötigt
+                    hx = T.zeros((1, 512), dtype=T.float)
+                    cx = T.zeros((1, 512), dtype=T.float)
+                else: # Ansonsten wiederverwenden
+                    hx = hx.detach()
+                    cx = cx.detach()
+            """
+            # GRU-Version
             with T.no_grad():
                 if local_done: # Neue Tensor erzeugen falls benötigt
                     hx = T.zeros((1, 512), dtype=T.float)
                 else: # Ansonsten wiederverwenden
                     hx = hx.detach()
+            """
 
             # Model
-            #action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx) # LSTM Version
-            action_logit_probability, action_judgement, hx = local_model(local_state, hx)
+            action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx) # LSTM-Version
+            #action_logit_probability, action_judgement, hx = local_model(local_state, hx) # GRU-Version
 
             # Policy
             policy = F.softmax(action_logit_probability, dim=1)
@@ -316,21 +329,22 @@ def dispatch_testing(idx, args, global_model, summarywriter_path):
                 # .. neustarten
                 local_done = True
 
-            # Überprüft ob das Enviroment zrückgesetzt werden soll
-            if local_done:
+            # Überprüft ob das Enviroment zurückgesetzt werden soll
+            if local_done: 
 
                 latest_sum_reward = sum(ep_rewards)
                 latest_avg_reward = latest_sum_reward / len(ep_rewards)
 
-                # Tensorboard
-                summarywriter.add_scalar("Tester-{}/X_Position".format(idx), info['x_pos'], local_episode)
-                summarywriter.add_scalar("Tester-{}/Score".format(idx), info['score'], local_episode)
-                summarywriter.add_scalar("Tester-{}/Coins".format(idx), info['coins'], local_episode)
-                summarywriter.add_scalar("Tester-{}/Sum_Reward".format(idx), latest_sum_reward, local_episode)
-                summarywriter.add_scalar("Tester-{}/Avg_Reward".format(idx), latest_avg_reward, local_episode)
-                if info["flag_get"]: flag_get = 1
-                else: flag_get = -1
-                summarywriter.add_scalar("Tester-{}/Flag".format(idx), flag_get, local_episode)
+                if not worker_done_states == num_parallel_trainings_threads:
+                    # Tensorboard
+                    summarywriter.add_scalar("Tester-{}/X_Position".format(idx), info['x_pos'], local_episode)
+                    summarywriter.add_scalar("Tester-{}/Score".format(idx), info['score'], local_episode)
+                    summarywriter.add_scalar("Tester-{}/Coins".format(idx), info['coins'], local_episode)
+                    summarywriter.add_scalar("Tester-{}/Sum_Reward".format(idx), latest_sum_reward, local_episode)
+                    summarywriter.add_scalar("Tester-{}/Avg_Reward".format(idx), latest_avg_reward, local_episode)
+                    if info["flag_get"]: flag_get = 1
+                    else: flag_get = -1
+                    summarywriter.add_scalar("Tester-{}/Flag".format(idx), flag_get, local_episode)
 
                 # Variablen zurückstetzten
                 local_step = 0
