@@ -1,6 +1,14 @@
+""" © Jan Gaida, 2020 """
+
+""" printers.py
+
+Definiert diverse Printfunktionen
+
+"""
+
+
 def printHeaders(args):
     """Gibt den Header des Skriptes aus."""
-
     printStars()
     printProjektInfos()
     printStars()
@@ -28,7 +36,6 @@ def printHeaders(args):
 
 def printTrainingMode():
     """Gibt den Header für den Training-Mode aus"""
-
     print("                                                                    _______        _       _\n\
                                                                    |__   __|      (_)     (_)            \n\
                                                                       | |_ __ __ _ _ _ __  _ _ __   __ _ \n\
@@ -42,7 +49,6 @@ def printTrainingMode():
 
 def printTestingMode():
     """Gibt den Header für den Testing-Mode aus"""
-
     print("                                                                      _______        _   _             \n\
                                                                      |__   __|      | | (_)            \n\
                                                                         | | ___  ___| |_ _ _ __   __ _ \n\
@@ -56,15 +62,13 @@ def printTestingMode():
 
 def printStars(add = ""):
     """Gibt eine Zeile voller Sterne aus"""
-
     print("******************************************************************************************************************************************************************{}".format(add))
 
 
 def printProjektInfos():
     """Gibt mehrere Zeilen mit Projekt-Infos aus"""
-
     print("\n\tAutor: Jan Gaida" +\
     "\n\tProjekt: Deep-Q-Learning mit 'Super Mario Bros' und A3C" +\
     "\n\tGithub: https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020" +\
-    "\n\tVersion: 1.0.0-r" +\
+    "\n\tVersion: 1.3.0" +\
     "\n\n\tCopyright (c) 2020 Jan Gaida\n")

@@ -1,3 +1,5 @@
+""" © Jan Gaida, 2020 """
+
 # Generel
 import numpy as np
 import cv2
@@ -13,8 +15,34 @@ import gym_super_mario_bros
 from nes_py.wrappers import JoypadSpace
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT, COMPLEX_MOVEMENT, RIGHT_ONLY
 
+
+""" enviorment.py
+
+Definiert das Super-Mario-Bors-Enviorment (basierend auf https://github.com/Kautenja/gym-super-mario-bros)
+
+
+- PreprocessFrameWrapper:
+Enviorment-Wrapper zum Preprocessing des Frames
+
+- RewardWrapper:
+Enviorment-Wrapper zum bestimmen des Rewards
+
+- FrameBufferWrapper:
+Enviorment-Wrapper zum sammeln einer Framereihenfolge
+
+- make_training_enviorment:
+Hilfsfunktion zum erstellen eines Training-Enviorments
+
+- make_testing_enviorment:
+Hilfsfunktion zum erstellen eines Testing-Enviorments
+
+"""
+
+
 np.seterr(over = 'ignore') # Ignoriere Numpy-Warnings -> https://github.com/RunzheYang/MORL/issues/5
 gym.logger.set_level(40) # Gym-Logger-Level -> DEBUG = 10  INFO = 20  WARN = 30  ERROR = 40  DISABLED = 50
+enviorment_out_width = 64
+enviorment_out_height = 50
 
 
 class PreprocessFrameWrapper(Wrapper):
@@ -23,71 +51,54 @@ class PreprocessFrameWrapper(Wrapper):
     def __init__(self, env):
         super(PreprocessFrameWrapper, self).__init__(env)
         """Init"""
-
-        # Write-Img-Parameter
-        #self.wrote_image_counter = 0
-        #self.write_every_x_image = 1000
-        #self.max_wrote_image_counter = 10001
+        self.counter = -1 # Zähler für das herausschreiben von Frames
 
 
     def step(self, action):
         """leite den Step weiter"""
-
         state, reward, done, info = self.env.step(action) # den Step auffangen
         return self.preprocess_frame(state), reward, done, info # den Frame verarbeiten
 
 
     def reset(self):
         """leitet den Reset-Call weiter"""
-
         return self.preprocess_frame(self.env.reset()) # Leite den call weiter und verarbeite den Frame
 
 
     def preprocess_frame(self, frame):
         """Vereinfacht das übergebe Frame"""
+        global enviorment_out_width
+        global enviorment_out_height
 
-        # frame.shape == (240, 256, 3) __Auflösung: 256 / 240 == 16 / 15
+        # Orginale Shape: (240, 256, 3)
         if frame is not None:
+            """ Um Frames herauszuschreiben
+            if self.counter <= 1000:
+                self.counter += 1
+                if self.counter % 50 == 0:
+                    frame_ = frame[15:215,:]
+                    cv2.imwrite("img/{}_frame_cut.jpg".format(self.counter), frame_)
+                    _, _ , frame_ = cv2.split(frame)
+                    cv2.imwrite("img/{}_frame_color_converted.jpg".format(self.counter), frame_)
+                    _, frame_ = cv2.threshold(frame_, 64, 255, cv2.THRESH_TOZERO)
+                    _, frame_ = cv2.threshold(frame_, 64, 255, cv2.THRESH_BINARY_INV)
+                    cv2.imwrite("img/{}_frame_threshold.jpg".format(self.counter), frame_)
+                    frame_ = cv2.resize(frame_, (enviorment_out_width, enviorment_out_height), interpolation=cv2.INTER_AREA)
+                    cv2.imwrite("img/{}_frame_resized.jpg".format(self.counter), frame_)
+            """ 
 
-            #if (not self.wrote_image_counter == self.max_wrote_image_counter) and self.wrote_image_counter % self.write_every_x_image == 0:
-            #    cv2.imwrite("frame-pre-processing-{}.jpg".format(self.wrote_image_counter), frame)
-
-            # Zuschneiden __ frame.shape == (200, 256, 3) __ Auflösung: 256/200 == 32/25
-            frame = frame[15:215,:]
-
-            #if (not self.wrote_image_counter == self.max_wrote_image_counter) and self.wrote_image_counter % self.write_every_x_image == 0:
-            #    cv2.imwrite("img/frame-cut-{}.jpg".format(self.wrote_image_counter), frame)
-
-            # Frame zu Schwarz-Weiß (255 - 0)
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-            #if (not self.wrote_image_counter == self.max_wrote_image_counter) and self.wrote_image_counter % self.write_every_x_image == 0:
-            #    cv2.imwrite("img/frame-black-n-white-{}.jpg".format(self.wrote_image_counter), frame)
-
-            # Treshold anwenden
-            frame = cv2.adaptiveThreshold(frame, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 3, 1)
-
-            #if (not self.wrote_image_counter == self.max_wrote_image_counter) and self.wrote_image_counter % self.write_every_x_image == 0:
-            #    cv2.imwrite("img/frame-w-gau-tresh-{}.jpg".format(self.wrote_image_counter), frame)
-
-            # Verkleinern __ frame.shape == (50, 64) __ Auflösung: 64/50 == 32/25
-            frame = cv2.resize(frame, (64, 50))
-
-            #if (not self.wrote_image_counter == self.max_wrote_image_counter) and self.wrote_image_counter % self.write_every_x_image == 0:
-            #    cv2.imwrite("img/frame-resized-{}.jpg".format(self.wrote_image_counter), frame) 
-
-            # Schwarz-Weiß zu Binary (1 - 0) & Channel hinzufügen __ frame.shape == (1, 50, 64)
-            frame = frame[None, :, :] / 255. 
-
-            #if not self.wrote_image_counter == self.max_wrote_image_counter:
-            #    self.wrote_image_counter += 1
-
-            return frame
+            # In Schwarz-Weißen-Ausschnitt umwandeln
+            _, _ , frame = cv2.split( frame[15:215,:] )
+            # Threshold anwenden
+            _, frame = cv2.threshold(frame, 64, 255, cv2.THRESH_TOZERO)
+            _, frame = cv2.threshold(frame, 64, 255, cv2.THRESH_BINARY_INV)
+            # Shape anpassen
+            return (cv2.resize(frame, (enviorment_out_width, enviorment_out_height), interpolation=cv2.INTER_AREA))[None, :, :] / 255.
 
         # Ansonsten
         else:
             # Leeres Bild
-            return np.zeros((1, 50, 64))
+            return np.zeros((1, enviorment_out_height, enviorment_out_width))
 
 
 class RewardWrapper(Wrapper):
@@ -98,9 +109,9 @@ class RewardWrapper(Wrapper):
         """Init"""
 
         self.x_0 = 40 # Mario's initiale X-Position
-        self.score_0 = 0 # Mario's initialer Score
-        self.clock_0 = 400 # Mario's initiale Zeit, Anmerkung: In Bowser-Lvln 300
-        self.life_0 = 3 # Mario's initiale Leben
+        #self.score_0 = 0 # Mario's initialer Score
+        self.clock_0 = 0 # Mario's initiale Zeit, Anmerkung: ggf. 300
+        self.life_0 = 0 # Mario's initiale Leben
         #self.coins_0 = 0  # Mario's initialer Coins
         #self.status_0 = 0 # Mario's initaler Status (== small)
 
@@ -118,13 +129,16 @@ class RewardWrapper(Wrapper):
         x_1 = info['x_pos']
         score_1 = info['score']
         clock_1 = info['time']
-        life_1 = info['life']
+        #life_1 = info['life']
 
-        reward =  ( max( x_1 - self.x_0, -5 ) ) \
+        reward =  ( max( x_1 - self.x_0, -100) ) \
                 + ( max( score_1 - self.score_0, 0 ) / 400. ) \
-                + ( clock_1 - self.clock_0 ) / 10. \
-                + ( 0. if not done else  50. if info['flag_get'] else -50.) \
-                + ( -50. if not life_1 == self.life_0 else 0. )
+                + ( min( clock_1 - self.clock_0, 0 ) / 10. ) \
+                + ( 0. if not done else  35. if info['flag_get'] else -35.) #\
+                #+ ( -10. if life_1 < self.life_0 else 0. )
+
+        # jetzt vorher
+        #   1     0
 
         """w/o w1s3
         reward =  ( max( x_1 - self.x_0, -5 ) ) \
@@ -144,42 +158,20 @@ class RewardWrapper(Wrapper):
         self.x_0 = x_1
         self.score_0 = score_1
         self.clock_0 = clock_1
-        self.life_0 = life_1
-
-        """ Gut für W1S2        
-        reward =  ( max( x_1 - self.x_0, -1 ) / 2. ) \
-                + ( max(clock_1 - self.clock_0, -1) ) \
-                + ( max( score_1 - self.score_0, 0 ) / 400. ) \
-                + ( 0. if not done else  50. if info['flag_get'] else -50.) \
-                + ( -5 if not life_1 == self.life_0 else 0 )
-        """
-
-        """ Sehr gut für W1S1
-        reward =  ( max( x_1 - self.x_0, 0 ) ) \
-                + ( max( score_1 - self.score_0, 0 ) / 400. ) \
-                + ( clock_1 - self.clock_0 ) / 10. \
-                + ( 0. if not done else  50. if info['flag_get'] else -50.)
-        """
-
-        """ Semi-Gut
-        reward = \
-                  ( max( x_1 - self.x_0, 0 ) ) / 10  \
-                + ( max( score_1 - self.score_0, 0 ) / 1000. ) \
-                + ( clock_1 - self.clock_0 ) * 2 \
-                + ( 10 if done and info['flag_get'] else 0 ) \
-                # + ( -5 if not life_1 == self.life_0 else 0 )
-        """
+        #self.life_0 = life_1
 
         # Fertig
-        return state, reward / 10. , done, info        
-
+        return state, reward / 10. , done, info # CNN-Version
 
     def reset(self):
         """Leitet den Reset-Call weiter"""
 
-        # Letzten Score ebenfalls zurücksetzten
+        self.x_0 = 40
         self.score_0 = 0
-        #self.coin_0 = 0
+        self.clock_0 = 0
+        self.life_0 = 0
+        #self.coins_0 = 0
+        #self.status_0 = 0
 
         # Weiterleiten
         return self.env.reset()
@@ -187,11 +179,7 @@ class RewardWrapper(Wrapper):
 
     def status_to_int(self, status):
         """Hilfsfunktion um den Status von Mario in einen vergleichbaren Integer zu wandeln"""
-
-        if not status == "small":
-            return 1
-        else:
-            return 0
+        return 1 if not status == "small" else 0
 
 
 class FrameBufferWrapper(Wrapper):
@@ -200,13 +188,14 @@ class FrameBufferWrapper(Wrapper):
     def __init__(self, env, skip):
         super(FrameBufferWrapper, self).__init__(env)
         """Init"""
+        global enviorment_out_width
+        global enviorment_out_height
 
         # Merk wie viel Frames übersprungen werden sollen
-        self.skip = (skip - 1)
+        self.skip = skip
 
         # Überschreib den Observation_Space
-        self.observation_space = Box(low = 0, high = 255, shape = (4, 50, 64), dtype = np.float32)
-
+        self.observation_space = Box(low = 0, high = 255, shape = (skip, enviorment_out_height, enviorment_out_width), dtype = np.float32)
 
     def step(self, action):
         """Leite den Step-Call weiter und puffert die Frames"""
@@ -238,7 +227,6 @@ class FrameBufferWrapper(Wrapper):
         states = states.astype(np.float32)
 
         return states, reward, done, info
-
 
     def reset(self):
         """Leitet den Reset-Call weiter"""

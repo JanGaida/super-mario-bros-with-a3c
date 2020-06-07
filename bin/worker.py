@@ -1,3 +1,5 @@
+""" © Jan Gaida, 2020 """
+
 # Generel
 import timeit, os
 from datetime import datetime
@@ -15,12 +17,29 @@ from tensorboardX import SummaryWriter
 from bin.enviorment import make_training_enviorment
 from bin.model import ActorCriticModel
 
+
+""" worker.py
+
+Definiert die Aufgaben der Worker bzw. Tester während dem Trainieren
+
+
+- dispatch_training:
+Die Aufgaben eines Workers während des Trainings
+
+- dispatch_testing:
+Die Aufgaben eines Testers während des Trainings
+
+
+"""
+
+
 worker_done_states = 0 
+memory_out_channels = 512
 
 def dispatch_training(idx, args, global_model, optimizer, should_save, trained_episodes, summarywriter_path):
     """Die Worker Aufgabe für ein Training"""
-
     global worker_done_states
+    global memory_out_channels
 
     try:
         #summarywriter = SummaryWriter(summarywriter_path)
@@ -49,6 +68,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
         local_step = 0 # aktueller worker-step
         local_reward = 0 # aktueller worker-reward
 
+        # Loss-Werte
         actor_loss = 0
         critic_loss = 0
         entropy_loss = 0
@@ -105,18 +125,17 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
             # Episoden Tensor 
             # LSTM-Version
             if local_done: # Neue Tensor erzeugen falls benötigt
-                hx = T.zeros( (1, 512), dtype = T.float)
-                cx = T.zeros( (1, 512), dtype = T.float)
+                hx = T.zeros( (1, memory_out_channels), dtype = T.float)
+                cx = T.zeros( (1, memory_out_channels), dtype = T.float)
             else: # Wiederverwenden
                 hx = hx.detach()
                 cx = cx.detach()
             if cuda: # CUDA-Support
                 hx = hx.cuda()
                 cx = cx.cuda()
-            """
-            # GRU-Version
+            """ # GRU-Version
             if local_done: # Neue Tensor erzeugen falls benötigt
-                hx = T.zeros( (1, 512), dtype = T.float)
+                hx = T.zeros( (1, memory_out_channels), dtype = T.float)
             else: # Wiederverwenden
                 hx = hx.detach()
             if cuda: # CUDA-Support
@@ -184,7 +203,8 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
                 #_, R, _ = local_model(local_state, hx) # GRU-Version
 
             gae = T.zeros((1,1), dtype=T.float)
-            if cuda: gae = gae.cuda()
+            if cuda: 
+                gae = gae.cuda()
 
             # Loss's
             actor_loss = 0
@@ -194,7 +214,6 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
 
             # Loope alle Erfahrungen rückwärts (!)
             for judgment, log_policy, reward, entropy in list( zip(ep_judgment, ep_policies, ep_rewards, ep_entropies) )[::-1]:
-                # Berechnung nach Boltzmann-Policy (?)
                 gae = gae * discount_gamma * tau
                 gae = gae + reward + discount_gamma * next_value.detach() - judgment.detach()
                 next_value = judgment
@@ -253,6 +272,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
 def dispatch_testing(idx, args, global_model, summarywriter_path):
     """Die Worker Aufgabe für ein Testing"""
     global worker_done_states
+    global memory_out_channels
 
     try:
         summarywriter = SummaryWriter(summarywriter_path)
@@ -291,16 +311,15 @@ def dispatch_testing(idx, args, global_model, summarywriter_path):
             # LSTM-Version
             with T.no_grad():
                 if local_done: # Neue Tensor erzeugen falls benötigt
-                    hx = T.zeros((1, 512), dtype=T.float)
-                    cx = T.zeros((1, 512), dtype=T.float)
+                    hx = T.zeros((1, memory_out_channels), dtype=T.float)
+                    cx = T.zeros((1, memory_out_channels), dtype=T.float)
                 else: # Ansonsten wiederverwenden
                     hx = hx.detach()
                     cx = cx.detach()
-            """
-            # GRU-Version
+            """ # GRU-Version
             with T.no_grad():
                 if local_done: # Neue Tensor erzeugen falls benötigt
-                    hx = T.zeros((1, 512), dtype=T.float)
+                    hx = T.zeros((1, memory_out_channels), dtype=T.float)
                 else: # Ansonsten wiederverwenden
                     hx = hx.detach()
             """

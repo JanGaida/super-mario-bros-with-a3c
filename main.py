@@ -1,4 +1,6 @@
-# Generel
+""" © Jan Gaida, 2020 """
+
+# Generell
 import argparse
 import shutil
 import os
@@ -6,6 +8,25 @@ import os
 # Hilfsklassen & -Funktionen
 from bin.printers import printHeaders, printTrainingMode, printTestingMode
 from bin.instructions import start_training, start_testing
+
+
+""" main.py
+
+Einstiegspunkt für das Trainieren bzw. Testen von Netzwerken für das Super-Mario-Bros-Gym.
+
+Weitere Informationen zu dem Programm befindet sich in der 'README.md'-Datei
+
+
+- grab_arguments:
+Hier werden die Programm-Argumente initialisiert
+
+- check_dir_structure:
+Hier wird die notwendige Ordnerstruktur für das Programm erstellt wenn erforderlich
+
+- __main__:
+Hier wird das eigentliche Programm gestartet, u.a. wird basierend auf dem gewählten Modus das Training oder Testing (vgl. 'instrutctions.py') gestartet
+
+"""
 
 
 def grab_arguments():
@@ -18,7 +39,7 @@ def grab_arguments():
 		help="Wertebereich: \'training\', \'testing\'\nLegt fest ob ein Model trainiert oder getestet werden soll.")
 	parser.add_argument("-v", "--verbose", type=bool, default=True, 
 		help="Ob diverse Informationen ausgegeben werden sollen.")
-	parser.add_argument("--verbose_every_episode", type=int, default=50, 
+	parser.add_argument("--verbose_every_episode", type=int, default=100, 
 		help="Nach welchen Episoden diverse Informationen ausgegeben werden sollen.")
 
 
