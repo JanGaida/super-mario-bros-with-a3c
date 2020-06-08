@@ -53,7 +53,7 @@ class PreprocessFrameWrapper(Wrapper):
 		"""Init"""
 		# Zähler für das herausschreiben von Frames
 		self.counter = -1 
-		
+
 	def step(self, action):
 		"""leite den Step weiter"""
 		state, reward, done, info = self.env.step(action) # den Step auffangen
@@ -74,15 +74,19 @@ class PreprocessFrameWrapper(Wrapper):
 			if self.counter <= 1000:
 				self.counter += 1
 				if self.counter % 50 == 0:
-					frame_ = frame[15:215,:]
-					cv2.imwrite("img/cut_{}.jpg".format(self.counter), frame_)
-					_, _ , frame_ = cv2.split(frame)
-					cv2.imwrite("img/black_n_white_{}.jpg".format(self.counter), frame_)
+					frame_ = frame
+					#cv2.imwrite("img/orginal_{}.jpg".format(self.counter), frame_)
+					frame_ = frame_[15:215,:]
+					#cv2.imwrite("img/zugeschnitten_{}.jpg".format(self.counter), frame_)
+					_, _ , frame_ = cv2.split( frame_ )
+					#cv2.imwrite("img/schwarzweiß_{}.jpg".format(self.counter), frame_)
 					_, frame_ = cv2.threshold(frame_, 64, 255, cv2.THRESH_TOZERO)
+					#cv2.imwrite("img/threshold_tozero_{}.jpg".format(self.counter), frame_)
 					_, frame_ = cv2.threshold(frame_, 64, 255, cv2.THRESH_BINARY_INV)
-					cv2.imwrite("img/threshold_{}.jpg".format(self.counter), frame_)
-					frame_ = cv2.resize(frame_, (enviorment_out_width, enviorment_out_height), interpolation=cv2.INTER_AREA)
-					cv2.imwrite("img/resized_{}.jpg".format(self.counter), frame_)
+					#cv2.imwrite("img/threshold_binary_{}.jpg".format(self.counter), frame_)
+					frame_ = (cv2.resize(frame_, (enviorment_out_width, enviorment_out_height), interpolation=cv2.INTER_AREA))
+					cv2.imwrite("img/verkleinert_{}.jpg".format(self.counter), frame_)
+					#frame_ = frame_[None, :, :] / 255.
 			""" 
 
 			# In Schwarz-Weißen-Ausschnitt umwandeln
