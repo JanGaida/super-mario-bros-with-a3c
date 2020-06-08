@@ -126,7 +126,7 @@ Nachfolgend ist die genaue Architektur des Neuronalen-Netzwerkes zusehen.²
 
 ## Frame-Preprocessing
 
-Nachfolgend ist das Frame-Preprocessing kurz erklärt. Die Orginalen Bild-Datei befinden sich <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/tree/master/doc/frames/w1s1rv0">hier</a>
+Nachfolgend ist das Frame-Preprocessing kurz erklärt. Die Orginalen Bild-Datei befinden sich <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/tree/master/doc/frames/w1s1rv0">hier</a>.
 
 #### Insgesamter Verlauf:
 
