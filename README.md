@@ -106,13 +106,17 @@ python3 main.py -m testing -w 1 -s 1
 
 ---
 
-## Neuronales Netzwerk
+## Neuronales-Netzwerk
 
-**Grundlegende Architektur:**
+#### Neuronales-Netzwerk-Context:
+Nachfolgend ist der Context des Neuronalen-Netzwerkes zusehen.²
 <img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur.png?raw=true" />
 
-**Netzwerk-Architektur:**
+#### Neuronales-Netzwerk-Architektur:
+Nachfolgend ist die genaue Architektur des Neuronalen-Netzwerkes zusehen.²
 <img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur.png?raw=true" />
+
+² *Verion mit LSTM und Deep-CNN*
 
 ---
 
