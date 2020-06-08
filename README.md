@@ -130,7 +130,7 @@ Nachfolgend ist das Frame-Preprocessing kurz erklärt. Die Orginalen Bild-Datei 
 
 #### 1. Schritt :
 <p align="center">
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/0_orginaler_frame.jpeg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/0_orginaler_frame.jpeg?raw=true"/></a>
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/0_orginaler_frame.jpeg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/0_orginaler_frame.jpeg?raw=true" height="200"/></a>
   <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/1_zugeschnittener_frame.jpeg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/1_zugeschnittener_frame.jpeg?raw=true"/></a>
 </p>
 
