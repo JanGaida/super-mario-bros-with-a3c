@@ -1,11 +1,17 @@
-[![Generic badge](https://img.shields.io/badge/License-Properitary-red.svg)](https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/blob/master/LICENSE.md)
-[![Active Development](https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg)](https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/)
-[![Python 3.6.4](https://img.shields.io/badge/Python-3.6.4-blue.svg)](https://www.python.org/downloads/release/python-364/)
-[![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/issues)
+<p align="center">
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/LICENSE.md"><img alt="Licence" src="https://img.shields.io/badge/License-Properitary-red.svg"></a>
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/commits/master"><img alt="Active Development" src="https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg"></a>
+  <a href="https://docs.python.org/3/"><img alt="Python 3.8" src="https://img.shields.io/badge/Python-3.8-blue.svg"></a>
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/issues"><img alt="Ask Me Anything" src="https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg"></a>
+  <img alt="last commit" src="https://img.shields.io/github/last-commit/JanGaida/super-mario-bros-with-a3c?style=flat&logo=GitHub">
+  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/JanGaida/super-mario-bros-with-a3c?style=flat&logo=GitHub">
+</p>
 
 ---
 
-<a href="https://www.hof-university.de/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="200"></a>
+<p align="center">
+<a href="https://www.hof-university.de/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="350"></a>
+</p>
 
 ---
 
