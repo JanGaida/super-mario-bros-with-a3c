@@ -53,14 +53,14 @@ Installieren Sie anschließend die benötigten Pakete:
 
 *Für **Gpu**-Unterstützung*¹:
 ```shell
-cd <destination>
+cd <destination>/super-mario-bros-with-a3c
 pip3 install tensorflow-gpu==2.2.0
 pip3 install -r requirements.txt
 ```
 
 *Für **Cpu**-Unterstützung*:
 ```shell
-cd <destination>
+cd <destination>/super-mario-bros-with-a3c
 pip3 install tensorflow==2.2.0
 pip3 install -r requirements.txt
 ```
