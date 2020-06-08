@@ -10,12 +10,10 @@
 ---
 
 <p align="center">
-<a href="https://www.hof-university.de/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="350"></a>
+<a href="https://www.hof-university.de/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="250"></a>
 </p>
 
----
-
-#### Research Project: 
+#### Student Research Project: 
 # Deep-Q-Learning mit 'Super Mario Bros' und A3C.
 
 *Seminararbeit der Vorlesung **Angewandtes Maschinelles Lernen** an der **Hochschule für angewande Wissenschaften Hof** des **Sommersemesters 2020**.*
