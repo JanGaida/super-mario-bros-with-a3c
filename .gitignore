@@ -9,6 +9,8 @@ rec/*
 # Default-Ordner der angefertigten Bild-Aufnahmen
 img/*
 
+# Mac
+.DS_Store
 
 
 # Byte-compiled / optimized / DLL files
