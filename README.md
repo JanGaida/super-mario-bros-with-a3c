@@ -108,7 +108,11 @@ python3 main.py -m testing -w 1 -s 1
 
 ## Neuronales Netzwerk
 
-*upcoming*
+**Grundlegende Architektur:**
+<img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur.png?raw=true" />
+
+**Netzwerk-Architektur:**
+<img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur.png?raw=true" />
 
 ---
 
