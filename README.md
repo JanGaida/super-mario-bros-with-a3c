@@ -5,14 +5,14 @@
 
 ---
 
+<a href="https://www.hof-university.de/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="200"></a>
+
+---
+
 #### Research Project: 
 # Deep-Q-Learning mit 'Super Mario Bros' und A3C.
 
 *Seminararbeit der Vorlesung **Angewandtes Maschinelles Lernen** an der **Hochschule für angewande Wissenschaften Hof** des **Sommersemesters 2020**.*
-
----
-
-<a href="https://www.hof-university.de/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="200"></a>
 
 ---
 
@@ -25,7 +25,37 @@
 
 ## Installation
 
-*upcoming*
+#### Benötigt:
+- lauffähige **Python-3**-Installtion (<a href="https://docs.python.org/3/installing/index.html">Anleitung</a>)
+- lauffähiges **Pip3**-Paketemanager (in Python-3.4 und später bereits enthalten)
+- **CUDA-Treiber** für die Gpu-Unterstützung¹ (<a href="https://docs.nvidia.com/cuda/cuda-quick-start-guide/index.html">Anleitung</a>)
+
+#### Repository clonen:
+Laden Sie sich eine Kopie dieses Projektes lokal herunter, hier bspw. mit <a href="https://git-scm.com/docs/git">Git</a>:
+
+```shell
+cd <destination>
+git clone https://github.com/JanGaida/super-mario-bros-with-a3c.git
+```
+
+#### Dependencies installieren:
+Installieren Sie anschließend die benötigten Pakete:
+
+*Für **Gpu**-Unterstützung*¹:
+```shell
+cd <destination>
+pip3 install tensorflow-gpu==2.2.0
+pip3 install -r requirements.txt
+```
+
+*Für **Cpu**-Unterstützung*:
+```shell
+cd <destination>
+pip3 install tensorflow==2.2.0
+pip3 install -r requirements.txt
+```
+
+¹ *für das Trainiern empfohlen; Gpu-Empfehlung: Nvidia-Gpu, GTX 9XX oder neuer, 6GB NVRAM für 5 parallel laufende Trainings-Prozesse*
 
 ---
 
