@@ -20,6 +20,12 @@
 
 ---
 
+## Paper
+
+*upcoming*
+
+---
+
 ## Ziele
 
 - Entwicklen, Traninern und Testen eines Neuronalen Netzes zum absovlieren von <a href="https://de.wikipedia.org/wiki/Super_Mario_Bros.">Super Mario Bros. (1985)</a>
