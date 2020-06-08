@@ -1,10 +1,10 @@
 <p align="center">
   <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/LICENSE.md"><img alt="Licence" src="https://img.shields.io/badge/License-Properitary-red.svg"></a>
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/commits/master"><img alt="Active Development" src="https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg"></a>
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/pulse"><img alt="Active Development" src="https://img.shields.io/badge/Maintenance%20Level-Actively%20Developed-brightgreen.svg"></a>
   <a href="https://docs.python.org/3/"><img alt="Python 3.8" src="https://img.shields.io/badge/Python-3.8-blue.svg"></a>
   <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/issues"><img alt="Ask Me Anything" src="https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg"></a>
-  <img alt="last commit" src="https://img.shields.io/github/last-commit/JanGaida/super-mario-bros-with-a3c?style=flat&logo=GitHub">
-  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/JanGaida/super-mario-bros-with-a3c?style=flat&logo=GitHub">
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/commits/master"><img alt="last commit" src="https://img.shields.io/github/last-commit/JanGaida/super-mario-bros-with-a3c?style=flat&logo=GitHub"></a>
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/"><img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/JanGaida/super-mario-bros-with-a3c?style=flat&logo=GitHub"></a>
 </p>
 
 ---
