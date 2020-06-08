@@ -101,12 +101,39 @@ python3 main.py -m testing -w 1 -s 1
 ---
 
 ## Ergebnisse
+```
+<p align="center">
+  <a href=""><img src=""/></a>
+</p>
+```
 
 *upcoming*
 
+#### Erreichte X-Position:
+<p align="center">
+  <a href="
+https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_X_Position.png"><img src="
+https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_X_Position.png?raw=true"/></a>
+</p>
+
+#### Summe Reward:
+<p align="center">
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_Sum_Reward.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_Sum_Reward.png?raw=true"/></a>
+</p>
+
+#### Druchschnittlicher Reward:
+<p align="center">
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_Avg_Reward.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_Avg_Reward.png?raw=true"/></a>
+</p>
+
+#### Erreichtes Level-Ende (Flagge):
+<p align="center">
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_Flag.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_Flag.png?raw=true"/></a>
+</p>
+
+
 #### Model-Files:
 Vortrainierte PyTorch-Model-Files befinden sich <a href="https://drive.google.com/drive/folders/1OnAW680HXIiHOvfb-MxD0GHxbLoGcpCq?usp=sharing">hier</a> (<a href="https://docs.google.com/document/d/1UDgxDr2wFpdXbE7-w9TowjG0rgAvxz345Ac1zRAC1v8/edit?usp=sharing">Anleitung</a>).
-
 
 ---
 
