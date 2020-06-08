@@ -147,7 +147,7 @@ Anschließend wird der Frame um die Farb-Dimensionen erleichtert, sodass ein Sch
 
 #### 3. Schritt:
 <p align="center">
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/5_verkleinerter_frame.jpg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/5_verkleinerter_frame.jpg?raw=true"/></a>
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/5_verkleinerter_frame.jpg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/5_verkleinerter_frame.jpg?raw=true" height="200"/></a>
 </p>
 
 Zuletzt wird das Frame zu auf eine Größe von 50x64 Pixel verkleinert, um die Anforderungen an das Neuronale-Netz zu reduzieren.
