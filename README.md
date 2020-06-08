@@ -102,9 +102,9 @@ python3 main.py -m testing -w 1 -s 1
 
 ## Ergebnisse
 
-*upcoming*
+#### Trainings-Statistiken:
 
-<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_x_positon_and_flag.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_x_positon_and_flag.png?raw=true"/></a><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_sum_reward_and_avg_reward.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_sum_reward_and_avg_reward.png?raw=true"/></a></p>
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_x_positon_and_flag.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_x_positon_and_flag.png?raw=true"/></a><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_sum_reward_and_avg_reward.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_sum_reward_and_avg_reward.png?raw=true"/></a><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_score_and_coins.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_score_and_coins.png?raw=true"/></a></p>
 
 
 #### Model-Files:
