@@ -5,10 +5,6 @@
 
 ---
 
-<a href="https://www.hof-university.de/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="350"></a>
-
----
-
 #### Research Project: 
 # Deep-Q-Learning mit 'Super Mario Bros' und A3C.
 
@@ -16,40 +12,44 @@
 
 ---
 
-## Anforderungen
-- Ubuntu 18.04 / 20.04, 64-Bit (andere Versionen erfordern ggf. Anpassungen)
-- Eingerichtete CUDA kompatible GPU (<a href="https://developer.nvidia.com/cuda-gpus">Klicke hier für eine Liste der unterstützten GPU's</a>)
-- Python 3
-
-*Anmerkung: Eine CUDA-Unterstüzte GPU ist <b>nicht</b> zwingend erforderlich, für das Trainieren dees NN empfohlen.*
+<a href="https://www.hof-university.de/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="200"></a>
 
 ---
 
-## Ziel
+## Ziele
 
-- Entwicklen, Traninern und Testen eines Neuronalen Netzes zum absovlieren von Super Mario Bros. (1985)
-- Verständnis von Neuronalen Netzten und RL-Algorithmen (insbesondere Deep-Q-Learning) entfalten
+- Entwicklen, Traninern und Testen eines Neuronalen Netzes zum absovlieren von <a href="https://de.wikipedia.org/wiki/Super_Mario_Bros.">Super Mario Bros. (1985)</a>
+- Verständnis von Neuronalen Netzten und RL-Algorithmen (insbesondere Deep-Q-Learning) ausbilden
 
 ---
 
-## Anwendung
+## Installation
 
 *upcoming*
 
 ---
 
-## Benötigte Pip-Packages
+## Starten
 
-- gym
-- gym-super-mario-bros
-- tensorboardX
-- torch
+*upcoming*
 
-*Zum installieren der empfohlenen Packages kann auch die <a href="https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020/blob/master/requierments.txt">Requierments.txt</a> benutzt werden:*
+---
 
-```bash 
-pip install -r <PATH>/requirements.txt
-```
+## Ergebnisse
+
+*upcoming*
+
+---
+
+## Neuronales Netzwerk
+
+*upcoming*
+
+---
+
+## Reward-Funktion
+
+*upcomming*
 
 ---
 
@@ -58,4 +58,5 @@ pip install -r <PATH>/requirements.txt
 - Dem Professor und den Komilitonen der Vorlesung "Angewandtes maschinelles Lernen (Sose 2020)"
 - Christian Kauten für das Bereitstellen des <a href="https://github.com/Kautenja/gym-super-mario-bros">OpenAi-Gym's Super-Mario-Bros.</a> 
 - <a href="https://github.com/uvipen/Super-mario-bros-A3C-pytorch">Viet Nguyen</a>, <a href="https://github.com/ArvindSoma/a3c-super-mario-pytorch">Arvind Soma</a>, <a href="https://github.com/sachinruk/Mario">Sachin Abeywardana</a>, <a href="https://github.com/Kautenja/playing-mario-with-deep-reinforcement-learning">Christian Kauten</a>,  <a href="https://github.com/sadeqa/Super-Mario-Bros-RL">Otmane Sakhi & Amine Sadeq</a> und <a href="https://github.com/search?q=super+mario+bros+reinforcement-learning&type=Repositories">viele weitere Projekte</a> für inspirerende Reinforcement-Learning-Implementationen im Super-Mario-Bros-Gym's
+
 ---
