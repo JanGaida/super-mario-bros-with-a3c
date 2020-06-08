@@ -104,6 +104,10 @@ python3 main.py -m testing -w 1 -s 1
 
 *upcoming*
 
+#### Model-Files:
+Vortrainierte PyTorch-Model-Files befinden sich <a href="https://drive.google.com/drive/folders/1OnAW680HXIiHOvfb-MxD0GHxbLoGcpCq?usp=sharing">hier</a> (<a href="https://docs.google.com/document/d/1UDgxDr2wFpdXbE7-w9TowjG0rgAvxz345Ac1zRAC1v8/edit?usp=sharing">Anleitung</a>).
+
+
 ---
 
 ## Neuronales-Netzwerk
