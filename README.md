@@ -110,13 +110,35 @@ python3 main.py -m testing -w 1 -s 1
 
 #### Neuronales-Netzwerk-Context:
 Nachfolgend ist der Context des Neuronalen-Netzwerkes zusehen.²
-<img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur.png?raw=true" />
+<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur.png?raw=true" /></a>
 
 #### Neuronales-Netzwerk-Architektur:
 Nachfolgend ist die genaue Architektur des Neuronalen-Netzwerkes zusehen.²
-<img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur.png?raw=true" />
+<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur.png?raw=true"/></a>
 
 ² *Verion mit LSTM und Deep-CNN*
+
+---
+
+## Frame-Preprocessing
+
+Nachfolgend ist das Frame-Preprocessing kurz erklärt. Die Orginalen Bild-Datei befinden sich <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/tree/master/doc/frames/w1s1rv0">hier</a>
+
+<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/preprocessing_w1s1rv0.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/preprocessing_w1s1rv0.png?raw=true"/></a>
+
+#### 0_Orginaler_Frame & 1_Zugeschnittener_Frame :
+<p align="center">
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/0_orginaler_frame.jpeg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/0_orginaler_frame.jpeg?raw=true"/></a>
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/1_zugeschnittener_frame.jpeg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/1_zugeschnittener_frame.jpeg?raw=true"/></a>
+</p>
+Das Enviorment liefert einen 240x256 Pixel großen Frame im YIQ-Farbmodel (vgl. Farbmodel des NES). Dieser wird um 15 Pixel von Oben und 25 Pixel von Unten zugeschnitten, sodass ein 200x256 Pixel großes Frame entsteht.
+
+#### 2_Schwarzweißer_Frame, 3_Threshhold_Torzero & 4_Treshhold_Binary_Inv:
+<p align="center">
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/2_schwarzwei%C3%9F_frame.jpg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/2_schwarzwei%C3%9F_frame.jpg?raw=true"/></a>
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/3_threshold_tozero_frame.jpg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/3_threshold_tozero_frame.jpg?raw=true"/></a>
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/4_threshold_binary_frame.jpg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/4_threshold_binary_frame.jpg?raw=true"/></a>
+</p>
 
 ---
 
