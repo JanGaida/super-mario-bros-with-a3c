@@ -104,25 +104,8 @@ python3 main.py -m testing -w 1 -s 1
 
 *upcoming*
 
-#### Erreichte X-Position:
 <p align="center">
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_X_Position.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_X_Position.png?raw=true"/></a>
-</p>
-
-#### Summe Reward:
-<p align="center">
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_Sum_Reward.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_Sum_Reward.png?raw=true"/></a>
-</p>
-
-#### Druchschnittlicher Reward:
-<p align="center">
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_Avg_Reward.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_Avg_Reward.png?raw=true"/></a>
-</p>
-
-#### Erreichtes Level-Ende (Flagge):
-<p align="center">
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_Flag.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_Flag.png?raw=true"/></a>
-</p>
+  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_x_positon_and_flag.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_x_positon_and_flag.png?raw=true"/></a></p>
 
 
 #### Model-Files:
