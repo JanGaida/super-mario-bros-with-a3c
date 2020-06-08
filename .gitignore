@@ -1,8 +1,15 @@
-# Project-Specific
+# Projekt-Spezifisch
+
+# Default-Ordner der Tensorboard-Logs
 logs/*
+# Default-Ordner der gespeicherten Gewichte & Biase
 models/*
+# Default-Ordner der angefertigten Video-Aufnahmen
 rec/*
+# Default-Ordner der angefertigten Bild-Aufnahmen
 img/*
+
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
