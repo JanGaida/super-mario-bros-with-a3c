@@ -60,9 +60,34 @@ pip3 install -r requirements.txt
 ---
 
 ## Starten
+Das Progamm selbst ist darauf ausgelegt, dass mit diversen Parametern experimentiert werden kann und verfügt deshalb um eine große Anzahl an Start-Argumenten. Desweitern verfügt es über viele Kommentare im Code um bspw. die Netzwerkarchitektur zuändern, wie etwa das *LSTM*-Modul mit einem *GRU*-Modul auszutauschen.
 
-*upcoming*
+#### Start-Argumente:
+Für eine Auflistung aller Start-Argumente:
+```shell
+cd <destination>/super-mario-bros-with-a3c
+python3 main.py --help
+```
 
+#### Trainieren:
+Für das Starten des Training-Vorgangs des Super-Mario-Bros Level 1 in Welt 1 von 10000 Episoden mit 5 Trainingsthreads:
+```shell
+cd <destination>/super-mario-bros-with-a3c
+# Ausführliche Schreibweise:
+python3 main.py --mode training --world 1 --stage 1 --absolute_max_training_steps 10000 --num_parallel_trainings_threads 5
+# Kurze Schreibweise:
+python3 main.py -m training -w 1 -s 1 -max 10000 -ttr 5
+```
+
+#### Testen:
+Für das Starten des Testing-Vorgangs des Super-Mario-Bros Level 1 in Welt 1:
+```shell
+cd <destination>/super-mario-bros-with-a3c
+# Ausführliche Schreibweise:
+python3 main.py --mode testing --world 1 --stage 1
+# Kurze Schreibweise:
+python3 main.py -m testing -w 1 -s 1
+```
 ---
 
 ## Ergebnisse
