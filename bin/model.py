@@ -27,12 +27,18 @@ Hilfsklassse für eine nn.Conv2d mit ReLU-Aktivierungsfunktion
 """
 
 
+memory_in_channels = 32*5*7*4 # Entspricht dem geflachten Output des vorherigen Netzes
+memory_out_channels = 512
+
+
 class ActorCriticModel(nn.Module):
 	"""Das zugrundeliegende Troch-Model für den A3C-Algorithmus"""
 
 	def __init__(self, num_states, num_actions):
 		super(ActorCriticModel, self).__init__()
 		"""Init"""
+		global memory_in_channels
+		global memory_out_channels
 
 		""" # CNN
 		self.cnn = nn.Sequential(
@@ -47,8 +53,6 @@ class ActorCriticModel(nn.Module):
 		self.dcv = DeepConvolutional(num_states)
 
 		# Memory
-		memory_in_channels = 32*5*7*4 # Entspricht dem geflachten Output des vorherigen Netzes
-		memory_out_channels = 512
 		self.lstm = nn.LSTMCell(memory_in_channels, memory_out_channels) # LSTM-Version
 		#self.gru = nn.GRUCell(memory_in_channels, memory_out_channels) # GRU-Version
 

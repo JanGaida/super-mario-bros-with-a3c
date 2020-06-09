@@ -95,7 +95,7 @@ def grab_arguments():
 		help="Die maximale Anzahl an globalen Steps die ein Worker auszuführen hat.")
 	parser.add_argument("--max_actions", type=int, default=100, 
 		help="Maximale Wiederholung von Aktionen in der Testphase.")
-	parser.add_argument("--skip_frames", type=int, default=5, 
+	parser.add_argument("--skip_frames", type=int, default=4, 
 		help="Die Anzahl an Frames die Übersprungen werden.")
 
 

@@ -113,8 +113,8 @@ class RewardWrapper(Wrapper):
 		super(RewardWrapper, self).__init__(env)
 		"""Init"""
 		self.x_0 = 40 # Mario's initiale X-Position
-		self.score_0 = 0 # Mario's initialer Score
-		self.clock_0 = 0 # Mario's initiale Zeit, Anmerkung: ggf. 300
+		self.clock_0 = 0 # Mario's initiale Zeit
+		#self.score_0 = 0 # Mario's initialer Score
 
 	def step(self, action):
 		"""Leitet den Step call weiter und übschreibt den Reward"""
@@ -123,14 +123,33 @@ class RewardWrapper(Wrapper):
 
 		# Var's lesen
 		x_1 = info['x_pos']
-		score_1 = info['score']
 		clock_1 = info['time']
+		#score_1 = info['score']
 
-		reward =  ( max( x_1 - self.x_0, -5 ) ) \
-				+ ( max( score_1 - self.score_0, 0 ) / 400. ) \
-				+ ( clock_1 - self.clock_0 ) / 10. \
-				+ ( 0. if not done else 50. if info['flag_get'] else -25.)
+		# Delta's bestimmen
+		delta_x = x_1 - self.x_0 # 0 >= delta_x >= 0
+		delta_clock = min( (clock_1 - self.clock_0), 0) # delta_clock <= 0
+		#delta_score = max( (score_1 - self.score_0), 0) # delta_score >= 0
 
+		# Zum detektieren ob ein Leben verloren wurde, wird der ursprüngliche Reward auf diesen Faktor reduziert
+		reward = reward - delta_x - delta_clock + 7 # bzgl. 7: sollte dem maximal delta_x-Wert entsprechen & möglichst weit von der 15 entfernt sein
+		if reward < 0: reward = -50 # ein Leben verloren
+		else: reward = 0 # kein Leben verloren
+
+		# Wenn das Level erfolgreich abgeschlossen wurde
+		if done: 
+			if info['flag_get']: reward += 50
+
+		# Weitere Reward-Faktoren:
+		reward += (delta_x) + (delta_clock / 10) # + (delta_score / 400)
+
+		# Vars updaten
+		self.x_0 = x_1
+		self.clock_0 = clock_1
+		#self.score_0 = score_1
+
+		# Für die Loss-Funktion wird der Reward verschoben
+		return state, (reward / 10), done, info
 
 		""" 26min w1s1
 		reward =  ( max( x_1 - self.x_0, -5 ) ) \
@@ -149,7 +168,7 @@ class RewardWrapper(Wrapper):
 		"""
 
 
-		"""w/o w1s3
+		""" CNN
 		reward =  ( max( x_1 - self.x_0, -5 ) ) \
 				+ ( max( score_1 - self.score_0, 0 ) / 400. ) \
 				+ ( clock_1 - self.clock_0 ) / 10. \
@@ -163,19 +182,12 @@ class RewardWrapper(Wrapper):
 				+ ( 0. if not done else  50. if info['flag_get'] else -50.) \
 				+ ( -75. if not life_1 == self.life_0 else 0. )"""
 
-		# VARs updaten
-		self.x_0 = x_1
-		self.score_0 = score_1
-		self.clock_0 = clock_1
-
-		# Fertig
-		return state, reward / 10. , done, info
 
 	def reset(self):
 		"""Leitet den Reset-Call weiter"""
 		self.x_0 = 40
-		self.score_0 = 0
 		self.clock_0 = 0
+		#self.score_0 = 0
 
 		# Weiterleiten
 		return self.env.reset()
