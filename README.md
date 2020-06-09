@@ -102,17 +102,14 @@ python3 main.py -m testing -w 1 -s 1
 
 ## Ergebnisse
 
-#### Trainings-Statistiken (Welt 1 Level 1)³:
+#### Trainings-Statistiken:
 
-Erstmaliges erreichen des Zieles nach *23min 30s*, Austrainiert nach ca. *35 min*. 
-
-<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_x_positon_and_flag.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_x_positon_and_flag.png?raw=true"/></a><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_sum_reward_and_avg_reward.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_sum_reward_and_avg_reward.png?raw=true"/></a><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_score_and_coins.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/w1s1v0_dcn_score_and_coins.png?raw=true"/></a></p>
+**Welt 1 Level 1:**
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/stats_w1s1v0_dcnn.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/stats_w1s1v0_dcnn.png?raw=true"/></a></p>
 
 
 #### Model-Files:
 Vortrainierte PyTorch-Model-Files befinden sich <a href="https://drive.google.com/drive/folders/1OnAW680HXIiHOvfb-MxD0GHxbLoGcpCq?usp=sharing">hier</a> (<a href="https://docs.google.com/document/d/1UDgxDr2wFpdXbE7-w9TowjG0rgAvxz345Ac1zRAC1v8/edit?usp=sharing">Anleitung</a>).
-
-³ Trainingszeiten können abweichen; Welt 1 Level 1 stellt hierbei keinen komplexes Level dar, sondern besteht nur aus Sprungpassagen.
 
 ---
 
