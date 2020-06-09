@@ -104,7 +104,7 @@ python3 main.py -m testing -w 1 -s 1
 
 #### Welt 1 Level 1:
 <p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/ep_1000_x_5__dcnn_w1s1v0.gif"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/ep_1000_x_5__dcnn_w1s1v0.gif?raw=true" width="256" height="240"/></a>   <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/ep_1500_x_5__dcnn_w1s1v0.gif"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/ep_1500_x_5__dcnn_w1s1v0.gif?raw=true" width="256" height="240"/></a>   <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/ep_3500_x_5__dcnn_w1s1v0.gif"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/ep_3500_x_5__dcnn_w1s1v0.gif?raw=true" width="256" height="240"/></a></p>
-<p align="center">_ 1k x 5 Episode _____________________ 1.5k x 5 Episoden ______________________ 3.5k x 5 Episoden _</p>
+<p align="center"><i>Von links nach rechts: 1k Episoden bei 5 Workern, 1.5k Episoden bei 5 Workern, 3.5k Episoden bei 5 Workern</i></p>
 <p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/stats_w1s1v0_dcnn.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/stats_w1s1v0_dcnn.png?raw=true"/></a></p>
 
 
