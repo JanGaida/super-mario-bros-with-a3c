@@ -102,9 +102,10 @@ python3 main.py -m testing -w 1 -s 1
 
 ## Ergebnisse
 
-#### Trainings-Statistiken:
+#### Welt 1 Level 1:
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/ep_3500_x_5__dcnn_w1s1v0.gif"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/ep_3500_x_5__dcnn_w1s1v0.gif?raw=true" width="256" height="240"/></a></p>
+*Weitere Aufnahmen befinden sich <a href="https://drive.google.com/drive/folders/1Pzn9ArpvdYdisD2qADFvM7LK059E8etK?usp=sharing">hier</a>*
 
-**Welt 1 Level 1:**
 <p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/stats_w1s1v0_dcnn.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/stats_w1s1v0_dcnn.png?raw=true"/></a></p>
 
 
