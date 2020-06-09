@@ -104,13 +104,15 @@ python3 main.py -m testing -w 1 -s 1
 
 #### Welt 1 Level 1:
 <p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/ep_3500_x_5__dcnn_w1s1v0.gif"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/ep_3500_x_5__dcnn_w1s1v0.gif?raw=true" width="256" height="240"/></a></p>
-*Weitere Aufnahmen befinden sich <a href="https://drive.google.com/drive/folders/1Pzn9ArpvdYdisD2qADFvM7LK059E8etK?usp=sharing">hier</a>*
 
 <p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/stats_w1s1v0_dcnn.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/stats_w1s1v0_dcnn.png?raw=true"/></a></p>
 
 
 #### Model-Files:
 Vortrainierte PyTorch-Model-Files befinden sich <a href="https://drive.google.com/drive/folders/1OnAW680HXIiHOvfb-MxD0GHxbLoGcpCq?usp=sharing">hier</a> (<a href="https://docs.google.com/document/d/1UDgxDr2wFpdXbE7-w9TowjG0rgAvxz345Ac1zRAC1v8/edit?usp=sharing">Anleitung</a>).
+
+#### Aufnahmen:
+Weitere Aufnahmen zu abgeschlossenen Trainings befinden sich <a href="https://drive.google.com/drive/folders/1Pzn9ArpvdYdisD2qADFvM7LK059E8etK?usp=sharing">hier</a>
 
 ---
 
