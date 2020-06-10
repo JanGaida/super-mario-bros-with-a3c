@@ -133,12 +133,16 @@ class RewardWrapper(Wrapper):
 
 		# Zum detektieren ob ein Leben verloren wurde, wird der ursprüngliche Reward auf diesen Faktor reduziert
 		reward = reward - delta_x - delta_clock + 7 # bzgl. 7: sollte dem maximal delta_x-Wert entsprechen & möglichst weit von der 15 entfernt sein
-		if reward < 0: reward = -50 # ein Leben verloren
+		if reward < 0: reward = -45 # ein Leben verloren
 		else: reward = 0 # kein Leben verloren
 
 		# Wenn das Level erfolgreich abgeschlossen wurde
 		if done: 
-			if info['flag_get']: reward += 50
+			if info['flag_get']:
+				reward += 45
+
+		# Bad Idea:
+		#if delta_x == 0: reward += -0.00001
 
 		# Weitere Reward-Faktoren:
 		reward += (delta_x) + (delta_clock / 10) # + (delta_score / 400)
