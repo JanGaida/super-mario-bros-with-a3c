@@ -26,8 +26,9 @@ Hilfsklassse für eine nn.Conv2d mit ReLU-Aktivierungsfunktion
 
 """
 
-
-memory_in_channels = 32*5*7*4 # Entspricht dem geflachten Output des vorherigen Netzes
+branch_out_channels = 32
+branch_out_shape = (5, 7)
+memory_in_channels = branch_out_channels*4*branch_out_shape[0]*branch_out_shape[1]
 memory_out_channels = 512
 
 
@@ -42,10 +43,10 @@ class ActorCriticModel(nn.Module):
 
 		""" # CNN
 		self.cnn = nn.Sequential(
-			Conv2d_ReLU(num_states, 320, kernel_size=3, stride=2, padding=1),
-			Conv2d_ReLU(320, 240, kernel_size=3, stride=2, padding=1),
-			Conv2d_ReLU(240, 160, kernel_size=3, stride=2, padding=1),
-			Conv2d_ReLU(160, 80, kernel_size=3, stride=2, padding=1)
+			Conv2d_ReLU(num_states, 320, kernel_size=3, stride=2),
+			Conv2d_ReLU(320, 240, kernel_size=3, stride=2),
+			Conv2d_ReLU(240, 160, kernel_size=3, stride=2),
+			Conv2d_ReLU(160, 80, kernel_size=3)
 		)
 		"""
 
@@ -86,17 +87,15 @@ class ActorCriticModel(nn.Module):
 				#nn.init.constant_(m.bias, 0)
 				values = T.as_tensor(stats.truncnorm(-2, 2, scale=0.01).rvs(m.weight.numel()), dtype=m.weight.dtype)
 				with T.no_grad():
-					m.weight.copy_(
-						T.as_tensor( stats.truncnorm(-2, 2, scale=0.01).rvs(m.weight.numel()), dtype=m.weight.dtype).view(m.weight.size())
-					)
+					m.weight.copy_( T.as_tensor( stats.truncnorm(-2, 2, scale=0.01).rvs(m.weight.numel()), dtype=m.weight.dtype).view(m.weight.size()) )
 
 
-	def forward(self, x, hx, cx): 
+	def forward(self, x, hx, cx): # LSTM-Version
+	#def forward(self, x, hx): # GRU-Version
 		"""Wenn das NN aufgerufen wird"""
 
-		""" # CNN
-		x = self.cnn(x)
-		"""
+		# CNN
+		#x = self.cnn(x)
 
 		# DeepConvolutional
 		x = self.dcv(x)
@@ -105,10 +104,10 @@ class ActorCriticModel(nn.Module):
 		hx, cx = self.lstm( x.view( x.size(0), -1), (hx,cx) )
 		return self.actor(hx), self.critic(hx), hx, cx
 
-		""" # GRU 
-		hx = self.gru( x.view( x.size(0), -1), hx)
-		return self.actor(hx), self.critic(hx), hx
-		"""
+		# GRU 
+		#hx = self.gru( x.view( x.size(0), -1), hx)
+		#return self.actor(hx), self.critic(hx), hx
+
 
 
 class DeepConvolutional(nn.Module):
@@ -117,34 +116,43 @@ class DeepConvolutional(nn.Module):
 	def __init__(self, in_channels):
 		super(DeepConvolutional, self).__init__()
 		"""Init"""
+		
+		# Besser im Preproccessing reduzieren
+		#self.stem = nn.AdaptiveAvgPool2d((25,32))
+
+		global branch_out_channels
+		global branch_out_shape
 
 		# Branch A
 		self.branch_a = nn.Sequential(
-			Conv2d_ReLU(in_channels, 32, kernel_size=1),
-			nn.AdaptiveAvgPool2d((5, 7))
+			Conv2d_ReLU(in_channels, branch_out_channels, kernel_size=1),
+			nn.AdaptiveAvgPool2d(branch_out_shape)
 		)
 		# Branch B
 		self.branch_b = nn.Sequential(
 			Conv2d_ReLU(in_channels, 256, kernel_size=3, stride=2),
 			Conv2d_ReLU(256, 96, kernel_size=3, stride=2),
-			Conv2d_ReLU(96, 32, kernel_size=3, stride=2)
+			Conv2d_ReLU(96, branch_out_channels, kernel_size=3, stride=2)
 		)
 		# Branch C
 		self.branch_c = nn.Sequential(
 			Conv2d_ReLU(in_channels, 256, kernel_size=5, stride=3, padding=1),
-			Conv2d_ReLU(256, 32, kernel_size=5, stride=3, padding=1)
+			Conv2d_ReLU(256, branch_out_channels, kernel_size=5, stride=3, padding=1)
 		)
 		# Branch D
 		self.branch_d = nn.Sequential(
-			nn.AdaptiveMaxPool2d((5, 7)),
-			Conv2d_ReLU(in_channels, 32, kernel_size=1)
+			nn.AdaptiveMaxPool2d(branch_out_shape),
+			Conv2d_ReLU(in_channels, branch_out_channels, kernel_size=1)
 		)
-		# Pool
-		self.pool = nn.AvgPool2d(1)
+
 
 	def forward(self, x):
 		"""Wenn das DeepConvolutional aufgerufen wird"""
-		return self.pool(concatenate([self.branch_a(x), self.branch_b(x), self.branch_c(x), self.branch_d(x)], dim=1))
+
+		# vgl. Definiton vom Stem
+		#x = self.stem(x)
+
+		return concatenate([self.branch_a(x), self.branch_b(x), self.branch_c(x), self.branch_d(x)], dim=1)
 
 
 class Conv2d_ReLU(nn.Module):
@@ -155,7 +163,9 @@ class Conv2d_ReLU(nn.Module):
 		"""Init"""
 		# Conv2d mit den übergebenen Parametern
 		self.cv = nn.Conv2d(in_channels, out_channels, bias=False, **kwargs)
+		#self.bn = nn.BatchNorm2d(out_channels, eps=0.001)
 
 	def forward(self, x):
 		"""Wenn die Conv2d_ReLU aufgerufen wird"""
+		#return F.relu(self.bn(self.cv(x)))
 		return F.relu(self.cv(x))

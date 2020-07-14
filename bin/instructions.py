@@ -2,6 +2,7 @@
 
 # Generel
 import os, shutil, time, glob
+from multiprocessing import Queue
 from datetime import datetime
 
 # Torch
@@ -42,8 +43,8 @@ Sucht alle passenden Model-Files für die gegeben Argumente
 
 os.environ['OMP_NUM_THREADS'] = '1'
 memory_out_channels = 512
-enviorment_out_width = 64
 enviorment_out_height = 50
+enviorment_out_width = 64
 
 
 def start_training(args):
@@ -122,21 +123,26 @@ def start_training(args):
 		# Threads
 		print("Initialsiere Threads...\nAnzahl Worker: {}\nAnzahl Live-Tester: {}"
 			.format(args.num_parallel_trainings_threads, args.num_parallel_testing_threads))
+
+		worker_done_states = T.tensor([0])
+		for it in worker_done_states:
+			it.share_memory_()
+
 		threads = []
 		if args.num_parallel_trainings_threads > 0:
 			# initaler Trainings-Thread (wird abgespeichert)
-			trainings_thread = mp.Process(target = dispatch_training, args = (0, args, global_model, optimizer, True, trained_episodes, summarywriter_path))
+			trainings_thread = mp.Process(target = dispatch_training, args = (0, args, global_model, optimizer, True, trained_episodes, summarywriter_path, worker_done_states))
 			threads.append(trainings_thread)
 
 		# weitere Trainings-Threads
 		for idx in range(1, args.num_parallel_trainings_threads):
-			trainings_thread = mp.Process(target = dispatch_training, args = (idx, args, global_model, optimizer, False, trained_episodes, summarywriter_path))
+			trainings_thread = mp.Process(target = dispatch_training, args = (idx, args, global_model, optimizer, False, trained_episodes, summarywriter_path, worker_done_states))
 			threads.append(trainings_thread)
 
 		# Testing-Threads
 		trainings_threads_count = args.num_parallel_trainings_threads
 		for idx in range(args.num_parallel_testing_threads):
-			test_thread = mp.Process(target = dispatch_testing, args = ((idx + trainings_threads_count), args, global_model, summarywriter_path))
+			test_thread = mp.Process(target = dispatch_testing, args = ((idx + trainings_threads_count), args, global_model, summarywriter_path, worker_done_states))
 			threads.append(test_thread)
 		print("... insgesamt {} Threads initialisiert\n"
 			.format(len(threads)))
@@ -276,7 +282,6 @@ def start_testing(args):
 					hx = hx.cuda()
 					cx = cx.cuda() 
 					local_state = local_state.cuda()
-
 				# Model
 				action_logit_probability, action_judgement, hx, cx = local_model(local_state, hx, cx)
 
@@ -296,7 +301,7 @@ def start_testing(args):
 				# Model
 				action_logit_probability, action_judgement, hx = local_model(local_state, hx)
 				"""
-
+				
 				# Policy
 				policy = F.softmax(action_logit_probability, dim = 1)
 

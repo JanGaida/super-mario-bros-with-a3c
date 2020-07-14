@@ -39,7 +39,7 @@ def grab_arguments():
 		help="Wertebereich: \'training\', \'testing\'\nLegt fest ob ein Model trainiert oder getestet werden soll.")
 	parser.add_argument("-v", "--verbose", type=bool, default=True, 
 		help="Ob diverse Informationen ausgegeben werden sollen.")
-	parser.add_argument("--verbose_every_episode", type=int, default=100, 
+	parser.add_argument("-ve", "--verbose_every_episode", type=int, default=100, 
 		help="Nach welchen Episoden diverse Informationen ausgegeben werden sollen.")
 
 
@@ -59,7 +59,7 @@ def grab_arguments():
 		help="Legt fest ob die GPU (mit CUDA-Support) verwendet werden soll.")
 	parser.add_argument("-ttr", "--num_parallel_trainings_threads", type=int, default=5, 
 		help="Legt fest wie viele Threads verwendet werden sollen.")
-	parser.add_argument("-tte", "--num_parallel-testing_threads", type=int, default=1, 
+	parser.add_argument("-tte", "--num_parallel_testing_threads", type=int, default=1, 
 		help="Legt fest wie viele Threads verwendet werden sollen.")
 
 

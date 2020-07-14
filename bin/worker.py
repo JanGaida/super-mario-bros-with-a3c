@@ -33,12 +33,10 @@ Die Aufgaben eines Testers während des Trainings
 """
 
 
-worker_done_states = 0 
 memory_out_channels = 512
 
-def dispatch_training(idx, args, global_model, optimizer, should_save, trained_episodes, summarywriter_path):
+def dispatch_training(idx, args, global_model, optimizer, should_save, trained_episodes, summarywriter_path, worker_done_state):
 	"""Die Worker Aufgabe für ein Training"""
-	global worker_done_states
 	global memory_out_channels
 
 	try:
@@ -214,8 +212,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
 
 			# Loope alle Erfahrungen rückwärts (!)
 			for judgment, log_policy, reward, entropy in list( zip(ep_judgment, ep_policies, ep_rewards, ep_entropies) )[::-1]:
-				gae = gae * discount_gamma * tau
-				gae = gae + reward + discount_gamma * next_value.detach() - judgment.detach()
+				gae = (gae * discount_gamma * tau) + reward + discount_gamma * next_value.detach() - judgment.detach()
 				next_value = judgment
 				actor_loss = actor_loss + log_policy * gae
 				R = R * discount_gamma + reward
@@ -223,7 +220,6 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
 				entropy_loss = entropy_loss + entropy
 
 			total_loss = -actor_loss + critic_loss - beta * entropy_loss
-
 
 			# Tensorboard
 			#summarywriter.add_scalar("Worker-{}/actor_loss".format(idx), actor_loss.item(), local_episode)
@@ -255,7 +251,7 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
 				else:
 					print("{} :: Worker {: 2d}    ---   abgeschlossen".format(datetime.now().strftime("%H:%M:%S"), idx))
 				# Fertig
-				worker_done_states += 1
+				worker_done_state[0] += 1
 				return
 
 	except KeyboardInterrupt:
@@ -264,13 +260,10 @@ def dispatch_training(idx, args, global_model, optimizer, should_save, trained_e
 			print("{} :: Worker {: 2d}    ---    nach {:.2f} s abgeschlossen".format(datetime.now().strftime("%H:%M:%S"), idx, (end_time - start_time)))
 		else:
 			print("{} :: Worker {: 2d}    ---   abgeschlossen".format(datetime.now().strftime("%H:%M:%S"), idx))
-		# Fertig
 		return
 
-
-def dispatch_testing(idx, args, global_model, summarywriter_path):
+def dispatch_testing(idx, args, global_model, summarywriter_path, worker_done_state):
 	"""Die Worker Aufgabe für ein Testing"""
-	global worker_done_states
 	global memory_out_channels
 
 	try:
@@ -353,7 +346,14 @@ def dispatch_testing(idx, args, global_model, summarywriter_path):
 				latest_sum_reward = sum(ep_rewards)
 				latest_avg_reward = latest_sum_reward / len(ep_rewards)
 
-				if not worker_done_states == num_parallel_trainings_threads:
+				#print("num_parallel_trainings_threads", num_parallel_trainings_threads)
+				#print("worker_done_state", worker_done_state)
+
+				if worker_done_state.item() == num_parallel_trainings_threads:
+					# quit
+					print("{} :: Runner {: 2d}    ---   abgeschlossen".format(datetime.now().strftime("%H:%M:%S"), idx))
+					return
+				else:
 					# Tensorboard
 					summarywriter.add_scalar("Tester-{}/X_Position".format(idx), info['x_pos'], local_episode)
 					summarywriter.add_scalar("Tester-{}/Score".format(idx), info['score'], local_episode)
@@ -363,6 +363,7 @@ def dispatch_testing(idx, args, global_model, summarywriter_path):
 					if info["flag_get"]: flag_get = 1
 					else: flag_get = 0
 					summarywriter.add_scalar("Tester-{}/Flag".format(idx), flag_get, local_episode)
+
 
 				# Variablen zurückstetzten
 				local_step = 0

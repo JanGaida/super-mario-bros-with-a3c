@@ -3,6 +3,7 @@
 # Generel
 import numpy as np
 import cv2, colorsys
+import time
 
 # Gym
 import gym
@@ -41,8 +42,8 @@ Hilfsfunktion zum erstellen eines Testing-Enviorments
 
 np.seterr(over = 'ignore') # Ignoriere Numpy-Warnings
 gym.logger.set_level(40) # Gym-Logger-Level -> DEBUG = 10  INFO = 20  WARN = 30  ERROR = 40  DISABLED = 50
-enviorment_out_width = 64
 enviorment_out_height = 50
+enviorment_out_width = 64
 
 
 class PreprocessFrameWrapper(Wrapper):
@@ -70,29 +71,34 @@ class PreprocessFrameWrapper(Wrapper):
 
 		# Orginale Shape: (240, 256, 3)
 		if frame is not None:
-			""" Um Frames herauszuschreiben
+			""" Um Frames herauszuschreiben:
 			if self.counter <= 1000:
 				self.counter += 1
 				if self.counter % 50 == 0:
 					frame_ = frame
-					#cv2.imwrite("img/orginal_{}.jpg".format(self.counter), frame_)
+					cv2.imwrite("img/orginal_{}.jpg".format(self.counter), frame_)
 					frame_ = frame_[15:215,:]
-					#cv2.imwrite("img/zugeschnitten_{}.jpg".format(self.counter), frame_)
+					cv2.imwrite("img/zugeschnitten_{}.jpg".format(self.counter), frame_)
 					_, _ , frame_ = cv2.split( frame_ )
-					#cv2.imwrite("img/schwarzweiß_{}.jpg".format(self.counter), frame_)
-					_, frame_ = cv2.threshold(frame_, 64, 255, cv2.THRESH_TOZERO)
+					cv2.imwrite("img/schwarzweiß_{}.jpg".format(self.counter), frame_)
+
+					#_, frame_ = cv2.threshold(frame_, 64, 255, cv2.THRESH_TOZERO)
 					#cv2.imwrite("img/threshold_tozero_{}.jpg".format(self.counter), frame_)
 					_, frame_ = cv2.threshold(frame_, 64, 255, cv2.THRESH_BINARY_INV)
-					#cv2.imwrite("img/threshold_binary_{}.jpg".format(self.counter), frame_)
+					cv2.imwrite("img/threshold_binary_{}.jpg".format(self.counter), frame_)
+
 					frame_ = (cv2.resize(frame_, (enviorment_out_width, enviorment_out_height), interpolation=cv2.INTER_AREA))
 					cv2.imwrite("img/verkleinert_{}.jpg".format(self.counter), frame_)
+
 					#frame_ = frame_[None, :, :] / 255.
-			""" 
+
+					time.sleep(15)
+			"""
 
 			# In Schwarz-Weißen-Ausschnitt umwandeln
 			_, _ , frame = cv2.split( frame[15:215,:] )
 			# Threshold anwenden
-			_, frame = cv2.threshold(frame, 64, 255, cv2.THRESH_TOZERO)
+			#_, frame = cv2.threshold(frame, 64, 255, cv2.THRESH_TOZERO)
 			_, frame = cv2.threshold(frame, 64, 255, cv2.THRESH_BINARY_INV)
 			# Shape anpassen
 			return (cv2.resize(frame, (enviorment_out_width, enviorment_out_height), interpolation=cv2.INTER_AREA))[None, :, :] / 255.
@@ -116,8 +122,10 @@ class RewardWrapper(Wrapper):
 		self.clock_0 = 0 # Mario's initiale Zeit
 		#self.score_0 = 0 # Mario's initialer Score
 
+		self.standing = False
+
 	def step(self, action):
-		"""Leitet den Step call weiter und übschreibt den Reward"""
+		"""Leitet den Step call weiter und ?bschreibt den Reward"""
 		# leite den Step weiter
 		state, reward, done, info = self.env.step(action)
 
@@ -131,8 +139,8 @@ class RewardWrapper(Wrapper):
 		delta_clock = min( (clock_1 - self.clock_0), 0) # delta_clock <= 0
 		#delta_score = max( (score_1 - self.score_0), 0) # delta_score >= 0
 
-		# Zum detektieren ob ein Leben verloren wurde, wird der ursprüngliche Reward auf diesen Faktor reduziert
-		reward = reward - delta_x - delta_clock + 7 # bzgl. 7: sollte dem maximal delta_x-Wert entsprechen & möglichst weit von der 15 entfernt sein
+		# Zum detektieren ob ein Leben verloren wurde, wird der urspr?ngliche Reward auf diesen Faktor reduziert
+		reward = reward - delta_x - delta_clock + 7 # bzgl. 7: sollte dem maximal delta_x-Wert entsprechen & m?glichst weit von der 15 entfernt sein
 		if reward < 0: reward = -45 # ein Leben verloren
 		else: reward = 0 # kein Leben verloren
 
@@ -140,9 +148,6 @@ class RewardWrapper(Wrapper):
 		if done: 
 			if info['flag_get']:
 				reward += 45
-
-		# Bad Idea:
-		#if delta_x == 0: reward += -0.00001
 
 		# Weitere Reward-Faktoren:
 		reward += (delta_x) + (delta_clock / 10) # + (delta_score / 400)
@@ -152,39 +157,8 @@ class RewardWrapper(Wrapper):
 		self.clock_0 = clock_1
 		#self.score_0 = score_1
 
-		# Für die Loss-Funktion wird der Reward verschoben
+		# F?r die Loss-Funktion wird der Reward verschoben
 		return state, (reward / 10), done, info
-
-		""" 26min w1s1
-		reward =  ( max( x_1 - self.x_0, -5 ) ) \
-				+ ( max( score_1 - self.score_0, 0 ) / 400. ) \
-				+ ( clock_1 - self.clock_0 ) / 10. \
-				+ ( 0. if not done else  35. if info['flag_get'] else -35.) \
-				+ ( max( life_1 - self.life_0, 0 ) * 35.)
-		"""
-
-		"""        
-		reward =  ( max( x_1 - self.x_0, -100) ) \
-				+ ( max( score_1 - self.score_0, 0 ) / 400. ) \
-				+ ( min( clock_1 - self.clock_0, 0 ) / 10. ) \
-				+ ( 0. if not done else  35. if info['flag_get'] else -35.) #\
-				#+ ( -10. if life_1 < self.life_0 else 0. )
-		"""
-
-
-		""" CNN
-		reward =  ( max( x_1 - self.x_0, -5 ) ) \
-				+ ( max( score_1 - self.score_0, 0 ) / 400. ) \
-				+ ( clock_1 - self.clock_0 ) / 10. \
-				+ ( 0. if not done else  50. if info['flag_get'] else -50.) \
-				+ ( -40. if not life_1 == self.life_0 else 0. )
-		"""
-
-		"""reward =  ( (x_1 - self.x_0) / 4. ) \
-				+ ( max(clock_1 - self.clock_0, -1) ) \
-				+ ( max( score_1 - self.score_0, 0 ) / 400. ) \
-				+ ( 0. if not done else  50. if info['flag_get'] else -50.) \
-				+ ( -75. if not life_1 == self.life_0 else 0. )"""
 
 
 	def reset(self):
