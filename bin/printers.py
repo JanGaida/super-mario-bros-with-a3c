@@ -70,5 +70,5 @@ def printProjektInfos():
     print("\n\tAutor: Jan Gaida" +\
     "\n\tProjekt: Deep-Q-Learning mit 'Super Mario Bros' und A3C" +\
     "\n\tGithub: https://github.com/JanGaida/research_project_machine_learning_hshof_sose2020" +\
-    "\n\tVersion: 1.3.0" +\
+    "\n\tVersion: 1.4.1" +\
     "\n\n\tCopyright (c) 2020 Jan Gaida\n")
