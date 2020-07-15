@@ -133,22 +133,22 @@ Weitere Aufnahmen zu abgeschlossenen Trainings befinden sich <a href="https://dr
 
 #### Neuronales-Netzwerk-Context:
 Nachfolgend ist der Context des Neuronalen-Netzwerkes zusehen.
-<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur_c.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur_c.png?raw=true"/></a>
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur_c.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur_c.png?raw=true"/></a></p>
 
 #### Neuronales-Netzwerk-Architektur:
 Nachfolgend sind die genauen Architekturen der Neuronalen-Netzwerkes zusehen die implemtiert wurden.
 
 ##### Naive-CNN-Ansatz:
-<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_cn.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_cn.png?raw=true" height="500"/></a>
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_cn.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_cn.png?raw=true" height="500"/></a></p>
 
 ##### Deep-CNN-Ansatz:
-<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_dcn.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_dcn.png?raw=true" height="500"/></a>
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_dcn.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_dcn.png?raw=true" height="500"/></a></p>
 
 ##### LSTM-RNN-Ansatz:
-<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_lstm.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_lstm.png?raw=true" height="250"/></a>
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_lstm.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_lstm.png?raw=true" height="250"/></a></p>
 
 ##### GRU-RNN-Ansatz:
-<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_gru.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_gru.png?raw=true" height="250"/></a>
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_gru.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_gru.png?raw=true" height="250"/></a></p>
 
 ---
 
@@ -156,13 +156,32 @@ Nachfolgend sind die genauen Architekturen der Neuronalen-Netzwerkes zusehen die
 
 Nachfolgend ist das Frame-Preprocessing in einer Graphik kurz erklärt.
 
-<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/preprocessing.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/preprocessing.png?raw=true"/></a>
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/preprocessing.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/preprocessing.png?raw=true"/></a>
 
 ---
 
 ## Reward-Funktion
 
-*upcomming*
+Der Reward selbst wurde als sog. 'Reward Shaping' implementiert und besteht aus vier Bestandteilen:
+
+##### Delta-X-Position
+Formula: <i>delta_x = x_1 - x_0</i>
+
+##### Delta-Time
+Formula: <i>delta_time = min( (t_1 - t_0), 0 )</i>
+
+##### R-Ziel
+Formula: <i>r_ziel = 45 if flag_reached else 0</i>
+
+##### R-Life
+Formula: <i>r_life = -45 if life_lost else 0</i>
+
+##### Reward
+
+Insgesammt bildet sich der Reward schließlich nach nachfolgenden Formular:
+
+Formula: <i>reward = (delta_x + delta_time + r_ziel + r_life) / 10</i>
+
 
 ---
 
