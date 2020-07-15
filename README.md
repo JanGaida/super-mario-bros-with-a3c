@@ -164,19 +164,19 @@ Nachfolgend ist das Frame-Preprocessing in einer Graphik kurz erklärt.
 
 Der Reward selbst wurde als sog. 'Reward Shaping' implementiert und besteht aus vier Bestandteilen:
 
-##### Delta-X-Position
+##### - Delta-X-Position
 Formula: <i>delta_x = x_1 - x_0</i>
 
-##### Delta-Time
+##### - Delta-Time
 Formula: <i>delta_time = min( (t_1 - t_0), 0 )</i>
 
-##### R-Ziel
+##### - R-Ziel
 Formula: <i>r_ziel = 45 if flag_reached else 0</i>
 
-##### R-Life
+##### - R-Life
 Formula: <i>r_life = -45 if life_lost else 0</i>
 
-##### Reward
+##### → Reward
 
 Insgesammt bildet sich der Reward schließlich nach nachfolgenden Formular:
 
