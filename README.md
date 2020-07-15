@@ -132,48 +132,31 @@ Weitere Aufnahmen zu abgeschlossenen Trainings befinden sich <a href="https://dr
 ## Neuronales-Netzwerk
 
 #### Neuronales-Netzwerk-Context:
-Nachfolgend ist der Context des Neuronalen-Netzwerkes zusehen.²
-<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur.png?raw=true" /></a>
+Nachfolgend ist der Context des Neuronalen-Netzwerkes zusehen.
+<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur_c.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Basis_Architektur_c.png?raw=true"/></a>
 
 #### Neuronales-Netzwerk-Architektur:
-Nachfolgend ist die genaue Architektur des Neuronalen-Netzwerkes zusehen.²
-<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur.png?raw=true"/></a>
+Nachfolgend sind die genauen Architekturen der Neuronalen-Netzwerkes zusehen die implemtiert wurden.
 
-² *Verion mit LSTM und Deep-CNN*
+##### Naive-CNN-Ansatz:
+<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_cn.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_cn.png?raw=true" height="500"/></a>
+
+##### Deep-CNN-Ansatz:
+<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_dcn.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_dcn.png?raw=true" height="500"/></a>
+
+##### LSTM-RNN-Ansatz:
+<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_lstm.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_lstm.png?raw=true" height="250"/></a>
+
+##### GRU-RNN-Ansatz:
+<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_gru.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/nn/Netzwerk_Architektur_gru.png?raw=true" height="250"/></a>
 
 ---
 
 ## Frame-Preprocessing
 
-Nachfolgend ist das Frame-Preprocessing kurz erklärt. Die Orginalen Bild-Datei befinden sich <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/tree/master/doc/frames/w1s1rv0">hier</a>.
+Nachfolgend ist das Frame-Preprocessing in einer Graphik kurz erklärt.
 
-#### Insgesamter Verlauf:
-
-<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/preprocessing_w1s1rv0.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/preprocessing_w1s1rv0.png?raw=true"/></a>
-
-#### 1. Schritt :
-<p align="center">
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/0_orginaler_frame.jpeg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/0_orginaler_frame.jpeg?raw=true" height="200"/></a>
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/1_zugeschnittener_frame.jpeg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/1_zugeschnittener_frame.jpeg?raw=true"/></a>
-</p>
-
-Das Enviorment liefert einen 240x256 Pixel großen Frame im YIQ-Farbmodel (vgl. Farbmodel des NES). Dieser wird um 15 Pixel von Oben und 25 Pixel von Unten zugeschnitten, sodass ein 200x256 Pixel großes Frame entsteht.
-
-#### 2. Schritt:
-<p align="center">
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/2_schwarzwei%C3%9F_frame.jpg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/2_schwarzwei%C3%9F_frame.jpg?raw=true"/></a>
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/3_threshold_tozero_frame.jpg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/3_threshold_tozero_frame.jpg?raw=true"/></a>
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/4_threshold_binary_frame.jpg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/4_threshold_binary_frame.jpg?raw=true"/></a>
-</p>
-
-Anschließend wird der Frame um die Farb-Dimensionen erleichtert, sodass ein Schwarz-Weiß-Bild entsteht. Dieses wird mit den darauffolgenden Threshold-Filtern so manipuliert das ein Frame ohne Graustufen entsteht.
-
-#### 3. Schritt:
-<p align="center">
-  <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/5_verkleinerter_frame.jpg"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/w1s1rv0/5_verkleinerter_frame.jpg?raw=true" height="200"/></a>
-</p>
-
-Zuletzt wird das Frame zu auf eine Größe von 50x64 Pixel verkleinert, um die Anforderungen an das Neuronale-Netz zu reduzieren.
+<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/preprocessing.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/frames/preprocessing.png?raw=true"/></a>
 
 ---
 
