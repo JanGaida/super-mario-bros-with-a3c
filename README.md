@@ -10,7 +10,7 @@
 ---
 
 <p align="center">
-<a href="https://www.hof-university.de/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="750"></a>
+<a href="https://www.hof-university.de/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="300"></a>
 </p>
 
 #### Student Research Project: 
@@ -153,7 +153,7 @@ Die nachfolgenden Ergebnisse beziehen sich speziell auf die Modelversion mit <b>
 Vortrainierte PyTorch-Model-Files befinden sich <a href="https://drive.google.com/drive/folders/1OnAW680HXIiHOvfb-MxD0GHxbLoGcpCq?usp=sharing">hier</a> (<a href="https://docs.google.com/document/d/1UDgxDr2wFpdXbE7-w9TowjG0rgAvxz345Ac1zRAC1v8/edit?usp=sharing">Anleitung</a>).
 
 #### Aufnahmen:
-Weitere Aufnahmen zu abgeschlossenen Trainings befinden sich <a href="https://drive.google.com/drive/folders/1Pzn9ArpvdYdisD2qADFvM7LK059E8etK?usp=sharing">hier</a>
+Weitere Aufnahmen zu abgeschlossenen Trainings befinden sich <a href="https://drive.google.com/drive/folders/1xE2ToJRI1w3PCFcOrqUxLZ-Hitry7tTB?usp=sharing">hier</a>
 
 ---
 
