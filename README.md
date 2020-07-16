@@ -10,7 +10,7 @@
 ---
 
 <p align="center">
-<a href="https://www.hof-university.de/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="250"></a>
+<a href="https://www.hof-university.de/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Logo_fh_hof.svg/2000px-Logo_fh_hof.svg.png" width="750"></a>
 </p>
 
 #### Student Research Project: 
@@ -118,7 +118,19 @@ Zunächst wurde in der Welt-1-Stage-1 unterscheidliche Modelle getestet (vgl. na
 ##### CN + GRU
 <p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/CN_GRU/ep_1500_x_5__15-07-20.gif"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/CN_GRU/ep_1500_x_5__15-07-20.gif?raw=true" width="192"/></a> <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/CN_GRU/ep_2000_x_5__15-07-20.gif"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/CN_GRU/ep_2000_x_5__15-07-20.gif?raw=true" width="192"/></a> <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/CN_GRU/ep_2500_x_5__15-07-20.gif"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/CN_GRU/ep_2500_x_5__15-07-20.gif?raw=true" width="192"/> <a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/CN_GRU/ep_3500_x_5__15-07-20.gif"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/gifs/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/CN_GRU/ep_3500_x_5__15-07-20.gif?raw=true" width="192"/></p>
 
-<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/flag.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/flag.png?raw=true" width="192"/></a></p>
+#### Statistiken
+
+Nachfolgende Graphen basieren auf folgender Legende:
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/legende.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/legende.png?raw=true" height="100"/></a></p>
+
+##### Letzte erreichte X-Position
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/x_position.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/x_position.png?raw=true" height="350"/></a></p>
+
+##### Insgesamt erreichter Reward
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/sum_reward.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/sum_reward.png?raw=true" height="350"/></a></p>
+
+##### Erreichte Flagge
+<p align="center"><a href="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/flag.png"><img src="https://github.com/JanGaida/super-mario-bros-with-a3c/blob/master/doc/stats/DCN_vs_CN_with_LSTM_vs_GRU__w1s1v0/flag.png?raw=true" height="350"/></a></p>
 
 
 ### Weitere Trainings mit DCN + LSTM
