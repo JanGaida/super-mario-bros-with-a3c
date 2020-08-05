@@ -22,7 +22,7 @@
 
 ## Paper
 
-*upcoming*
+<a href="https://github.com/JanGaida/super-mario-bros-with-a3c/raw/master/doc/Deep-Q-Learninbg-mit-Super-Mario-Bros-und-a3c.pdf">Hier</a>
 
 ---
 
